@@ -62,7 +62,6 @@ namespace path {
       "C:\\tmp",
     };
     static std::string cascs[] = {
-      "D:\\Program Files\\7-Zip\\Lang\\Diablo III Public Test\\Data",
       "E:\\D3Ptr\\Data",
     };
     static bool initialized = false;
