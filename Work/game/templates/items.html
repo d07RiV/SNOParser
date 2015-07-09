@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>D3 Diff</title>
+  <style type="text/css">
+   .bg-red { background-color: #f88; }
+   .bg-green { background-color: #8f8; }
+   .indent { padding-left: 48px; margin: 0; }
+   .label { display: inline-block; width: 80px; text-align: right; }
+   a { color: #00f; text-decoration: none; }
+   a:hover { text-decoration: underline; }
+   i { font-size: 16px; display: block; background-color: #ccc; padding: 2px; margin-bottom: 3px; }
+   div { border: 1px solid black; margin-bottom: 6px; padding-bottom: 3px; }
+   span.icon { color: #00f; text-decoration: none; cursor: pointer; }
+   span.icon:hover { text-decoration: underline; }
+  </style>
+  <script src="/external/jquery.min.js"></script>
+  <script type="text/javascript">
+   $(function() {
+     $(".ptr_link").each(function() {
+       var href = $(this).attr("href");
+       $(this).attr("href", location.protocol + "//" + location.hostname.replace("www.", "ptr.") + href);
+     });
+     $(".live_link").each(function() {
+       var href = $(this).attr("href");
+       $(this).attr("href", location.protocol + "//" + location.hostname.replace("ptr.", "www.") + href);
+     });
+     var clsn = ["DH Male", "DH Female", "Barb Male", "Barb Female", "Wiz Male", "Wiz Female",
+                 "WD Male", "WD Female", "Monk Male", "Monk Female", "Crus Male", "Crus Female"];
+     $(".icon").click(function() {
+       var icons = $(this).attr("icons").split(",");
+       var tbl = "<table><tr>";
+       for (var i = 0; i < icons.length; ++i) {
+         var id = parseInt(icons[i]);
+         if (id) tbl += "<th>" + clsn[i] + "</th>";
+       }
+       tbl += "</tr><tr>";
+       for (var i = 0; i < icons.length; ++i) {
+         var id = parseInt(icons[i]);
+         if (id) tbl += "<td><img src=\"/game/icons/" + id + "\"></img></td>";
+       }
+       tbl += "</tr></table>";
+       $(this).replaceWith(tbl);
+     });
+   });
+  </script>
+ </head>
+ <body>
+  Items | <a href="/game/itemsets">Sets</a>

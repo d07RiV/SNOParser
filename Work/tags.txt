@@ -1,0 +1,4598 @@
+{
+  "262400": {
+    "name": "Projectile Actor",
+    "tag": "TAG_POWER_PROJECTILE_SNO"
+  },
+  "262401": {
+    "name": "Explosion Actor",
+    "tag": "TAG_POWER_EXPLOSION_SNO"
+  },
+  "262402": {
+    "name": "Ground Impact Actor",
+    "tag": "TAG_POWER_GROUND_IMPACT_SNO"
+  },
+  "262403": {
+    "name": "Chain Rope",
+    "tag": "TAG_POWER_ROPE_CHAIN_SNO"
+  },
+  "262405": {
+    "name": "Target Impact Particle",
+    "tag": "TAG_POWER_TARGET_IMPACT_SNO"
+  },
+  "262406": {
+    "name": "Target Attacked Particle",
+    "tag": "TAG_POWER_TARGET_ATTACKED_SNO"
+  },
+  "262407": {
+    "name": "Target Impact Effect Group",
+    "tag": "TAG_POWER_TARGET_IMPACT_EFFECT_GROUP"
+  },
+  "262408": {
+    "name": "Projectile Throw Over Guys",
+    "tag": "TAG_POWER_PROJECTILE_THROW_OVER"
+  },
+  "262410": {
+    "name": "Projectile Wall/Floor Explosion",
+    "tag": "TAG_POWER_WALL_FLOOR_EXPLOSION_SNO"
+  },
+  "262415": {
+    "name": "Spawned Actor",
+    "tag": "TAG_POWER_SPAWNED_ACTOR"
+  },
+  "262432": {
+    "name": "Rope",
+    "tag": "TAG_POWER_ROPE_SNO"
+  },
+  "262433": {
+    "name": "Hitsound Override",
+    "tag": "TAG_POWER_HITSOUND_OVERRIDE"
+  },
+  "262434": {
+    "name": "Rope Ground",
+    "tag": "TAG_POWER_ROPE_GROUND_SNO"
+  },
+  "262435": {
+    "name": "Projectile Scale Velocity",
+    "tag": "TAG_POWER_PROJECTILE_SCALE_VELOCITY"
+  },
+  "262440": {
+    "name": "Effect Actor",
+    "tag": "TAG_POWER_EFFECT_ACTOR_SNO"
+  },
+  "262448": {
+    "name": "Alternate Explosion Actor",
+    "tag": "TAG_POWER_ALT_EXPLOSION_SNO"
+  },
+  "262480": {
+    "name": "Uses Weapon Projectile",
+    "tag": "TAG_POWER_USES_WEAPON_PROJECTILE"
+  },
+  "262656": {
+    "name": "Animation Tag",
+    "tag": "TAG_POWER_ANIMATION_TAG"
+  },
+  "262657": {
+    "name": "Animation Charge Up",
+    "tag": "TAG_POWER_CHARGEUP_ANIMATION"
+  },
+  "262658": {
+    "name": "Animation Tag 2",
+    "tag": "TAG_POWER_ANIMATION_TAG_2"
+  },
+  "262659": {
+    "name": "Source-Dest Effect Group",
+    "tag": "TAG_POWER_SOURCE_DEST_EFFECT_GROUP"
+  },
+  "262660": {
+    "name": "Casting Effect Group - Male",
+    "tag": "TAG_POWER_CASTING_EFFECT_GROUP"
+  },
+  "262661": {
+    "name": "Generic Effect Group 0",
+    "tag": "TAG_POWER_GENERIC_EFFECT_GROUP_0"
+  },
+  "262662": {
+    "name": "Ending Effect Group",
+    "tag": "TAG_POWER_ENDING_EFFECT_GROUP"
+  },
+  "262663": {
+    "name": "Offhand Animation Tag (for dual wield)",
+    "tag": "TAG_POWER_OFFHAND_ANIMATION_TAG"
+  },
+  "262673": {
+    "name": "Animation Tag Rune A",
+    "tag": "TAG_POWER_ANIMATION_TAG_RUNE_A"
+  },
+  "262674": {
+    "name": "Animation Tag Rune B",
+    "tag": "TAG_POWER_ANIMATION_TAG_RUNE_B"
+  },
+  "262675": {
+    "name": "Animation Tag Rune C",
+    "tag": "TAG_POWER_ANIMATION_TAG_RUNE_C"
+  },
+  "262676": {
+    "name": "Animation Tag Rune D",
+    "tag": "TAG_POWER_ANIMATION_TAG_RUNE_D"
+  },
+  "262677": {
+    "name": "Animation Tag Rune E",
+    "tag": "TAG_POWER_ANIMATION_TAG_RUNE_E"
+  },
+  "262912": {
+    "name": "Combo Animation 1",
+    "tag": "TAG_POWER_COMBO_ANIMATION_1"
+  },
+  "262913": {
+    "name": "Combo Animation 2",
+    "tag": "TAG_POWER_COMBO_ANIMATION_2"
+  },
+  "262914": {
+    "name": "Combo Animation 3",
+    "tag": "TAG_POWER_COMBO_ANIMATION_3"
+  },
+  "262928": {
+    "name": "Combo Template 1",
+    "tag": "TAG_POWER_COMBO_TEMPLATE_1"
+  },
+  "262929": {
+    "name": "Combo Template 2",
+    "tag": "TAG_POWER_COMBO_TEMPLATE_2"
+  },
+  "262930": {
+    "name": "Combo Template 3",
+    "tag": "TAG_POWER_COMBO_TEMPLATE_3"
+  },
+  "262944": {
+    "name": "Combo SpellFunc End 1",
+    "tag": "TAG_POWER_COMBO_SPELL_FUNC_END_1"
+  },
+  "262945": {
+    "name": "Combo SpellFunc End 2",
+    "tag": "TAG_POWER_COMBO_SPELL_FUNC_END_2"
+  },
+  "262946": {
+    "name": "Combo SpellFunc End 3",
+    "tag": "TAG_POWER_COMBO_SPELL_FUNC_END_3"
+  },
+  "262960": {
+    "name": "Combo SpellFunc Interrupted 1",
+    "tag": "TAG_POWER_COMBO_SPELL_FUNC_INTERRUPTED_1"
+  },
+  "262961": {
+    "name": "Combo SpellFunc Interrupted 2",
+    "tag": "TAG_POWER_COMBO_SPELL_FUNC_INTERRUPTED_2"
+  },
+  "262962": {
+    "name": "Combo SpellFunc Interrupted 3",
+    "tag": "TAG_POWER_COMBO_SPELL_FUNC_INTERRUPTED_3"
+  },
+  "263185": {
+    "name": "Combo Animation 1 Rune A",
+    "tag": "TAG_POWER_COMBO_ANIMATION_1_RUNE_A"
+  },
+  "263186": {
+    "name": "Combo Animation 1 Rune B",
+    "tag": "TAG_POWER_COMBO_ANIMATION_1_RUNE_B"
+  },
+  "263187": {
+    "name": "Combo Animation 1 Rune C",
+    "tag": "TAG_POWER_COMBO_ANIMATION_1_RUNE_C"
+  },
+  "263188": {
+    "name": "Combo Animation 1 Rune D",
+    "tag": "TAG_POWER_COMBO_ANIMATION_1_RUNE_D"
+  },
+  "263189": {
+    "name": "Combo Animation 1 Rune E",
+    "tag": "TAG_POWER_COMBO_ANIMATION_1_RUNE_E"
+  },
+  "263201": {
+    "name": "Combo Animation 2 Rune A",
+    "tag": "TAG_POWER_COMBO_ANIMATION_2_RUNE_A"
+  },
+  "263202": {
+    "name": "Combo Animation 2 Rune B",
+    "tag": "TAG_POWER_COMBO_ANIMATION_2_RUNE_B"
+  },
+  "263203": {
+    "name": "Combo Animation 2 Rune C",
+    "tag": "TAG_POWER_COMBO_ANIMATION_2_RUNE_C"
+  },
+  "263204": {
+    "name": "Combo Animation 2 Rune D",
+    "tag": "TAG_POWER_COMBO_ANIMATION_2_RUNE_D"
+  },
+  "263205": {
+    "name": "Combo Animation 2 Rune E",
+    "tag": "TAG_POWER_COMBO_ANIMATION_2_RUNE_E"
+  },
+  "263217": {
+    "name": "Combo Animation 3 Rune A",
+    "tag": "TAG_POWER_COMBO_ANIMATION_3_RUNE_A"
+  },
+  "263218": {
+    "name": "Combo Animation 3 Rune B",
+    "tag": "TAG_POWER_COMBO_ANIMATION_3_RUNE_B"
+  },
+  "263219": {
+    "name": "Combo Animation 3 Rune C",
+    "tag": "TAG_POWER_COMBO_ANIMATION_3_RUNE_C"
+  },
+  "263220": {
+    "name": "Combo Animation 3 Rune D",
+    "tag": "TAG_POWER_COMBO_ANIMATION_3_RUNE_D"
+  },
+  "263221": {
+    "name": "Combo Animation 3 Rune E",
+    "tag": "TAG_POWER_COMBO_ANIMATION_3_RUNE_E"
+  },
+  "263222": {
+    "name": "Scaled Animation Timing Min",
+    "tag": "TAG_POWER_ANIMATION_MIN_SCALING"
+  },
+  "263223": {
+    "name": "Scaled Animation Timing Max",
+    "tag": "TAG_POWER_ANIMATION_MAX_SCALING"
+  },
+  "263224": {
+    "name": "Burrow Weapon Class Override",
+    "tag": "TAG_POWER_BURROW_WEAPON_CLASS_OVERRIDE"
+  },
+  "263296": {
+    "name": "Looping Animation Time",
+    "tag": "TAG_POWER_LOOPING_ANIMATION_TIME"
+  },
+  "263298": {
+    "name": "Looping Not Self Interrupting",
+    "tag": "TAG_POWER_LOOPING_IS_SELF_INTERRUPTING"
+  },
+  "263300": {
+    "name": "Looping Suppress Item Tooltips",
+    "tag": "TAG_POWER_LOOPING_SUPPRESS_ITEM_TOOLTIPS"
+  },
+  "263424": {
+    "name": "Animation Tag Turn Left",
+    "tag": "TAG_POWER_ANIMATION_TAG_TURN_LEFT"
+  },
+  "263425": {
+    "name": "Animation Tag Turn Right",
+    "tag": "TAG_POWER_ANIMATION_TAG_TURN_RIGHT"
+  },
+  "263426": {
+    "name": "Animation Turn Threshold",
+    "tag": "TAG_POWER_ANIMATION_TURN_THRESHOLD"
+  },
+  "263680": {
+    "name": "Generic Effect Group 1",
+    "tag": "TAG_POWER_GENERIC_EFFECT_GROUP_1"
+  },
+  "264192": {
+    "name": "Contact Frame Effect Group - Male",
+    "tag": "TAG_POWER_CONTACT_FRAME_EFFECT_GROUP"
+  },
+  "264193": {
+    "name": "Casting Effect Group - Male 2",
+    "tag": "TAG_POWER_CASTING_EFFECT_GROUP_2"
+  },
+  "264194": {
+    "name": "Contact Frame Effect Group - Male 2",
+    "tag": "TAG_POWER_CONTACT_FRAME_EFFECT_GROUP_2"
+  },
+  "264273": {
+    "name": "Casting Effect Group - Female",
+    "tag": "TAG_POWER_CASTING_EFFECT_GROUP_FEMALE"
+  },
+  "264275": {
+    "name": "Contact Frame Effect Group - Female",
+    "tag": "TAG_POWER_CONTACT_FRAME_EFFECT_GROUP_FEMALE"
+  },
+  "264276": {
+    "name": "Casting Effect Group - Female 2",
+    "tag": "TAG_POWER_CASTING_EFFECT_GROUP_FEMALE_2"
+  },
+  "264277": {
+    "name": "Contact Frame Effect Group - Female 2",
+    "tag": "TAG_POWER_CONTACT_FRAME_EFFECT_GROUP_FEMALE_2"
+  },
+  "264288": {
+    "name": "Combo 0 Casting Effect Group - Male",
+    "tag": "TAG_POWER_COMBO_CASTING_EFFECT_GROUP_0"
+  },
+  "264289": {
+    "name": "Combo 1 Casting Effect Group - Male",
+    "tag": "TAG_POWER_COMBO_CASTING_EFFECT_GROUP_1"
+  },
+  "264290": {
+    "name": "Combo 2 Casting Effect Group - Male",
+    "tag": "TAG_POWER_COMBO_CASTING_EFFECT_GROUP_2"
+  },
+  "264304": {
+    "name": "Combo 0 Contact Frame Effect Group - Male",
+    "tag": "TAG_POWER_COMBO_CONTACT_FRAME_EFFECT_GROUP_0"
+  },
+  "264305": {
+    "name": "Combo 1 Contact Frame Effect Group - Male",
+    "tag": "TAG_POWER_COMBO_CONTACT_FRAME_EFFECT_GROUP_1"
+  },
+  "264306": {
+    "name": "Combo 2 Contact Frame Effect Group - Male",
+    "tag": "TAG_POWER_COMBO_CONTACT_FRAME_EFFECT_GROUP_2"
+  },
+  "264320": {
+    "name": "Combo 0 Casting Effect Group - Female",
+    "tag": "TAG_POWER_COMBO_CASTING_EFFECT_GROUP_FEMALE_0"
+  },
+  "264321": {
+    "name": "Combo 1 Casting Effect Group - Female",
+    "tag": "TAG_POWER_COMBO_CASTING_EFFECT_GROUP_FEMALE_1"
+  },
+  "264322": {
+    "name": "Combo 2 Casting Effect Group - Female",
+    "tag": "TAG_POWER_COMBO_CASTING_EFFECT_GROUP_FEMALE_2"
+  },
+  "264336": {
+    "name": "Combo 0 Contact Frame Effect Group - Female",
+    "tag": "TAG_POWER_COMBO_CONTACT_FRAME_EFFECT_GROUP_FEMALE_0"
+  },
+  "264337": {
+    "name": "Combo 1 Contact Frame Effect Group - Female",
+    "tag": "TAG_POWER_COMBO_CONTACT_FRAME_EFFECT_GROUP_FEMALE_1"
+  },
+  "264338": {
+    "name": "Combo 2 Contact Frame Effect Group - Female",
+    "tag": "TAG_POWER_COMBO_CONTACT_FRAME_EFFECT_GROUP_FEMALE_2"
+  },
+  "264448": {
+    "name": "IsComboPower",
+    "tag": "TAG_POWER_IS_COMBO_POWER"
+  },
+  "264449": {
+    "name": "RefreshesComboLevel",
+    "tag": "TAG_POWER_REFRESHES_COMBO_LEVEL"
+  },
+  "264704": {
+    "name": "IsEmote",
+    "tag": "TAG_POWER_IS_EMOTE"
+  },
+  "264720": {
+    "name": "Emote Conversation SNO",
+    "tag": "TAG_POWER_EMOTE_CONVERSATION_SNO"
+  },
+  "266496": {
+    "name": "Script Formula 0",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_0"
+  },
+  "266512": {
+    "name": "Script Formula 1",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_1"
+  },
+  "266528": {
+    "name": "Script Formula 2",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_2"
+  },
+  "266544": {
+    "name": "Script Formula 3",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_3"
+  },
+  "266560": {
+    "name": "Script Formula 4",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_4"
+  },
+  "266576": {
+    "name": "Script Formula 5",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_5"
+  },
+  "266592": {
+    "name": "Script Formula 6",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_6"
+  },
+  "266608": {
+    "name": "Script Formula 7",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_7"
+  },
+  "266624": {
+    "name": "Script Formula 8",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_8"
+  },
+  "266640": {
+    "name": "Script Formula 9",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_9"
+  },
+  "266752": {
+    "name": "Script Formula 10",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_10"
+  },
+  "266768": {
+    "name": "Script Formula 11",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_11"
+  },
+  "266784": {
+    "name": "Script Formula 12",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_12"
+  },
+  "266800": {
+    "name": "Script Formula 13",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_13"
+  },
+  "266816": {
+    "name": "Script Formula 14",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_14"
+  },
+  "266832": {
+    "name": "Script Formula 15",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_15"
+  },
+  "266848": {
+    "name": "Script Formula 16",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_16"
+  },
+  "266864": {
+    "name": "Script Formula 17",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_17"
+  },
+  "266880": {
+    "name": "Script Formula 18",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_18"
+  },
+  "266896": {
+    "name": "Script Formula 19",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_19"
+  },
+  "267008": {
+    "name": "Script Formula 20",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_20"
+  },
+  "267024": {
+    "name": "Script Formula 21",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_21"
+  },
+  "267040": {
+    "name": "Script Formula 22",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_22"
+  },
+  "267056": {
+    "name": "Script Formula 23",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_23"
+  },
+  "267072": {
+    "name": "Script Formula 24",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_24"
+  },
+  "267088": {
+    "name": "Script Formula 25",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_25"
+  },
+  "267104": {
+    "name": "Script Formula 26",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_26"
+  },
+  "267120": {
+    "name": "Script Formula 27",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_27"
+  },
+  "267136": {
+    "name": "Script Formula 28",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_28"
+  },
+  "267152": {
+    "name": "Script Formula 29",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_29"
+  },
+  "267264": {
+    "name": "Script Formula 30",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_30"
+  },
+  "267280": {
+    "name": "Script Formula 31",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_31"
+  },
+  "267296": {
+    "name": "Script Formula 32",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_32"
+  },
+  "267312": {
+    "name": "Script Formula 33",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_33"
+  },
+  "267328": {
+    "name": "Script Formula 34",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_34"
+  },
+  "267344": {
+    "name": "Script Formula 35",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_35"
+  },
+  "267360": {
+    "name": "Script Formula 36",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_36"
+  },
+  "267376": {
+    "name": "Script Formula 37",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_37"
+  },
+  "267392": {
+    "name": "Script Formula 38",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_38"
+  },
+  "267408": {
+    "name": "Script Formula 39",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_39"
+  },
+  "267520": {
+    "name": "Script Formula 40",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_40"
+  },
+  "267536": {
+    "name": "Script Formula 41",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_41"
+  },
+  "267552": {
+    "name": "Script Formula 42",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_42"
+  },
+  "267568": {
+    "name": "Script Formula 43",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_43"
+  },
+  "267584": {
+    "name": "Script Formula 44",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_44"
+  },
+  "267600": {
+    "name": "Script Formula 45",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_45"
+  },
+  "267616": {
+    "name": "Script Formula 46",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_46"
+  },
+  "267632": {
+    "name": "Script Formula 47",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_47"
+  },
+  "267648": {
+    "name": "Script Formula 48",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_48"
+  },
+  "267664": {
+    "name": "Script Formula 49",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_49"
+  },
+  "267776": {
+    "name": "Script Formula 50",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_50"
+  },
+  "267792": {
+    "name": "Script Formula 51",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_51"
+  },
+  "267808": {
+    "name": "Script Formula 52",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_52"
+  },
+  "267824": {
+    "name": "Script Formula 53",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_53"
+  },
+  "267840": {
+    "name": "Script Formula 54",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_54"
+  },
+  "267856": {
+    "name": "Script Formula 55",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_55"
+  },
+  "267872": {
+    "name": "Script Formula 56",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_56"
+  },
+  "267888": {
+    "name": "Script Formula 57",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_57"
+  },
+  "267904": {
+    "name": "Script Formula 58",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_58"
+  },
+  "267920": {
+    "name": "Script Formula 59",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_59"
+  },
+  "268032": {
+    "name": "Script Formula 60",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_60"
+  },
+  "268048": {
+    "name": "Script Formula 61",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_61"
+  },
+  "268064": {
+    "name": "Script Formula 62",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_62"
+  },
+  "268080": {
+    "name": "Script Formula 63",
+    "tag": "TAG_POWER_SCRIPT_FORMULA_63"
+  },
+  "270336": {
+    "name": "Buff 0 Effect Group",
+    "tag": "TAG_POWER_BUFF_0_EFFECT_GROUP"
+  },
+  "270337": {
+    "name": "Buff 1 Effect Group",
+    "tag": "TAG_POWER_BUFF_1_EFFECT_GROUP"
+  },
+  "270338": {
+    "name": "Buff 2 Effect Group",
+    "tag": "TAG_POWER_BUFF_2_EFFECT_GROUP"
+  },
+  "270339": {
+    "name": "Buff 3 Effect Group",
+    "tag": "TAG_POWER_BUFF_3_EFFECT_GROUP"
+  },
+  "270340": {
+    "name": "Buff 4 Effect Group",
+    "tag": "TAG_POWER_BUFF_4_EFFECT_GROUP"
+  },
+  "270341": {
+    "name": "Buff 5 Effect Group",
+    "tag": "TAG_POWER_BUFF_5_EFFECT_GROUP"
+  },
+  "270342": {
+    "name": "Buff 6 Effect Group",
+    "tag": "TAG_POWER_BUFF_6_EFFECT_GROUP"
+  },
+  "270343": {
+    "name": "Buff 7 Effect Group",
+    "tag": "TAG_POWER_BUFF_7_EFFECT_GROUP"
+  },
+  "270344": {
+    "name": "Buff 8 Effect Group",
+    "tag": "TAG_POWER_BUFF_8_EFFECT_GROUP"
+  },
+  "270345": {
+    "name": "Buff 9 Effect Group",
+    "tag": "TAG_POWER_BUFF_9_EFFECT_GROUP"
+  },
+  "270352": {
+    "name": "Buff 10 Effect Group",
+    "tag": "TAG_POWER_BUFF_10_EFFECT_GROUP"
+  },
+  "270353": {
+    "name": "Buff 11 Effect Group",
+    "tag": "TAG_POWER_BUFF_11_EFFECT_GROUP"
+  },
+  "270354": {
+    "name": "Buff 12 Effect Group",
+    "tag": "TAG_POWER_BUFF_12_EFFECT_GROUP"
+  },
+  "270355": {
+    "name": "Buff 13 Effect Group",
+    "tag": "TAG_POWER_BUFF_13_EFFECT_GROUP"
+  },
+  "270356": {
+    "name": "Buff 14 Effect Group",
+    "tag": "TAG_POWER_BUFF_14_EFFECT_GROUP"
+  },
+  "270357": {
+    "name": "Buff 15 Effect Group",
+    "tag": "TAG_POWER_BUFF_15_EFFECT_GROUP"
+  },
+  "270358": {
+    "name": "Buff 16 Effect Group",
+    "tag": "TAG_POWER_BUFF_16_EFFECT_GROUP"
+  },
+  "270359": {
+    "name": "Buff 17 Effect Group",
+    "tag": "TAG_POWER_BUFF_17_EFFECT_GROUP"
+  },
+  "270360": {
+    "name": "Buff 18 Effect Group",
+    "tag": "TAG_POWER_BUFF_18_EFFECT_GROUP"
+  },
+  "270361": {
+    "name": "Buff 19 Effect Group",
+    "tag": "TAG_POWER_BUFF_19_EFFECT_GROUP"
+  },
+  "270368": {
+    "name": "Buff 20 Effect Group",
+    "tag": "TAG_POWER_BUFF_20_EFFECT_GROUP"
+  },
+  "270369": {
+    "name": "Buff 21 Effect Group",
+    "tag": "TAG_POWER_BUFF_21_EFFECT_GROUP"
+  },
+  "270370": {
+    "name": "Buff 22 Effect Group",
+    "tag": "TAG_POWER_BUFF_22_EFFECT_GROUP"
+  },
+  "270371": {
+    "name": "Buff 23 Effect Group",
+    "tag": "TAG_POWER_BUFF_23_EFFECT_GROUP"
+  },
+  "270372": {
+    "name": "Buff 24 Effect Group",
+    "tag": "TAG_POWER_BUFF_24_EFFECT_GROUP"
+  },
+  "270373": {
+    "name": "Buff 25 Effect Group",
+    "tag": "TAG_POWER_BUFF_25_EFFECT_GROUP"
+  },
+  "270374": {
+    "name": "Buff 26 Effect Group",
+    "tag": "TAG_POWER_BUFF_26_EFFECT_GROUP"
+  },
+  "270375": {
+    "name": "Buff 27 Effect Group",
+    "tag": "TAG_POWER_BUFF_27_EFFECT_GROUP"
+  },
+  "270376": {
+    "name": "Buff 28 Effect Group",
+    "tag": "TAG_POWER_BUFF_28_EFFECT_GROUP"
+  },
+  "270377": {
+    "name": "Buff 29 Effect Group",
+    "tag": "TAG_POWER_BUFF_29_EFFECT_GROUP"
+  },
+  "270384": {
+    "name": "Buff 30 Effect Group",
+    "tag": "TAG_POWER_BUFF_30_EFFECT_GROUP"
+  },
+  "270385": {
+    "name": "Buff 31 Effect Group",
+    "tag": "TAG_POWER_BUFF_31_EFFECT_GROUP"
+  },
+  "270592": {
+    "name": "Buff 0 Icon",
+    "tag": "TAG_POWER_BUFF_0_ICON"
+  },
+  "270593": {
+    "name": "Buff 1 Icon",
+    "tag": "TAG_POWER_BUFF_1_ICON"
+  },
+  "270594": {
+    "name": "Buff 2 Icon",
+    "tag": "TAG_POWER_BUFF_2_ICON"
+  },
+  "270595": {
+    "name": "Buff 3 Icon",
+    "tag": "TAG_POWER_BUFF_3_ICON"
+  },
+  "270596": {
+    "name": "Buff 4 Icon",
+    "tag": "TAG_POWER_BUFF_4_ICON"
+  },
+  "270597": {
+    "name": "Buff 5 Icon",
+    "tag": "TAG_POWER_BUFF_5_ICON"
+  },
+  "270598": {
+    "name": "Buff 6 Icon",
+    "tag": "TAG_POWER_BUFF_6_ICON"
+  },
+  "270599": {
+    "name": "Buff 7 Icon",
+    "tag": "TAG_POWER_BUFF_7_ICON"
+  },
+  "270600": {
+    "name": "Buff 8 Icon",
+    "tag": "TAG_POWER_BUFF_8_ICON"
+  },
+  "270601": {
+    "name": "Buff 9 Icon",
+    "tag": "TAG_POWER_BUFF_9_ICON"
+  },
+  "270608": {
+    "name": "Buff 10 Icon",
+    "tag": "TAG_POWER_BUFF_10_ICON"
+  },
+  "270609": {
+    "name": "Buff 11 Icon",
+    "tag": "TAG_POWER_BUFF_11_ICON"
+  },
+  "270610": {
+    "name": "Buff 12 Icon",
+    "tag": "TAG_POWER_BUFF_12_ICON"
+  },
+  "270611": {
+    "name": "Buff 13 Icon",
+    "tag": "TAG_POWER_BUFF_13_ICON"
+  },
+  "270612": {
+    "name": "Buff 14 Icon",
+    "tag": "TAG_POWER_BUFF_14_ICON"
+  },
+  "270613": {
+    "name": "Buff 15 Icon",
+    "tag": "TAG_POWER_BUFF_15_ICON"
+  },
+  "270614": {
+    "name": "Buff 16 Icon",
+    "tag": "TAG_POWER_BUFF_16_ICON"
+  },
+  "270615": {
+    "name": "Buff 17 Icon",
+    "tag": "TAG_POWER_BUFF_17_ICON"
+  },
+  "270616": {
+    "name": "Buff 18 Icon",
+    "tag": "TAG_POWER_BUFF_18_ICON"
+  },
+  "270617": {
+    "name": "Buff 19 Icon",
+    "tag": "TAG_POWER_BUFF_19_ICON"
+  },
+  "270624": {
+    "name": "Buff 20 Icon",
+    "tag": "TAG_POWER_BUFF_20_ICON"
+  },
+  "270625": {
+    "name": "Buff 21 Icon",
+    "tag": "TAG_POWER_BUFF_21_ICON"
+  },
+  "270626": {
+    "name": "Buff 22 Icon",
+    "tag": "TAG_POWER_BUFF_22_ICON"
+  },
+  "270627": {
+    "name": "Buff 23 Icon",
+    "tag": "TAG_POWER_BUFF_23_ICON"
+  },
+  "270628": {
+    "name": "Buff 24 Icon",
+    "tag": "TAG_POWER_BUFF_24_ICON"
+  },
+  "270629": {
+    "name": "Buff 25 Icon",
+    "tag": "TAG_POWER_BUFF_25_ICON"
+  },
+  "270630": {
+    "name": "Buff 26 Icon",
+    "tag": "TAG_POWER_BUFF_26_ICON"
+  },
+  "270631": {
+    "name": "Buff 27 Icon",
+    "tag": "TAG_POWER_BUFF_27_ICON"
+  },
+  "270632": {
+    "name": "Buff 28 Icon",
+    "tag": "TAG_POWER_BUFF_28_ICON"
+  },
+  "270633": {
+    "name": "Buff 29 Icon",
+    "tag": "TAG_POWER_BUFF_29_ICON"
+  },
+  "270640": {
+    "name": "Buff 30 Icon",
+    "tag": "TAG_POWER_BUFF_30_ICON"
+  },
+  "270641": {
+    "name": "Buff 31 Icon",
+    "tag": "TAG_POWER_BUFF_31_ICON"
+  },
+  "270848": {
+    "name": "Buff 0 Is Harmful",
+    "tag": "TAG_POWER_BUFF_0_HARMFUL_BUFF"
+  },
+  "270849": {
+    "name": "Buff 1 Is Harmful",
+    "tag": "TAG_POWER_BUFF_1_HARMFUL_BUFF"
+  },
+  "270850": {
+    "name": "Buff 2 Is Harmful",
+    "tag": "TAG_POWER_BUFF_2_HARMFUL_BUFF"
+  },
+  "270851": {
+    "name": "Buff 3 Is Harmful",
+    "tag": "TAG_POWER_BUFF_3_HARMFUL_BUFF"
+  },
+  "270852": {
+    "name": "Buff 4 Is Harmful",
+    "tag": "TAG_POWER_BUFF_4_HARMFUL_BUFF"
+  },
+  "270853": {
+    "name": "Buff 5 Is Harmful",
+    "tag": "TAG_POWER_BUFF_5_HARMFUL_BUFF"
+  },
+  "270854": {
+    "name": "Buff 6 Is Harmful",
+    "tag": "TAG_POWER_BUFF_6_HARMFUL_BUFF"
+  },
+  "270855": {
+    "name": "Buff 7 Is Harmful",
+    "tag": "TAG_POWER_BUFF_7_HARMFUL_BUFF"
+  },
+  "270856": {
+    "name": "Buff 8 Is Harmful",
+    "tag": "TAG_POWER_BUFF_8_HARMFUL_BUFF"
+  },
+  "270857": {
+    "name": "Buff 9 Is Harmful",
+    "tag": "TAG_POWER_BUFF_9_HARMFUL_BUFF"
+  },
+  "270864": {
+    "name": "Buff 10 Is Harmful",
+    "tag": "TAG_POWER_BUFF_10_HARMFUL_BUFF"
+  },
+  "270865": {
+    "name": "Buff 11 Is Harmful",
+    "tag": "TAG_POWER_BUFF_11_HARMFUL_BUFF"
+  },
+  "270866": {
+    "name": "Buff 12 Is Harmful",
+    "tag": "TAG_POWER_BUFF_12_HARMFUL_BUFF"
+  },
+  "270867": {
+    "name": "Buff 13 Is Harmful",
+    "tag": "TAG_POWER_BUFF_13_HARMFUL_BUFF"
+  },
+  "270868": {
+    "name": "Buff 14 Is Harmful",
+    "tag": "TAG_POWER_BUFF_14_HARMFUL_BUFF"
+  },
+  "270869": {
+    "name": "Buff 15 Is Harmful",
+    "tag": "TAG_POWER_BUFF_15_HARMFUL_BUFF"
+  },
+  "270870": {
+    "name": "Buff 16 Is Harmful",
+    "tag": "TAG_POWER_BUFF_16_HARMFUL_BUFF"
+  },
+  "270871": {
+    "name": "Buff 17 Is Harmful",
+    "tag": "TAG_POWER_BUFF_17_HARMFUL_BUFF"
+  },
+  "270872": {
+    "name": "Buff 18 Is Harmful",
+    "tag": "TAG_POWER_BUFF_18_HARMFUL_BUFF"
+  },
+  "270873": {
+    "name": "Buff 19 Is Harmful",
+    "tag": "TAG_POWER_BUFF_19_HARMFUL_BUFF"
+  },
+  "270880": {
+    "name": "Buff 20 Is Harmful",
+    "tag": "TAG_POWER_BUFF_20_HARMFUL_BUFF"
+  },
+  "270881": {
+    "name": "Buff 21 Is Harmful",
+    "tag": "TAG_POWER_BUFF_21_HARMFUL_BUFF"
+  },
+  "270882": {
+    "name": "Buff 22 Is Harmful",
+    "tag": "TAG_POWER_BUFF_22_HARMFUL_BUFF"
+  },
+  "270883": {
+    "name": "Buff 23 Is Harmful",
+    "tag": "TAG_POWER_BUFF_23_HARMFUL_BUFF"
+  },
+  "270884": {
+    "name": "Buff 24 Is Harmful",
+    "tag": "TAG_POWER_BUFF_24_HARMFUL_BUFF"
+  },
+  "270885": {
+    "name": "Buff 25 Is Harmful",
+    "tag": "TAG_POWER_BUFF_25_HARMFUL_BUFF"
+  },
+  "270886": {
+    "name": "Buff 26 Is Harmful",
+    "tag": "TAG_POWER_BUFF_26_HARMFUL_BUFF"
+  },
+  "270887": {
+    "name": "Buff 27 Is Harmful",
+    "tag": "TAG_POWER_BUFF_27_HARMFUL_BUFF"
+  },
+  "270888": {
+    "name": "Buff 28 Is Harmful",
+    "tag": "TAG_POWER_BUFF_28_HARMFUL_BUFF"
+  },
+  "270889": {
+    "name": "Buff 29 Is Harmful",
+    "tag": "TAG_POWER_BUFF_29_HARMFUL_BUFF"
+  },
+  "270896": {
+    "name": "Buff 30 Is Harmful",
+    "tag": "TAG_POWER_BUFF_30_HARMFUL_BUFF"
+  },
+  "270897": {
+    "name": "Buff 31 Is Harmful",
+    "tag": "TAG_POWER_BUFF_31_HARMFUL_BUFF"
+  },
+  "271104": {
+    "name": "Buff 0 Show Duration",
+    "tag": "TAG_POWER_BUFF_0_SHOW_DURATION"
+  },
+  "271105": {
+    "name": "Buff 1 Show Duration",
+    "tag": "TAG_POWER_BUFF_1_SHOW_DURATION"
+  },
+  "271106": {
+    "name": "Buff 2 Show Duration",
+    "tag": "TAG_POWER_BUFF_2_SHOW_DURATION"
+  },
+  "271107": {
+    "name": "Buff 3 Show Duration",
+    "tag": "TAG_POWER_BUFF_3_SHOW_DURATION"
+  },
+  "271108": {
+    "name": "Buff 4 Show Duration",
+    "tag": "TAG_POWER_BUFF_4_SHOW_DURATION"
+  },
+  "271109": {
+    "name": "Buff 5 Show Duration",
+    "tag": "TAG_POWER_BUFF_5_SHOW_DURATION"
+  },
+  "271110": {
+    "name": "Buff 6 Show Duration",
+    "tag": "TAG_POWER_BUFF_6_SHOW_DURATION"
+  },
+  "271111": {
+    "name": "Buff 7 Show Duration",
+    "tag": "TAG_POWER_BUFF_7_SHOW_DURATION"
+  },
+  "271112": {
+    "name": "Buff 8 Show Duration",
+    "tag": "TAG_POWER_BUFF_8_SHOW_DURATION"
+  },
+  "271113": {
+    "name": "Buff 9 Show Duration",
+    "tag": "TAG_POWER_BUFF_9_SHOW_DURATION"
+  },
+  "271120": {
+    "name": "Buff 10 Show Duration",
+    "tag": "TAG_POWER_BUFF_10_SHOW_DURATION"
+  },
+  "271121": {
+    "name": "Buff 11 Show Duration",
+    "tag": "TAG_POWER_BUFF_11_SHOW_DURATION"
+  },
+  "271122": {
+    "name": "Buff 12 Show Duration",
+    "tag": "TAG_POWER_BUFF_12_SHOW_DURATION"
+  },
+  "271123": {
+    "name": "Buff 13 Show Duration",
+    "tag": "TAG_POWER_BUFF_13_SHOW_DURATION"
+  },
+  "271124": {
+    "name": "Buff 14 Show Duration",
+    "tag": "TAG_POWER_BUFF_14_SHOW_DURATION"
+  },
+  "271125": {
+    "name": "Buff 15 Show Duration",
+    "tag": "TAG_POWER_BUFF_15_SHOW_DURATION"
+  },
+  "271126": {
+    "name": "Buff 16 Show Duration",
+    "tag": "TAG_POWER_BUFF_16_SHOW_DURATION"
+  },
+  "271127": {
+    "name": "Buff 17 Show Duration",
+    "tag": "TAG_POWER_BUFF_17_SHOW_DURATION"
+  },
+  "271128": {
+    "name": "Buff 18 Show Duration",
+    "tag": "TAG_POWER_BUFF_18_SHOW_DURATION"
+  },
+  "271129": {
+    "name": "Buff 19 Show Duration",
+    "tag": "TAG_POWER_BUFF_19_SHOW_DURATION"
+  },
+  "271136": {
+    "name": "Buff 20 Show Duration",
+    "tag": "TAG_POWER_BUFF_20_SHOW_DURATION"
+  },
+  "271137": {
+    "name": "Buff 21 Show Duration",
+    "tag": "TAG_POWER_BUFF_21_SHOW_DURATION"
+  },
+  "271138": {
+    "name": "Buff 22 Show Duration",
+    "tag": "TAG_POWER_BUFF_22_SHOW_DURATION"
+  },
+  "271139": {
+    "name": "Buff 23 Show Duration",
+    "tag": "TAG_POWER_BUFF_23_SHOW_DURATION"
+  },
+  "271140": {
+    "name": "Buff 24 Show Duration",
+    "tag": "TAG_POWER_BUFF_24_SHOW_DURATION"
+  },
+  "271141": {
+    "name": "Buff 25 Show Duration",
+    "tag": "TAG_POWER_BUFF_25_SHOW_DURATION"
+  },
+  "271142": {
+    "name": "Buff 26 Show Duration",
+    "tag": "TAG_POWER_BUFF_26_SHOW_DURATION"
+  },
+  "271143": {
+    "name": "Buff 27 Show Duration",
+    "tag": "TAG_POWER_BUFF_27_SHOW_DURATION"
+  },
+  "271144": {
+    "name": "Buff 28 Show Duration",
+    "tag": "TAG_POWER_BUFF_28_SHOW_DURATION"
+  },
+  "271145": {
+    "name": "Buff 29 Show Duration",
+    "tag": "TAG_POWER_BUFF_29_SHOW_DURATION"
+  },
+  "271152": {
+    "name": "Buff 30 Show Duration",
+    "tag": "TAG_POWER_BUFF_30_SHOW_DURATION"
+  },
+  "271153": {
+    "name": "Buff 31 Show Duration",
+    "tag": "TAG_POWER_BUFF_31_SHOW_DURATION"
+  },
+  "271360": {
+    "name": "Buff 0 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_0_PLAYER_CAN_CANCEL"
+  },
+  "271361": {
+    "name": "Buff 1 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_1_PLAYER_CAN_CANCEL"
+  },
+  "271362": {
+    "name": "Buff 2 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_2_PLAYER_CAN_CANCEL"
+  },
+  "271363": {
+    "name": "Buff 3 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_3_PLAYER_CAN_CANCEL"
+  },
+  "271364": {
+    "name": "Buff 4 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_4_PLAYER_CAN_CANCEL"
+  },
+  "271365": {
+    "name": "Buff 5 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_5_PLAYER_CAN_CANCEL"
+  },
+  "271366": {
+    "name": "Buff 6 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_6_PLAYER_CAN_CANCEL"
+  },
+  "271367": {
+    "name": "Buff 7 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_7_PLAYER_CAN_CANCEL"
+  },
+  "271368": {
+    "name": "Buff 8 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_8_PLAYER_CAN_CANCEL"
+  },
+  "271369": {
+    "name": "Buff 9 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_9_PLAYER_CAN_CANCEL"
+  },
+  "271376": {
+    "name": "Buff 10 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_10_PLAYER_CAN_CANCEL"
+  },
+  "271377": {
+    "name": "Buff 11 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_11_PLAYER_CAN_CANCEL"
+  },
+  "271378": {
+    "name": "Buff 12 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_12_PLAYER_CAN_CANCEL"
+  },
+  "271379": {
+    "name": "Buff 13 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_13_PLAYER_CAN_CANCEL"
+  },
+  "271380": {
+    "name": "Buff 14 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_14_PLAYER_CAN_CANCEL"
+  },
+  "271381": {
+    "name": "Buff 15 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_15_PLAYER_CAN_CANCEL"
+  },
+  "271382": {
+    "name": "Buff 16 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_16_PLAYER_CAN_CANCEL"
+  },
+  "271383": {
+    "name": "Buff 17 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_17_PLAYER_CAN_CANCEL"
+  },
+  "271384": {
+    "name": "Buff 18 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_18_PLAYER_CAN_CANCEL"
+  },
+  "271385": {
+    "name": "Buff 19 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_19_PLAYER_CAN_CANCEL"
+  },
+  "271392": {
+    "name": "Buff 20 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_20_PLAYER_CAN_CANCEL"
+  },
+  "271393": {
+    "name": "Buff 21 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_21_PLAYER_CAN_CANCEL"
+  },
+  "271394": {
+    "name": "Buff 22 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_22_PLAYER_CAN_CANCEL"
+  },
+  "271395": {
+    "name": "Buff 23 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_23_PLAYER_CAN_CANCEL"
+  },
+  "271396": {
+    "name": "Buff 24 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_24_PLAYER_CAN_CANCEL"
+  },
+  "271397": {
+    "name": "Buff 25 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_25_PLAYER_CAN_CANCEL"
+  },
+  "271398": {
+    "name": "Buff 26 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_26_PLAYER_CAN_CANCEL"
+  },
+  "271399": {
+    "name": "Buff 27 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_27_PLAYER_CAN_CANCEL"
+  },
+  "271400": {
+    "name": "Buff 28 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_28_PLAYER_CAN_CANCEL"
+  },
+  "271401": {
+    "name": "Buff 29 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_29_PLAYER_CAN_CANCEL"
+  },
+  "271408": {
+    "name": "Buff 30 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_30_PLAYER_CAN_CANCEL"
+  },
+  "271409": {
+    "name": "Buff 31 Player Can Cancel",
+    "tag": "TAG_POWER_BUFF_31_PLAYER_CAN_CANCEL"
+  },
+  "271616": {
+    "name": "Buff 0 Is Displayed",
+    "tag": "TAG_POWER_BUFF_0_IS_DISPLAYED"
+  },
+  "271617": {
+    "name": "Buff 1 Is Displayed",
+    "tag": "TAG_POWER_BUFF_1_IS_DISPLAYED"
+  },
+  "271618": {
+    "name": "Buff 2 Is Displayed",
+    "tag": "TAG_POWER_BUFF_2_IS_DISPLAYED"
+  },
+  "271619": {
+    "name": "Buff 3 Is Displayed",
+    "tag": "TAG_POWER_BUFF_3_IS_DISPLAYED"
+  },
+  "271620": {
+    "name": "Buff 4 Is Displayed",
+    "tag": "TAG_POWER_BUFF_4_IS_DISPLAYED"
+  },
+  "271621": {
+    "name": "Buff 5 Is Displayed",
+    "tag": "TAG_POWER_BUFF_5_IS_DISPLAYED"
+  },
+  "271622": {
+    "name": "Buff 6 Is Displayed",
+    "tag": "TAG_POWER_BUFF_6_IS_DISPLAYED"
+  },
+  "271623": {
+    "name": "Buff 7 Is Displayed",
+    "tag": "TAG_POWER_BUFF_7_IS_DISPLAYED"
+  },
+  "271624": {
+    "name": "Buff 8 Is Displayed",
+    "tag": "TAG_POWER_BUFF_8_IS_DISPLAYED"
+  },
+  "271625": {
+    "name": "Buff 9 Is Displayed",
+    "tag": "TAG_POWER_BUFF_9_IS_DISPLAYED"
+  },
+  "271632": {
+    "name": "Buff 10 Is Displayed",
+    "tag": "TAG_POWER_BUFF_10_IS_DISPLAYED"
+  },
+  "271633": {
+    "name": "Buff 11 Is Displayed",
+    "tag": "TAG_POWER_BUFF_11_IS_DISPLAYED"
+  },
+  "271634": {
+    "name": "Buff 12 Is Displayed",
+    "tag": "TAG_POWER_BUFF_12_IS_DISPLAYED"
+  },
+  "271635": {
+    "name": "Buff 13 Is Displayed",
+    "tag": "TAG_POWER_BUFF_13_IS_DISPLAYED"
+  },
+  "271636": {
+    "name": "Buff 14 Is Displayed",
+    "tag": "TAG_POWER_BUFF_14_IS_DISPLAYED"
+  },
+  "271637": {
+    "name": "Buff 15 Is Displayed",
+    "tag": "TAG_POWER_BUFF_15_IS_DISPLAYED"
+  },
+  "271638": {
+    "name": "Buff 16 Is Displayed",
+    "tag": "TAG_POWER_BUFF_16_IS_DISPLAYED"
+  },
+  "271639": {
+    "name": "Buff 17 Is Displayed",
+    "tag": "TAG_POWER_BUFF_17_IS_DISPLAYED"
+  },
+  "271640": {
+    "name": "Buff 18 Is Displayed",
+    "tag": "TAG_POWER_BUFF_18_IS_DISPLAYED"
+  },
+  "271641": {
+    "name": "Buff 19 Is Displayed",
+    "tag": "TAG_POWER_BUFF_19_IS_DISPLAYED"
+  },
+  "271648": {
+    "name": "Buff 20 Is Displayed",
+    "tag": "TAG_POWER_BUFF_20_IS_DISPLAYED"
+  },
+  "271649": {
+    "name": "Buff 21 Is Displayed",
+    "tag": "TAG_POWER_BUFF_21_IS_DISPLAYED"
+  },
+  "271650": {
+    "name": "Buff 22 Is Displayed",
+    "tag": "TAG_POWER_BUFF_22_IS_DISPLAYED"
+  },
+  "271651": {
+    "name": "Buff 23 Is Displayed",
+    "tag": "TAG_POWER_BUFF_23_IS_DISPLAYED"
+  },
+  "271652": {
+    "name": "Buff 24 Is Displayed",
+    "tag": "TAG_POWER_BUFF_24_IS_DISPLAYED"
+  },
+  "271653": {
+    "name": "Buff 25 Is Displayed",
+    "tag": "TAG_POWER_BUFF_25_IS_DISPLAYED"
+  },
+  "271654": {
+    "name": "Buff 26 Is Displayed",
+    "tag": "TAG_POWER_BUFF_26_IS_DISPLAYED"
+  },
+  "271655": {
+    "name": "Buff 27 Is Displayed",
+    "tag": "TAG_POWER_BUFF_27_IS_DISPLAYED"
+  },
+  "271656": {
+    "name": "Buff 28 Is Displayed",
+    "tag": "TAG_POWER_BUFF_28_IS_DISPLAYED"
+  },
+  "271657": {
+    "name": "Buff 29 Is Displayed",
+    "tag": "TAG_POWER_BUFF_29_IS_DISPLAYED"
+  },
+  "271664": {
+    "name": "Buff 30 Is Displayed",
+    "tag": "TAG_POWER_BUFF_30_IS_DISPLAYED"
+  },
+  "271665": {
+    "name": "Buff 31 Is Displayed",
+    "tag": "TAG_POWER_BUFF_31_IS_DISPLAYED"
+  },
+  "271872": {
+    "name": "Buff 0 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_0_MERGES_TOOLTIP"
+  },
+  "271873": {
+    "name": "Buff 1 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_1_MERGES_TOOLTIP"
+  },
+  "271874": {
+    "name": "Buff 2 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_2_MERGES_TOOLTIP"
+  },
+  "271875": {
+    "name": "Buff 3 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_3_MERGES_TOOLTIP"
+  },
+  "271876": {
+    "name": "Buff 4 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_4_MERGES_TOOLTIP"
+  },
+  "271877": {
+    "name": "Buff 5 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_5_MERGES_TOOLTIP"
+  },
+  "271878": {
+    "name": "Buff 6 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_6_MERGES_TOOLTIP"
+  },
+  "271879": {
+    "name": "Buff 7 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_7_MERGES_TOOLTIP"
+  },
+  "271880": {
+    "name": "Buff 8 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_8_MERGES_TOOLTIP"
+  },
+  "271881": {
+    "name": "Buff 9 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_9_MERGES_TOOLTIP"
+  },
+  "271888": {
+    "name": "Buff 10 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_10_MERGES_TOOLTIP"
+  },
+  "271889": {
+    "name": "Buff 11 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_11_MERGES_TOOLTIP"
+  },
+  "271890": {
+    "name": "Buff 12 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_12_MERGES_TOOLTIP"
+  },
+  "271891": {
+    "name": "Buff 13 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_13_MERGES_TOOLTIP"
+  },
+  "271892": {
+    "name": "Buff 14 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_14_MERGES_TOOLTIP"
+  },
+  "271893": {
+    "name": "Buff 15 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_15_MERGES_TOOLTIP"
+  },
+  "271894": {
+    "name": "Buff 16 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_16_MERGES_TOOLTIP"
+  },
+  "271895": {
+    "name": "Buff 17 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_17_MERGES_TOOLTIP"
+  },
+  "271896": {
+    "name": "Buff 18 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_18_MERGES_TOOLTIP"
+  },
+  "271897": {
+    "name": "Buff 19 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_19_MERGES_TOOLTIP"
+  },
+  "271904": {
+    "name": "Buff 20 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_20_MERGES_TOOLTIP"
+  },
+  "271905": {
+    "name": "Buff 21 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_21_MERGES_TOOLTIP"
+  },
+  "271906": {
+    "name": "Buff 22 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_22_MERGES_TOOLTIP"
+  },
+  "271907": {
+    "name": "Buff 23 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_23_MERGES_TOOLTIP"
+  },
+  "271908": {
+    "name": "Buff 24 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_24_MERGES_TOOLTIP"
+  },
+  "271909": {
+    "name": "Buff 25 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_25_MERGES_TOOLTIP"
+  },
+  "271910": {
+    "name": "Buff 26 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_26_MERGES_TOOLTIP"
+  },
+  "271911": {
+    "name": "Buff 27 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_27_MERGES_TOOLTIP"
+  },
+  "271912": {
+    "name": "Buff 28 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_28_MERGES_TOOLTIP"
+  },
+  "271913": {
+    "name": "Buff 29 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_29_MERGES_TOOLTIP"
+  },
+  "271920": {
+    "name": "Buff 30 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_30_MERGES_TOOLTIP"
+  },
+  "271921": {
+    "name": "Buff 31 Merges Tooltip",
+    "tag": "TAG_POWER_BUFF_31_MERGES_TOOLTIP"
+  },
+  "272128": {
+    "name": "Buff 0 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_0_MERGE_TOOLTIP_INDEX"
+  },
+  "272129": {
+    "name": "Buff 1 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_1_MERGE_TOOLTIP_INDEX"
+  },
+  "272130": {
+    "name": "Buff 2 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_2_MERGE_TOOLTIP_INDEX"
+  },
+  "272131": {
+    "name": "Buff 3 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_3_MERGE_TOOLTIP_INDEX"
+  },
+  "272132": {
+    "name": "Buff 4 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_4_MERGE_TOOLTIP_INDEX"
+  },
+  "272133": {
+    "name": "Buff 5 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_5_MERGE_TOOLTIP_INDEX"
+  },
+  "272134": {
+    "name": "Buff 6 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_6_MERGE_TOOLTIP_INDEX"
+  },
+  "272135": {
+    "name": "Buff 7 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_7_MERGE_TOOLTIP_INDEX"
+  },
+  "272136": {
+    "name": "Buff 8 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_8_MERGE_TOOLTIP_INDEX"
+  },
+  "272137": {
+    "name": "Buff 9 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_9_MERGE_TOOLTIP_INDEX"
+  },
+  "272144": {
+    "name": "Buff 10 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_10_MERGE_TOOLTIP_INDEX"
+  },
+  "272145": {
+    "name": "Buff 11 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_11_MERGE_TOOLTIP_INDEX"
+  },
+  "272146": {
+    "name": "Buff 12 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_12_MERGE_TOOLTIP_INDEX"
+  },
+  "272147": {
+    "name": "Buff 13 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_13_MERGE_TOOLTIP_INDEX"
+  },
+  "272148": {
+    "name": "Buff 14 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_14_MERGE_TOOLTIP_INDEX"
+  },
+  "272149": {
+    "name": "Buff 15 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_15_MERGE_TOOLTIP_INDEX"
+  },
+  "272150": {
+    "name": "Buff 16 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_16_MERGE_TOOLTIP_INDEX"
+  },
+  "272151": {
+    "name": "Buff 17 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_17_MERGE_TOOLTIP_INDEX"
+  },
+  "272152": {
+    "name": "Buff 18 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_18_MERGE_TOOLTIP_INDEX"
+  },
+  "272153": {
+    "name": "Buff 19 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_19_MERGE_TOOLTIP_INDEX"
+  },
+  "272160": {
+    "name": "Buff 20 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_20_MERGE_TOOLTIP_INDEX"
+  },
+  "272161": {
+    "name": "Buff 21 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_21_MERGE_TOOLTIP_INDEX"
+  },
+  "272162": {
+    "name": "Buff 22 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_22_MERGE_TOOLTIP_INDEX"
+  },
+  "272163": {
+    "name": "Buff 23 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_23_MERGE_TOOLTIP_INDEX"
+  },
+  "272164": {
+    "name": "Buff 24 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_24_MERGE_TOOLTIP_INDEX"
+  },
+  "272165": {
+    "name": "Buff 25 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_25_MERGE_TOOLTIP_INDEX"
+  },
+  "272166": {
+    "name": "Buff 26 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_26_MERGE_TOOLTIP_INDEX"
+  },
+  "272167": {
+    "name": "Buff 27 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_27_MERGE_TOOLTIP_INDEX"
+  },
+  "272168": {
+    "name": "Buff 28 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_28_MERGE_TOOLTIP_INDEX"
+  },
+  "272169": {
+    "name": "Buff 29 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_29_MERGE_TOOLTIP_INDEX"
+  },
+  "272176": {
+    "name": "Buff 30 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_30_MERGE_TOOLTIP_INDEX"
+  },
+  "272177": {
+    "name": "Buff 31 Merge Tooltip Index",
+    "tag": "TAG_POWER_BUFF_31_MERGE_TOOLTIP_INDEX"
+  },
+  "272384": {
+    "name": "Buff 0 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_0_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272385": {
+    "name": "Buff 1 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_1_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272386": {
+    "name": "Buff 2 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_2_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272387": {
+    "name": "Buff 3 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_3_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272388": {
+    "name": "Buff 4 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_4_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272389": {
+    "name": "Buff 5 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_5_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272390": {
+    "name": "Buff 6 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_6_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272391": {
+    "name": "Buff 7 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_7_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272392": {
+    "name": "Buff 8 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_8_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272393": {
+    "name": "Buff 9 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_9_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272394": {
+    "name": "Buff 10 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_10_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272395": {
+    "name": "Buff 11 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_11_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272396": {
+    "name": "Buff 12 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_12_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272397": {
+    "name": "Buff 13 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_13_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272398": {
+    "name": "Buff 14 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_14_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272399": {
+    "name": "Buff 15 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_15_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272400": {
+    "name": "Buff 16 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_16_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272401": {
+    "name": "Buff 17 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_17_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272402": {
+    "name": "Buff 18 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_18_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272403": {
+    "name": "Buff 19 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_19_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272404": {
+    "name": "Buff 20 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_20_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272405": {
+    "name": "Buff 21 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_21_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272406": {
+    "name": "Buff 22 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_22_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272407": {
+    "name": "Buff 23 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_23_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272408": {
+    "name": "Buff 24 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_24_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272409": {
+    "name": "Buff 25 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_25_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272410": {
+    "name": "Buff 26 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_26_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272411": {
+    "name": "Buff 27 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_27_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272412": {
+    "name": "Buff 28 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_28_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272413": {
+    "name": "Buff 29 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_29_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272414": {
+    "name": "Buff 30 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_30_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "272415": {
+    "name": "Buff 31 Dont Apply Visual To Pets",
+    "tag": "TAG_POWER_BUFF_31_DONT_APPLY_VISUAL_TO_PETS"
+  },
+  "274432": {
+    "name": "ReuseScriptState",
+    "tag": "TAG_POWER_REUSE_SCRIPT_STATE"
+  },
+  "278528": {
+    "name": "UI Icon",
+    "tag": "TAG_POWER_UI_ANIMATION"
+  },
+  "327680": {
+    "name": "Template",
+    "tag": "TAG_POWER_TEMPLATE"
+  },
+  "327681": {
+    "name": "Template Rune A",
+    "tag": "TAG_POWER_TEMPLATE_RUNE_A"
+  },
+  "327682": {
+    "name": "Template Rune B",
+    "tag": "TAG_POWER_TEMPLATE_RUNE_B"
+  },
+  "327683": {
+    "name": "Template Rune C",
+    "tag": "TAG_POWER_TEMPLATE_RUNE_C"
+  },
+  "327684": {
+    "name": "Template Rune D",
+    "tag": "TAG_POWER_TEMPLATE_RUNE_D"
+  },
+  "327685": {
+    "name": "Template Rune E",
+    "tag": "TAG_POWER_TEMPLATE_RUNE_E"
+  },
+  "327696": {
+    "name": "SpellFunc Begin",
+    "tag": "TAG_POWER_SPELL_FUNC_BEGIN"
+  },
+  "327697": {
+    "name": "SpellFunc Create",
+    "tag": "TAG_POWER_SPELL_FUNC_CREATE"
+  },
+  "327712": {
+    "name": "SpellFunc 0",
+    "tag": "TAG_POWER_SPELL_FUNC_0"
+  },
+  "327728": {
+    "name": "SpellFunc 1",
+    "tag": "TAG_POWER_SPELL_FUNC_1"
+  },
+  "327744": {
+    "name": "SpellFunc End",
+    "tag": "TAG_POWER_SPELL_FUNC_END"
+  },
+  "327745": {
+    "name": "SpellFunc Interrupted",
+    "tag": "TAG_POWER_SPELL_FUNC_INTERRUPTED"
+  },
+  "327760": {
+    "name": "Child Power",
+    "tag": "TAG_POWER_CHILD_POWER"
+  },
+  "327762": {
+    "name": "Targeting Passability SNO",
+    "tag": "TAG_POWER_TARGETING_PASSABILITY_SNO"
+  },
+  "327764": {
+    "name": "Synergy Power",
+    "tag": "TAG_POWER_SYNERGY_POWER"
+  },
+  "327768": {
+    "name": "Cooldown Time",
+    "tag": "TAG_POWER_COOLDOWN"
+  },
+  "327769": {
+    "name": "AI Pack Cooldown Time",
+    "tag": "TAG_POWER_AI_PACK_COOLDOWN"
+  },
+  "327776": {
+    "name": "IsPrimary",
+    "tag": "TAG_POWER_IS_PRIMARY"
+  },
+  "327792": {
+    "name": "IsPunch",
+    "tag": "TAG_POWER_IS_PUNCH"
+  },
+  "327808": {
+    "name": "IsBasicAttack",
+    "tag": "TAG_POWER_IS_BASIC_ATTACK"
+  },
+  "327824": {
+    "name": "IsDisplayed",
+    "tag": "TAG_POWER_IS_DISPLAYED"
+  },
+  "327829": {
+    "name": "DisplaysNoDamage",
+    "tag": "TAG_POWER_DISPLAYS_NO_DAMAGE"
+  },
+  "327831": {
+    "name": "ShowAttackWithoutMoveTip",
+    "tag": "TAG_POWER_SHOW_ATTACK_WITHOUT_MOVE_TIP"
+  },
+  "327840": {
+    "name": "IsOffensive",
+    "tag": "TAG_POWER_IS_OFFENSIVE"
+  },
+  "327856": {
+    "name": "IsTranslate",
+    "tag": "TAG_POWER_IS_TRANSLATE"
+  },
+  "327860": {
+    "name": "IsKnockbackMovement",
+    "tag": "TAG_POWER_IS_KNOCKBACK_MOVEMENT"
+  },
+  "327864": {
+    "name": "ChecksVerticalMovement",
+    "tag": "TAG_POWER_CHECKS_VERTICAL_MOVEMENT"
+  },
+  "327872": {
+    "name": "IsLobbed",
+    "tag": "TAG_POWER_IS_LOBBED"
+  },
+  "327888": {
+    "name": "IsAimedAtGround",
+    "tag": "TAG_POWER_IS_AIMED_AT_GROUND"
+  },
+  "327904": {
+    "name": "AlwaysHits",
+    "tag": "TAG_POWER_ALWAYS_HITS"
+  },
+  "327920": {
+    "name": "CannotLMBAssign",
+    "tag": "TAG_POWER_CANNOT_LMB_ASSIGN"
+  },
+  "327936": {
+    "name": "TurnsIntoWalk",
+    "tag": "TAG_POWER_TURNS_INTO_WALK"
+  },
+  "327937": {
+    "name": "Can Steer",
+    "tag": "TAG_POWER_CAN_STEER"
+  },
+  "327952": {
+    "name": "IsToggleable",
+    "tag": "TAG_POWER_IS_TOGGLEABLE"
+  },
+  "327953": {
+    "name": "Cannot Overkill",
+    "tag": "TAG_POWER_CANNOT_OVERKILL"
+  },
+  "327956": {
+    "name": "Lookswitch Doesnt Interrupt",
+    "tag": "TAG_POWER_LOOKSWITCH_DOESNT_INTERRUPT"
+  },
+  "327968": {
+    "name": "NeverCausesRecoil",
+    "tag": "TAG_POWER_NEVER_CAUSES_RECOIL"
+  },
+  "327984": {
+    "name": "ContactFreezesFacing",
+    "tag": "TAG_POWER_CONTACT_FREEZES_FACING"
+  },
+  "328000": {
+    "name": "NeverUpdatesFacing",
+    "tag": "TAG_POWER_NEVER_UPDATES_FACING_DURING"
+  },
+  "328016": {
+    "name": "NeverUpdatesFacingStarting",
+    "tag": "TAG_POWER_NEVER_UPDATES_FACING_STARTING"
+  },
+  "328021": {
+    "name": "SnapsToFacing",
+    "tag": "TAG_POWER_SNAPS_TO_FACING"
+  },
+  "328022": {
+    "name": "ClientControlsFacing",
+    "tag": "TAG_POWER_CLIENT_CONTROLS_FACING"
+  },
+  "328032": {
+    "name": "Doesn't Center",
+    "tag": "TAG_POWER_DOESNT_CENTER"
+  },
+  "328048": {
+    "name": "IsMouseAssignable",
+    "tag": "TAG_POWER_IS_MOUSE_ASSIGNABLE"
+  },
+  "328049": {
+    "name": "AutoAssignLocation",
+    "tag": "TAG_POWER_AUTOASSIGN_LOCATION"
+  },
+  "328064": {
+    "name": "IsHotbarAssignable",
+    "tag": "TAG_POWER_IS_HOTBAR_ASSIGNABLE"
+  },
+  "328069": {
+    "name": "Modal Cursor Radius",
+    "tag": "TAG_POWER_MODAL_CURSOR_RADIUS"
+  },
+  "328080": {
+    "name": "IsUsableInTown",
+    "tag": "TAG_POWER_IS_USABLE_IN_TOWN"
+  },
+  "328081": {
+    "name": "IsUsableInCombat",
+    "tag": "TAG_POWER_IS_USABLE_IN_COMBAT"
+  },
+  "328082": {
+    "name": "IsOnlyUsableInTownPortalAreas",
+    "tag": "TAG_POWER_ONLY_USABLE_IN_TOWN_PORTAL_AREAS"
+  },
+  "328083": {
+    "name": "CastTargetMustBeInTeleportableArea",
+    "tag": "TAG_POWER_CAST_TARGET_MUST_BE_IN_TELEPORTABLE_AREA"
+  },
+  "328084": {
+    "name": "IsUsableInPVP",
+    "tag": "TAG_POWER_IS_USABLE_IN_PVP"
+  },
+  "328096": {
+    "name": "TargetAllies",
+    "tag": "TAG_POWER_TARGET_ALLIES"
+  },
+  "328097": {
+    "name": "CastTargetAllies",
+    "tag": "TAG_POWER_CAST_TARGET_ALLIES"
+  },
+  "328112": {
+    "name": "TargetEnemies",
+    "tag": "TAG_POWER_TARGET_ENEMIES"
+  },
+  "328113": {
+    "name": "CastTargetEnemies",
+    "tag": "TAG_POWER_CAST_TARGET_ENEMIES"
+  },
+  "328128": {
+    "name": "TargetCorpse",
+    "tag": "TAG_POWER_TARGET_CORPSE"
+  },
+  "328129": {
+    "name": "CastTargetCorpse",
+    "tag": "TAG_POWER_CAST_TARGET_CORPSE"
+  },
+  "328144": {
+    "name": "TargetNeutral",
+    "tag": "TAG_POWER_TARGET_NEUTRAL"
+  },
+  "328145": {
+    "name": "CastTargetNeutral",
+    "tag": "TAG_POWER_CAST_TARGET_NEUTRAL"
+  },
+  "328160": {
+    "name": "TargetGroundOnly",
+    "tag": "TAG_POWER_TARGET_GROUND_ONLY"
+  },
+  "328161": {
+    "name": "CastTargetGroundOnly",
+    "tag": "TAG_POWER_CAST_TARGET_GROUND_ONLY"
+  },
+  "328162": {
+    "name": "TargetContactPlaneOnly",
+    "tag": "TAG_POWER_TARGET_CONTACT_PLANE_ONLY"
+  },
+  "328163": {
+    "name": "TargetNavMeshOnly",
+    "tag": "TAG_POWER_TARGET_NAV_MESH_ONLY"
+  },
+  "328165": {
+    "name": "TargetPathableOnly",
+    "tag": "TAG_POWER_TARGET_PATHABLE_ONLY"
+  },
+  "328168": {
+    "name": "TargetIgnoreWreckables",
+    "tag": "TAG_POWER_TARGET_IGNORE_WRECKABLES"
+  },
+  "328169": {
+    "name": "CastTargetIgnoreWreckables",
+    "tag": "TAG_POWER_CAST_TARGET_IGNORE_WRECKABLES"
+  },
+  "328176": {
+    "name": "NoAffectedACD",
+    "tag": "TAG_POWER_NO_AFFECTED_ACD"
+  },
+  "328177": {
+    "name": "TracksAffectedACDInstanceWide",
+    "tag": "TAG_POWER_TRACKS_AFFECTED_ACD_INSTANCE_WIDE"
+  },
+  "328192": {
+    "name": "ScaledAnimTiming",
+    "tag": "TAG_POWER_SCALED_ANIMATION_TIMING"
+  },
+  "328208": {
+    "name": "InfiniteAnimTiming",
+    "tag": "TAG_POWER_INFINITE_ANIMATION_TIMING"
+  },
+  "328224": {
+    "name": "ContactFrameType",
+    "tag": "TAG_POWER_CONTACT_FRAME_IN_COOLDOWN"
+  },
+  "328240": {
+    "name": "RequiresActorTarget",
+    "tag": "TAG_POWER_REQUIRES_ACTOR_TARGET"
+  },
+  "328248": {
+    "name": "RequiresSkillPoint",
+    "tag": "TAG_POWER_REQUIRES_SKILLPOINT"
+  },
+  "328256": {
+    "name": "DontWalkCloserIfOutOfRange",
+    "tag": "TAG_POWER_DONT_WALK_CLOSER_IF_OUT_OF_RANGE"
+  },
+  "328272": {
+    "name": "CanPathDuringWalk",
+    "tag": "TAG_POWER_CAN_PATH_DURING_WALK"
+  },
+  "328288": {
+    "name": "Start Walk After Intro",
+    "tag": "TAG_POWER_START_WALK_AFTER_INTRO"
+  },
+  "328292": {
+    "name": "Set Target After Intro",
+    "tag": "TAG_POWER_SET_TARGET_AFTER_INTRO"
+  },
+  "328296": {
+    "name": "Arc Move Until Dest Height",
+    "tag": "TAG_POWER_ARC_MOVE_UNTIL_DEST_HEIGHT"
+  },
+  "328304": {
+    "name": "BreaksImmobilize",
+    "tag": "TAG_POWER_BREAKS_IMMOBILIZE"
+  },
+  "328320": {
+    "name": "FailsIfImmobilized",
+    "tag": "TAG_POWER_FAILS_IF_IMMOBILIZED"
+  },
+  "328322": {
+    "name": "FailsIfStunned",
+    "tag": "TAG_POWER_FAILS_IF_STUNNED"
+  },
+  "328325": {
+    "name": "FailsIfFeared",
+    "tag": "TAG_POWER_FAILS_IF_FEARED"
+  },
+  "328336": {
+    "name": "ImmuneToRecoil",
+    "tag": "TAG_POWER_RECOIL_IMMUNE"
+  },
+  "328352": {
+    "name": "ImmuneToKnockback",
+    "tag": "TAG_POWER_KNOCKBACK_IMMUNE"
+  },
+  "328368": {
+    "name": "RollToDestination",
+    "tag": "TAG_POWER_ROLL_TO_DESTINATION"
+  },
+  "328384": {
+    "name": "TurnsIntoBasicAttack",
+    "tag": "TAG_POWER_TURNS_INTO_BASIC_ATTACK"
+  },
+  "328385": {
+    "name": "TurnsIntoBasicRangedAttack",
+    "tag": "TAG_POWER_TURNS_INTO_BASIC_ATTACK_RANGED"
+  },
+  "328386": {
+    "name": "TurnsIntoBasicMeleeAttack",
+    "tag": "TAG_POWER_TURNS_INTO_BASIC_ATTACK_MELEE"
+  },
+  "328400": {
+    "name": "IsChannelled",
+    "tag": "TAG_POWER_IS_CHANNELLED"
+  },
+  "328401": {
+    "name": "ChannelledLocksActors",
+    "tag": "TAG_POWER_CHANNELLED_LOCKS_ACTORS"
+  },
+  "328416": {
+    "name": "CannotLockOntoActors",
+    "tag": "TAG_POWER_CANNOT_LOCK_ONTO_ACTORS"
+  },
+  "328420": {
+    "name": "LocksActorsWhileSweeping",
+    "tag": "TAG_POWER_LOCKS_ACTORS_WHILE_SWEEPING"
+  },
+  "328432": {
+    "name": "RequiresTarget",
+    "tag": "TAG_POWER_REQUIRES_TARGET"
+  },
+  "328440": {
+    "name": "ProcTargetsSelf",
+    "tag": "TAG_POWER_PROC_TARGETS_SELF"
+  },
+  "328448": {
+    "name": "AffectedByDualWield",
+    "tag": "TAG_POWER_AFFECTED_BY_DUAL_WIELD"
+  },
+  "328480": {
+    "name": "Is A Dodge Power",
+    "tag": "TAG_POWER_IS_DODGE"
+  },
+  "328496": {
+    "name": "Snaps To Ground",
+    "tag": "TAG_POWER_SNAPS_TO_GROUND"
+  },
+  "328501": {
+    "name": "Alternates Anims",
+    "tag": "TAG_POWER_ALTERNATES_ANIMS"
+  },
+  "328512": {
+    "name": "Can Use When Feared",
+    "tag": "TAG_POWER_CAN_USE_WHEN_FEARED"
+  },
+  "328528": {
+    "name": "Can Use When Dead",
+    "tag": "TAG_POWER_CAN_USE_WHEN_DEAD"
+  },
+  "328532": {
+    "name": "Special Death Chance",
+    "tag": "TAG_POWER_SPECIAL_DEATH_CHANCE"
+  },
+  "328534": {
+    "name": "Special Death Type",
+    "tag": "TAG_POWER_SPECIAL_DEATH_TYPE"
+  },
+  "328535": {
+    "name": "Min Walk Duration",
+    "tag": "TAG_POWER_WALKING_DURATION_MIN"
+  },
+  "328536": {
+    "name": "SpecialWalk Player End Anim Scalar",
+    "tag": "TAG_POWER_SPECIALWALK_PLAYER_END_ANIM_SCALAR"
+  },
+  "328538": {
+    "name": "Use SpecialWalk Steering",
+    "tag": "TAG_POWER_USE_SPECIALWALK_STEERING"
+  },
+  "328539": {
+    "name": "Delay Before Setting Target",
+    "tag": "TAG_POWER_DELAY_BEFORE_SETTING_TARGET"
+  },
+  "328542": {
+    "name": "Use Charge Steering",
+    "tag": "TAG_POWER_USE_CHARGE_STEERING"
+  },
+  "328544": {
+    "name": "Is Cancellable",
+    "tag": "TAG_POWER_IS_CANCELLABLE"
+  },
+  "328545": {
+    "name": "Is Cancellable By Any Power",
+    "tag": "TAG_POWER_IS_CANCELLABLE_BY_ANY_POWER"
+  },
+  "328546": {
+    "name": "Is Cancellable By Walking",
+    "tag": "TAG_POWER_IS_CANCELLABLE_BY_WALKING"
+  },
+  "328560": {
+    "name": "Cancels Other Powers",
+    "tag": "TAG_POWER_CANCELS_OTHER_POWERS"
+  },
+  "328576": {
+    "name": "Cancels At Interrupt Frame",
+    "tag": "TAG_POWER_CANCELS_AT_INTERRUPT_FRAME"
+  },
+  "328592": {
+    "name": "Is Passive",
+    "tag": "TAG_POWER_IS_PASSIVE"
+  },
+  "328600": {
+    "name": "Ignores Range On Shift Click",
+    "tag": "TAG_POWER_IGNORES_RANGE_ON_SHIFT_CLICK"
+  },
+  "328601": {
+    "name": "Is Item Power",
+    "tag": "TAG_POWER_IS_ITEM_POWER"
+  },
+  "328602": {
+    "name": "Send Failure Reason To Client",
+    "tag": "TAG_POWER_SENDS_FAILURE_REASON_TO_CLIENT"
+  },
+  "328604": {
+    "name": "Call AIUpdate Immediately Upon Termination",
+    "tag": "TAG_POWER_CALL_AIUPDATE_IMMEDIATELY_UPON_TERMINATION"
+  },
+  "328606": {
+    "name": "Uses Attack Warmup Time",
+    "tag": "TAG_POWER_USES_ATTACK_WARMUP"
+  },
+  "328607": {
+    "name": "Uses Weapon Range",
+    "tag": "TAG_POWER_USES_WEAPON_RANGE"
+  },
+  "328608": {
+    "name": "Is Completed When Walking Stops",
+    "tag": "TAG_POWER_IS_COMPLETED_WHEN_WALKING_STOPS"
+  },
+  "328609": {
+    "name": "Is Invulnerable During",
+    "tag": "TAG_POWER_IS_INVULNERABLE_DURING"
+  },
+  "328610": {
+    "name": "Is Uninterruptable During",
+    "tag": "TAG_POWER_IS_UNINTERRUPTABLE_DURING"
+  },
+  "328611": {
+    "name": "Doesnt Preplay Animation",
+    "tag": "TAG_POWER_DOESNT_PREPLAY_ANIMATION"
+  },
+  "328612": {
+    "name": "TargetIgnoreLargeMonsters",
+    "tag": "TAG_POWER_TARGET_IGNORE_LARGE_MONSTERS"
+  },
+  "328613": {
+    "name": "TargetNormalMonstersOnly",
+    "tag": "TAG_POWER_TARGET_NORMAL_MONSTERS_ONLY"
+  },
+  "328614": {
+    "name": "TargetUndeadMonstersOnly",
+    "tag": "TAG_POWER_TARGET_UNDEAD_MONSTERS_ONLY"
+  },
+  "328615": {
+    "name": "TargetDoesntRequireActor",
+    "tag": "TAG_POWER_DOESNT_REQUIRE_ACTOR_TARGET"
+  },
+  "328616": {
+    "name": "CastTargetIgnoreLargeMonsters",
+    "tag": "TAG_POWER_CAST_TARGET_IGNORE_LARGE_MONSTERS"
+  },
+  "328617": {
+    "name": "CastTargetNormalMonstersOnly",
+    "tag": "TAG_POWER_CAST_TARGET_NORMAL_MONSTERS_ONLY"
+  },
+  "328618": {
+    "name": "CastTargetUndeadMonstersOnly",
+    "tag": "TAG_POWER_CAST_TARGET_UNDEAD_MONSTERS_ONLY"
+  },
+  "328620": {
+    "name": "CastTargetAllowDeadTargets",
+    "tag": "TAG_POWER_CAST_TARGET_ALLOW_DEAD_TARGETS"
+  },
+  "328624": {
+    "name": "Is Physical",
+    "tag": "TAG_POWER_IS_PHYSICAL"
+  },
+  "328632": {
+    "name": "Causes Closing Cooldown",
+    "tag": "TAG_POWER_CAUSES_CLOSING_COOLDOWN"
+  },
+  "328640": {
+    "name": "Special Death Chance Rune A",
+    "tag": "TAG_POWER_SPECIAL_DEATH_CHANCE_RUNE_A"
+  },
+  "328641": {
+    "name": "Special Death Type Rune A",
+    "tag": "TAG_POWER_SPECIAL_DEATH_TYPE_RUNE_A"
+  },
+  "328642": {
+    "name": "Special Death Chance Rune B",
+    "tag": "TAG_POWER_SPECIAL_DEATH_CHANCE_RUNE_B"
+  },
+  "328643": {
+    "name": "Special Death Type Rune B",
+    "tag": "TAG_POWER_SPECIAL_DEATH_TYPE_RUNE_B"
+  },
+  "328644": {
+    "name": "Special Death Chance Rune C",
+    "tag": "TAG_POWER_SPECIAL_DEATH_CHANCE_RUNE_C"
+  },
+  "328645": {
+    "name": "Special Death Type Rune C",
+    "tag": "TAG_POWER_SPECIAL_DEATH_TYPE_RUNE_C"
+  },
+  "328646": {
+    "name": "Special Death Chance Rune D",
+    "tag": "TAG_POWER_SPECIAL_DEATH_CHANCE_RUNE_D"
+  },
+  "328647": {
+    "name": "Special Death Type Rune D",
+    "tag": "TAG_POWER_SPECIAL_DEATH_TYPE_RUNE_D"
+  },
+  "328648": {
+    "name": "Special Death Chance Rune E",
+    "tag": "TAG_POWER_SPECIAL_DEATH_CHANCE_RUNE_E"
+  },
+  "328649": {
+    "name": "Special Death Type Rune E",
+    "tag": "TAG_POWER_SPECIAL_DEATH_TYPE_RUNE_E"
+  },
+  "328656": {
+    "name": "Uses Mainhand Only",
+    "tag": "TAG_POWER_USES_MAINHAND_ONLY"
+  },
+  "328704": {
+    "name": "Brain Action Type",
+    "tag": "TAG_POWER_BRAIN_ACTION_TYPE"
+  },
+  "328720": {
+    "name": "LOS Check",
+    "tag": "TAG_POWER_LOS_CHECK"
+  },
+  "328736": {
+    "name": "Custom Target Func",
+    "tag": "TAG_POWER_CUSTOM_TARGET_FUNC"
+  },
+  "328752": {
+    "name": "Custom Target Players Only",
+    "tag": "TAG_POWER_CUSTOM_TARGET_PLAYERS_ONLY"
+  },
+  "328768": {
+    "name": "Custom Target Min Range",
+    "tag": "TAG_POWER_CUSTOM_TARGET_MIN_RANGE"
+  },
+  "328784": {
+    "name": "Custom Target Max Range",
+    "tag": "TAG_POWER_CUSTOM_TARGET_MAX_RANGE"
+  },
+  "328800": {
+    "name": "Custom Target Unaffected Only",
+    "tag": "TAG_POWER_CUSTOM_TARGET_UNAFFECTED_ONLY"
+  },
+  "328801": {
+    "name": "Custom Target Buff Power SNO Buff Index",
+    "tag": "TAG_POWER_CUSTOM_TARGET_BUFF_SNO_BUFF_INDEX"
+  },
+  "328802": {
+    "name": "Custom Target Buff Power SNO",
+    "tag": "TAG_POWER_CUSTOM_TARGET_BUFF_SNO"
+  },
+  "328803": {
+    "name": "Custom Target Preferred Range Only",
+    "tag": "TAG_POWER_CUSTOM_TARGET_PREFERRED_RANGE"
+  },
+  "328804": {
+    "name": "Custom Target Needs Heal HP Percent",
+    "tag": "TAG_POWER_CUSTOM_TARGET_NEEDS_HEAL_HP_PERCENT"
+  },
+  "328805": {
+    "name": "Custom Target Closest In Pie Angle",
+    "tag": "TAG_POWER_CUSTOM_TARGET_CLOSEST_IN_PIE_ANGLE"
+  },
+  "328806": {
+    "name": "Custom Target Buff Power SNO 2",
+    "tag": "TAG_POWER_CUSTOM_TARGET_BUFF_SNO_2"
+  },
+  "328807": {
+    "name": "Custom Target Buff Power SNO Buff Index 2",
+    "tag": "TAG_POWER_CUSTOM_TARGET_BUFF_SNO_BUFF_INDEX_2"
+  },
+  "328808": {
+    "name": "Custom Target Unaffected Only 2",
+    "tag": "TAG_POWER_CUSTOM_TARGET_UNAFFECTED_ONLY_2"
+  },
+  "328960": {
+    "name": "Item Type Requirement",
+    "tag": "TAG_POWER_ITEM_TYPE_REQUIREMENT"
+  },
+  "328976": {
+    "name": "Requires 1H Item",
+    "tag": "TAG_POWER_REQUIRES_1H_ITEM"
+  },
+  "328992": {
+    "name": "Requires 2H Item",
+    "tag": "TAG_POWER_REQUIRES_2H_ITEM"
+  },
+  "329088": {
+    "name": "Consumes Item",
+    "tag": "TAG_POWER_CONSUMES_ITEM"
+  },
+  "329216": {
+    "name": "Is Upgrade",
+    "tag": "TAG_POWER_IS_UPGRADE"
+  },
+  "329232": {
+    "name": "Upgrade 0",
+    "tag": "TAG_POWER_UPGRADE_0"
+  },
+  "329248": {
+    "name": "Upgrade 1",
+    "tag": "TAG_POWER_UPGRADE_1"
+  },
+  "329264": {
+    "name": "Upgrade 2",
+    "tag": "TAG_POWER_UPGRADE_2"
+  },
+  "329312": {
+    "name": "Skill Point Cost",
+    "tag": "TAG_POWER_SKILL_POINT_COST"
+  },
+  "329472": {
+    "name": "Icon Normal",
+    "tag": "TAG_POWER_ICON_NORMAL"
+  },
+  "329488": {
+    "name": "Icon Mouseover",
+    "tag": "TAG_POWER_ICON_MOUSEOVER"
+  },
+  "329504": {
+    "name": "Icon Pushed",
+    "tag": "TAG_POWER_ICON_PUSHED"
+  },
+  "329512": {
+    "name": "Icon Inactive",
+    "tag": "TAG_POWER_ICON_INACTIVE"
+  },
+  "329520": {
+    "name": "Auto Purchase Level",
+    "tag": "TAG_POWER_AUTO_PURCHASE_LEVEL"
+  },
+  "329536": {
+    "name": "Always Known",
+    "tag": "TAG_POWER_ALWAYS_KNOWN"
+  },
+  "329616": {
+    "name": "Resource Cost",
+    "tag": "TAG_POWER_COST_RESOURCE"
+  },
+  "329617": {
+    "name": "Resource Cost Min To Cast",
+    "tag": "TAG_POWER_COST_RESOURCE_MIN_TO_CAST"
+  },
+  "329624": {
+    "name": "Resource Cost Reduction",
+    "tag": "TAG_POWER_COST_RESOURCE_REDUCTION"
+  },
+  "329625": {
+    "name": "Resource Cost Reduction Coefficient",
+    "tag": "TAG_POWER_COST_RESOURCE_REDUCTION_COEFFICIENT"
+  },
+  "329627": {
+    "name": "Resource Gained On First Hit",
+    "tag": "TAG_POWER_RESOURCE_GAINED_ON_FIRST_HIT"
+  },
+  "329632": {
+    "name": "Health Cost",
+    "tag": "TAG_POWER_COST_HEALTH"
+  },
+  "329633": {
+    "name": "Only Free Cast",
+    "tag": "TAG_POWER_ONLY_FREE_CAST"
+  },
+  "329634": {
+    "name": "Cost Only Free Cast",
+    "tag": "TAG_POWER_COST_ONLY_FREE_CAST"
+  },
+  "329648": {
+    "name": "Class Restriction",
+    "tag": "TAG_POWER_CLASS_RESTRICTION"
+  },
+  "329664": {
+    "name": "Continual Resource Cost",
+    "tag": "TAG_POWER_COST_CONTINUAL_RESOURCE"
+  },
+  "329680": {
+    "name": "Dont Allow Cooldown Reduction",
+    "tag": "TAG_POWER_DONT_ALLOW_COOLDOWN_REDUCTION"
+  },
+  "329696": {
+    "name": "Charge Cost",
+    "tag": "TAG_POWER_COST_CHARGES"
+  },
+  "329697": {
+    "name": "Max Charges",
+    "tag": "TAG_POWER_MAX_CHARGES"
+  },
+  "329698": {
+    "name": "Recharge Time",
+    "tag": "TAG_POWER_RECHARGE_TIME"
+  },
+  "329744": {
+    "name": "Escape Attack Radius",
+    "tag": "TAG_POWER_ESCAPE_ATTACK_RADIUS"
+  },
+  "329745": {
+    "name": "Escape Attack Angle",
+    "tag": "TAG_POWER_ESCAPE_ATTACK_ANGLE"
+  },
+  "329760": {
+    "name": "Payload Type",
+    "tag": "TAG_POWER_PAYLOAD_TYPE"
+  },
+  "329776": {
+    "name": "Payload Param 0",
+    "tag": "TAG_POWER_PAYLOAD_PARAM_0"
+  },
+  "329792": {
+    "name": "Payload Param 1",
+    "tag": "TAG_POWER_PAYLOAD_PARAM_1"
+  },
+  "329800": {
+    "name": "Max Targets",
+    "tag": "TAG_POWER_MAX_TARGETS"
+  },
+  "329808": {
+    "name": "Attack Radius",
+    "tag": "TAG_POWER_ATTACK_RADIUS"
+  },
+  "329809": {
+    "name": "Combo Attack Radius 1",
+    "tag": "TAG_POWER_COMBO_ATTACK_RADIUS_1"
+  },
+  "329810": {
+    "name": "Combo Attack Radius 2",
+    "tag": "TAG_POWER_COMBO_ATTACK_RADIUS_2"
+  },
+  "329811": {
+    "name": "Combo Attack Radius 3",
+    "tag": "TAG_POWER_COMBO_ATTACK_RADIUS_3"
+  },
+  "329824": {
+    "name": "Attack Speed",
+    "tag": "TAG_POWER_ATTACK_SPEED"
+  },
+  "329825": {
+    "name": "Combo Attack Speed 1",
+    "tag": "TAG_POWER_COMBO_ATTACK_SPEED_1"
+  },
+  "329826": {
+    "name": "Combo Attack Speed 2",
+    "tag": "TAG_POWER_COMBO_ATTACK_SPEED_2"
+  },
+  "329827": {
+    "name": "Combo Attack Speed 3",
+    "tag": "TAG_POWER_COMBO_ATTACK_SPEED_3"
+  },
+  "329828": {
+    "name": "Combo Level 1 On Hit Proc Coefficient",
+    "tag": "TAG_POWER_COMBO_LEVEL_1_ON_HIT_COEFFICIENT"
+  },
+  "329829": {
+    "name": "Combo Level 2 On Hit Proc Coefficient",
+    "tag": "TAG_POWER_COMBO_LEVEL_2_ON_HIT_COEFFICIENT"
+  },
+  "329830": {
+    "name": "Combo Level 3 On Hit Proc Coefficient",
+    "tag": "TAG_POWER_COMBO_LEVEL_3_ON_HIT_COEFFICIENT"
+  },
+  "329831": {
+    "name": "Combo Level 1 Uses Main Hand Only",
+    "tag": "TAG_POWER_USES_MAINHAND_ONLY_COMBO1"
+  },
+  "329832": {
+    "name": "Combo Level 2 Uses Main Hand Only",
+    "tag": "TAG_POWER_USES_MAINHAND_ONLY_COMBO2"
+  },
+  "329833": {
+    "name": "Combo Level 3 Uses Main Hand Only",
+    "tag": "TAG_POWER_USES_MAINHAND_ONLY_COMBO3"
+  },
+  "329840": {
+    "name": "Base Damage Scalar",
+    "tag": "TAG_POWER_BASE_DAMAGE_SCALAR"
+  },
+  "329856": {
+    "name": "Hit Chance",
+    "tag": "TAG_POWER_HIT_CHANCE"
+  },
+  "329872": {
+    "name": "Projectile Gravity",
+    "tag": "TAG_POWER_LOBBED_PROJECTILE_GRAVITY"
+  },
+  "329880": {
+    "name": "Height Above Source",
+    "tag": "TAG_POWER_LOBBED_HEIGHT_ABOVE_SOURCE"
+  },
+  "329888": {
+    "name": "Attack Rating",
+    "tag": "TAG_POWER_ATTACK_RATING"
+  },
+  "329904": {
+    "name": "Attack Rating Percent",
+    "tag": "TAG_POWER_ATTACK_RATING_PERCENT"
+  },
+  "329912": {
+    "name": "Disease Duration",
+    "tag": "TAG_POWER_DISEASE_DURATION"
+  },
+  "329920": {
+    "name": "Bleed Duration",
+    "tag": "TAG_POWER_BLEED_DURATION"
+  },
+  "329952": {
+    "name": "Arcane Duration",
+    "tag": "TAG_POWER_ARCANE_DURATION"
+  },
+  "329968": {
+    "name": "Holy Duration",
+    "tag": "TAG_POWER_HOLY_DURATION"
+  },
+  "329976": {
+    "name": "Fire Duration",
+    "tag": "TAG_POWER_FIRE_DURATION"
+  },
+  "329979": {
+    "name": "Dot Stacking Method",
+    "tag": "TAG_POWER_DOT_STACKING_METHOD"
+  },
+  "329981": {
+    "name": "Dot Max Stack Count",
+    "tag": "TAG_POWER_DOT_MAX_STACK_COUNT"
+  },
+  "329982": {
+    "name": "Dot Power",
+    "tag": "TAG_POWER_DOT_POWER"
+  },
+  "329983": {
+    "name": "On Hit Proc Coefficient",
+    "tag": "TAG_POWER_ON_HIT_PROC_COEFFICIENT"
+  },
+  "329984": {
+    "name": "Physical Damage Min",
+    "tag": "TAG_POWER_PHYSICAL_DAMAGE_MIN"
+  },
+  "330000": {
+    "name": "Physical Damage Delta",
+    "tag": "TAG_POWER_PHYSICAL_DAMAGE_DELTA"
+  },
+  "330016": {
+    "name": "Physical Damage Percent",
+    "tag": "TAG_POWER_PHYSICAL_DAMAGE_PERCENT"
+  },
+  "330032": {
+    "name": "Physical Damage Resistance",
+    "tag": "TAG_POWER_PHYSICAL_RESISTANCE"
+  },
+  "330048": {
+    "name": "Fire Damage Min",
+    "tag": "TAG_POWER_FIRE_DAMAGE_MIN"
+  },
+  "330064": {
+    "name": "Fire Damage Delta",
+    "tag": "TAG_POWER_FIRE_DAMAGE_DELTA"
+  },
+  "330080": {
+    "name": "Fire Damage Percent",
+    "tag": "TAG_POWER_FIRE_DAMAGE_PERCENT"
+  },
+  "330096": {
+    "name": "Fire Damage Resistance",
+    "tag": "TAG_POWER_FIRE_RESISTANCE"
+  },
+  "330112": {
+    "name": "Lightning Damage Min",
+    "tag": "TAG_POWER_LIGHTNING_DAMAGE_MIN"
+  },
+  "330128": {
+    "name": "Lightning Damage Delta",
+    "tag": "TAG_POWER_LIGHTNING_DAMAGE_DELTA"
+  },
+  "330144": {
+    "name": "Lightning Damage Percent",
+    "tag": "TAG_POWER_LIGHTNING_DAMAGE_PERCENT"
+  },
+  "330160": {
+    "name": "Lightning Damage Resistance",
+    "tag": "TAG_POWER_LIGHTNING_RESISTANCE"
+  },
+  "330176": {
+    "name": "Cold Damage Min",
+    "tag": "TAG_POWER_COLD_DAMAGE_MIN"
+  },
+  "330192": {
+    "name": "Cold Damage Delta",
+    "tag": "TAG_POWER_COLD_DAMAGE_DELTA"
+  },
+  "330208": {
+    "name": "Cold Damage Percent",
+    "tag": "TAG_POWER_COLD_DAMAGE_PERCENT"
+  },
+  "330224": {
+    "name": "Cold Damage Resistance",
+    "tag": "TAG_POWER_COLD_RESISTANCE"
+  },
+  "330240": {
+    "name": "Poison Damage Min",
+    "tag": "TAG_POWER_POISON_DAMAGE_MIN"
+  },
+  "330256": {
+    "name": "Poison Damage Delta",
+    "tag": "TAG_POWER_POISON_DAMAGE_DELTA"
+  },
+  "330272": {
+    "name": "Poison Damage Percent",
+    "tag": "TAG_POWER_POISON_DAMAGE_PERCENT"
+  },
+  "330288": {
+    "name": "Poison Damage Resistance",
+    "tag": "TAG_POWER_POISON_RESISTANCE"
+  },
+  "330304": {
+    "name": "Arcane Damage Min",
+    "tag": "TAG_POWER_ARCANE_DAMAGE_MIN"
+  },
+  "330320": {
+    "name": "Arcane Damage Delta",
+    "tag": "TAG_POWER_ARCANE_DAMAGE_DELTA"
+  },
+  "330336": {
+    "name": "Arcane Damage Percent",
+    "tag": "TAG_POWER_ARCANE_DAMAGE_PERCENT"
+  },
+  "330352": {
+    "name": "Arcane Damage Resistance",
+    "tag": "TAG_POWER_ARCANE_RESISTANCE"
+  },
+  "330432": {
+    "name": "Siege Damage Min",
+    "tag": "TAG_POWER_SIEGE_DAMAGE_MIN"
+  },
+  "330448": {
+    "name": "Siege Damage Delta",
+    "tag": "TAG_POWER_SIEGE_DAMAGE_DELTA"
+  },
+  "330464": {
+    "name": "Siege Damage Percent",
+    "tag": "TAG_POWER_SIEGE_DAMAGE_PERCENT"
+  },
+  "330480": {
+    "name": "Siege Damage Resistance",
+    "tag": "TAG_POWER_SIEGE_RESISTANCE"
+  },
+  "330496": {
+    "name": "Holy Damage Min",
+    "tag": "TAG_POWER_HOLY_DAMAGE_MIN"
+  },
+  "330512": {
+    "name": "Holy Damage Delta",
+    "tag": "TAG_POWER_HOLY_DAMAGE_DELTA"
+  },
+  "330528": {
+    "name": "Holy Damage Percent",
+    "tag": "TAG_POWER_HOLY_DAMAGE_PERCENT"
+  },
+  "330544": {
+    "name": "Holy Damage Resistance",
+    "tag": "TAG_POWER_HOLY_RESISTANCE"
+  },
+  "330560": {
+    "name": "Disease Damage Min",
+    "tag": "TAG_POWER_DISEASE_DAMAGE_MIN"
+  },
+  "330576": {
+    "name": "Disease Damage Delta",
+    "tag": "TAG_POWER_DISEASE_DAMAGE_DELTA"
+  },
+  "330592": {
+    "name": "Disease Damage Percent",
+    "tag": "TAG_POWER_DISEASE_DAMAGE_PERCENT"
+  },
+  "330608": {
+    "name": "Disease Damage Resistance",
+    "tag": "TAG_POWER_DISEASE_RESISTANCE"
+  },
+  "330624": {
+    "name": "Delivery Mechanism",
+    "tag": "TAG_POWER_DELIVERY_MECHANISM"
+  },
+  "330640": {
+    "name": "Triggers Hit Procs and Thorns",
+    "tag": "TAG_POWER_TRIGGERS_HIT_PROCS"
+  },
+  "330752": {
+    "name": "Damage Percent All",
+    "tag": "TAG_POWER_DAMAGE_PERCENT_ALL"
+  },
+  "330768": {
+    "name": "Defense Percent All",
+    "tag": "TAG_POWER_DEFENSE_PERCENT_ALL"
+  },
+  "330784": {
+    "name": "Stun Duration Min",
+    "tag": "TAG_POWER_STUN_DURATION_MIN"
+  },
+  "330800": {
+    "name": "Stun Duration Delta",
+    "tag": "TAG_POWER_STUN_DURATION_DELTA"
+  },
+  "330816": {
+    "name": "Stun Chance",
+    "tag": "TAG_POWER_STUN_CHANCE"
+  },
+  "330832": {
+    "name": "Web Duration Min",
+    "tag": "TAG_POWER_WEB_DURATION_MIN"
+  },
+  "330848": {
+    "name": "Web Duration Delta",
+    "tag": "TAG_POWER_WEB_DURATION_DELTA"
+  },
+  "330864": {
+    "name": "Immobilize Duration Min",
+    "tag": "TAG_POWER_IMMOBILIZE_DURATION_MIN"
+  },
+  "330880": {
+    "name": "Immobilize Duration Delta",
+    "tag": "TAG_POWER_IMMOBILIZE_DURATION_DELTA"
+  },
+  "330896": {
+    "name": "Slow Duration Min",
+    "tag": "TAG_POWER_SLOW_DURATION_MIN"
+  },
+  "330912": {
+    "name": "Slow Duration Delta",
+    "tag": "TAG_POWER_SLOW_DURATION_DELTA"
+  },
+  "330928": {
+    "name": "Slow Amount",
+    "tag": "TAG_POWER_SLOW_AMOUNT"
+  },
+  "330944": {
+    "name": "Slow Time Amount",
+    "tag": "TAG_POWER_SLOW_TIME_AMOUNT"
+  },
+  "330976": {
+    "name": "Poison Cloud Interval Duration",
+    "tag": "TAG_POWER_POISON_CLOUD_INTERVAL_DURATION"
+  },
+  "330992": {
+    "name": "Poison Cloud Num Intervals",
+    "tag": "TAG_POWER_POISON_CLOUD_NUM_INTERVALS"
+  },
+  "331008": {
+    "name": "Crit Chance",
+    "tag": "TAG_POWER_CRIT_CHANCE"
+  },
+  "331040": {
+    "name": "Pierce Chance",
+    "tag": "TAG_POWER_PIERCE_CHANCE"
+  },
+  "331056": {
+    "name": "Charged Bolt Num Bolts",
+    "tag": "TAG_POWER_CHARGED_BOLT_NUM_BOLTS"
+  },
+  "331057": {
+    "name": "Charged Bolt Spread Angle",
+    "tag": "TAG_POWER_CHARGED_BOLT_SPREAD_ANGLE"
+  },
+  "331072": {
+    "name": "Arcane Orb Num Grenades",
+    "tag": "TAG_POWER_ARCANE_ORB_NUM_GRENADES"
+  },
+  "331088": {
+    "name": "Payload Affected By Pet AOE Scalar",
+    "tag": "TAG_POWER_PAYLOAD_AFFECTED_BY_PET_AOE_SCALAR"
+  },
+  "331120": {
+    "name": "Summoned Actor Life Duration",
+    "tag": "TAG_POWER_SUMMONED_ACTOR_LIFE_DURATION"
+  },
+  "331136": {
+    "name": "Summoned Actor Level",
+    "tag": "TAG_POWER_SUMMONED_ACTOR_LEVEL"
+  },
+  "331137": {
+    "name": "Play Summoned By Monster Animation",
+    "tag": "TAG_POWER_PLAY_SUMMONED_BY_MONSTER_ANIMATION"
+  },
+  "331138": {
+    "name": "Summoned Actor Use Default Level",
+    "tag": "TAG_POWER_SUMMONED_ACTOR_USE_DEFAULT_LEVEL"
+  },
+  "331152": {
+    "name": "Gold Find Bonus",
+    "tag": "TAG_POWER_GOLD_FIND_BONUS"
+  },
+  "331156": {
+    "name": "Gem Find Bonus",
+    "tag": "TAG_POWER_GEM_FIND_BONUS"
+  },
+  "331160": {
+    "name": "Rune Find Bonus",
+    "tag": "TAG_POWER_RUNE_FIND_BONUS"
+  },
+  "331164": {
+    "name": "Salvage Find Bonus",
+    "tag": "TAG_POWER_SALVAGE_FIND_BONUS"
+  },
+  "331168": {
+    "name": "Thunderstorm Bolts Per Second",
+    "tag": "TAG_POWER_THUNDERSTORM_BOLTS_PER_SECOND"
+  },
+  "331184": {
+    "name": "Projectile Speed",
+    "tag": "TAG_POWER_PROJECTILE_SPEED"
+  },
+  "331192": {
+    "name": "Projectile Min Target Distance",
+    "tag": "TAG_POWER_PROJECTILE_MIN_TARGET_DISTANCE"
+  },
+  "331193": {
+    "name": "Projectile Count",
+    "tag": "TAG_POWER_PROJECTILE_COUNT"
+  },
+  "331194": {
+    "name": "Projectile Spread Angle",
+    "tag": "TAG_POWER_PROJECTILE_SPREAD_ANGLE"
+  },
+  "331196": {
+    "name": "Projectile Jitter",
+    "tag": "TAG_POWER_PROJECTILE_JITTER"
+  },
+  "331200": {
+    "name": "Mana Drain Amount Min",
+    "tag": "TAG_POWER_MANA_DRAIN_AMOUNT_MIN"
+  },
+  "331216": {
+    "name": "Mana Drain Amount Delta",
+    "tag": "TAG_POWER_MANA_DRAIN_AMOUNT_DELTA"
+  },
+  "331224": {
+    "name": "Lifesteal Percent",
+    "tag": "TAG_POWER_LIFESTEAL_PERCENT"
+  },
+  "331232": {
+    "name": "Freeze Damage Done Min",
+    "tag": "TAG_POWER_FREEZE_DAMAGE_DONE_MIN"
+  },
+  "331248": {
+    "name": "Freeze Damage Done Delta",
+    "tag": "TAG_POWER_FREEZE_DAMAGE_DONE_DELTA"
+  },
+  "331264": {
+    "name": "Hitpoints Granted By Heal",
+    "tag": "TAG_POWER_HITPOINTS_TO_HEAL"
+  },
+  "331280": {
+    "name": "Hitpoints to Heal Percent",
+    "tag": "TAG_POWER_HITPOINTS_TO_HEAL_PERCENT"
+  },
+  "331520": {
+    "name": "Mana Gained Per Second",
+    "tag": "TAG_POWER_MANA_GAINED_PER_SECOND"
+  },
+  "331536": {
+    "name": "Curse Damage Amplify Percent",
+    "tag": "TAG_POWER_CURSE_DAMAGE_AMPLIFY_PERCENT"
+  },
+  "331552": {
+    "name": "Ring of Frost Slow Chance",
+    "tag": "TAG_POWER_RING_OF_FROST_SLOW_CHANCE"
+  },
+  "331568": {
+    "name": "Bonus Hitpoint Percent",
+    "tag": "TAG_POWER_BONUS_HITPOINT_PERCENT"
+  },
+  "331584": {
+    "name": "Bonus Mana Percent",
+    "tag": "TAG_POWER_BONUS_MANA_PERCENT"
+  },
+  "331600": {
+    "name": "Mana Percent To Reserve",
+    "tag": "TAG_POWER_MANA_PERCENT_TO_RESERVE"
+  },
+  "331616": {
+    "name": "Fear Duration Min",
+    "tag": "TAG_POWER_FEAR_DURATION_MIN"
+  },
+  "331632": {
+    "name": "Fear Duration Delta",
+    "tag": "TAG_POWER_FEAR_DURATION_DELTA"
+  },
+  "331648": {
+    "name": "Retaliation Knockback Magnitude",
+    "tag": "TAG_POWER_RETALIATION_KNOCKBACK_MAGNITUDE"
+  },
+  "331664": {
+    "name": "Whirlwind Knockback Magnitude",
+    "tag": "TAG_POWER_WHIRLWIND_KNOCKBACK_MAGNITUDE"
+  },
+  "331696": {
+    "name": "Knockback Magnitude",
+    "tag": "TAG_POWER_KNOCKBACK_MAGNITUDE"
+  },
+  "331697": {
+    "name": "Causes Knockback",
+    "tag": "TAG_POWER_CAUSES_KNOCKBACK"
+  },
+  "331704": {
+    "name": "Knockback Height Min",
+    "tag": "TAG_POWER_KNOCKBACK_HEIGHT_MIN"
+  },
+  "331705": {
+    "name": "Knockback Height Delta",
+    "tag": "TAG_POWER_KNOCKBACK_HEIGHT_DELTA"
+  },
+  "331708": {
+    "name": "Knockback Gravity Min",
+    "tag": "TAG_POWER_KNOCKBACK_GRAVITY_MIN"
+  },
+  "331709": {
+    "name": "Knockback Gravity Delta",
+    "tag": "TAG_POWER_KNOCKBACK_GRAVITY_DELTA"
+  },
+  "331710": {
+    "name": "Knockback Power on Target",
+    "tag": "TAG_POWER_KNOCKBACK_POWER"
+  },
+  "331840": {
+    "name": "Aura Affected Radius",
+    "tag": "TAG_POWER_AURA_AFFECTED_RADIUS"
+  },
+  "331856": {
+    "name": "Number of Missiles",
+    "tag": "TAG_POWER_NUMBER_OF_MISSILES"
+  },
+  "331904": {
+    "name": "Templar Devotion Damage Absorb Percent",
+    "tag": "TAG_POWER_TEMPLAR_PROTECTION_DAMAGE_ABSORB_PERCENT"
+  },
+  "331936": {
+    "name": "Dodge Travel Speed",
+    "tag": "TAG_POWER_DODGE_TRAVEL_SPEED"
+  },
+  "331952": {
+    "name": "Walking Speed Multiplier",
+    "tag": "TAG_POWER_WALKING_SPEED_MULTIPLIER"
+  },
+  "331960": {
+    "name": "Walking Distance Min",
+    "tag": "TAG_POWER_WALKING_DISTANCE_MIN"
+  },
+  "331968": {
+    "name": "Attack Speed Percent Increase Min",
+    "tag": "TAG_POWER_ATTACK_SPEED_PERCENT_INCREASE_MIN"
+  },
+  "331984": {
+    "name": "Attack Speed Percent Increase Delta",
+    "tag": "TAG_POWER_ATTACK_SPEED_PERCENT_INCREASE_DELTA"
+  },
+  "332000": {
+    "name": "Movement Speed Percent Increase Min",
+    "tag": "TAG_POWER_MOVEMENT_SPEED_PERCENT_INCREASE_MIN"
+  },
+  "332016": {
+    "name": "Movement Speed Percent Increase Delta",
+    "tag": "TAG_POWER_MOVEMENT_SPEED_PERCENT_INCREASE_DELTA"
+  },
+  "332024": {
+    "name": "Scale Bonus",
+    "tag": "TAG_POWER_SCALE_BONUS"
+  },
+  "332032": {
+    "name": "Crushing Blow Max Buff Level",
+    "tag": "TAG_POWER_CRUSHING_BLOW_MAX_BUFF_LEVEL"
+  },
+  "332048": {
+    "name": "Battle Rage Max Stack Level",
+    "tag": "TAG_POWER_BATTLE_RAGE_MAX_STACK_LEVEL"
+  },
+  "332049": {
+    "name": "Improved Battle Rage Proc Chance",
+    "tag": "TAG_POWER_IMPROVED_BATTLE_RAGE_PROC_CHANCE"
+  },
+  "332050": {
+    "name": "Improved Battle Rage Duration",
+    "tag": "TAG_POWER_IMPROVED_BATTLE_RAGE_DURATION"
+  },
+  "332064": {
+    "name": "Electrocute Attack Delay Time",
+    "tag": "TAG_POWER_ELECTROCUTE_ATTACK_DELAY_TIME"
+  },
+  "332080": {
+    "name": "Blizzard Initial Impact Delay",
+    "tag": "TAG_POWER_BLIZZARD_INITIAL_IMPACT_DELAY"
+  },
+  "332096": {
+    "name": "Fury Gained Per Percent Health Lost",
+    "tag": "TAG_POWER_FURY_GAINED_PER_PERCENT_HEALTH_LOST"
+  },
+  "332097": {
+    "name": "Fury Gained Per Second Of Attack",
+    "tag": "TAG_POWER_FURY_GAINED_PER_SECOND_OF_ATTACK"
+  },
+  "332177": {
+    "name": "Fury Degeneration Out of Combat (per second)",
+    "tag": "TAG_POWER_FURY_DEGENERATION_OUT_OF_COMBAT"
+  },
+  "332178": {
+    "name": "Fury Add Per Interval",
+    "tag": "TAG_POWER_FURY_ADD_PER_INTERVAL"
+  },
+  "332180": {
+    "name": "Fury Coefficient",
+    "tag": "TAG_POWER_FURY_COEFFICIENT"
+  },
+  "332181": {
+    "name": "Fury Degeneration Start (in seconds)",
+    "tag": "TAG_POWER_FURY_DEGENERATION_START"
+  },
+  "332185": {
+    "name": "Fury Max Damage Bonus",
+    "tag": "TAG_POWER_FURY_MAX_DAMAGE_BONUS"
+  },
+  "332186": {
+    "name": "Fury Reduced Degen. threshold (fraction)",
+    "tag": "TAG_POWER_FURY_DEGENERATION_REDUCED_DECAY_THRESHOLD"
+  },
+  "332256": {
+    "name": "Electrocute Chance of AOE Attack on Target Death",
+    "tag": "TAG_POWER_ELECTROCUTE_AOE_CHANCE"
+  },
+  "332272": {
+    "name": "Paladin Resurrection Cooldown Time",
+    "tag": "TAG_POWER_PALADIN_RESURRECTION_COOLDOWN_TIME"
+  },
+  "332288": {
+    "name": "Electrocute Percent Damage Reduction Per Bounce",
+    "tag": "TAG_POWER_ELECTROCUTE_PERCENT_DAMAGE_REDUCTION_PER_BOUNCE"
+  },
+  "332304": {
+    "name": "Disintegrate Beam Width",
+    "tag": "TAG_POWER_DISINTEGRATE_BEAM_WIDTH"
+  },
+  "332320": {
+    "name": "Special Walk Trajectory Height",
+    "tag": "TAG_POWER_SPECIAL_WALK_TRAJECTORY_HEIGHT"
+  },
+  "332321": {
+    "name": "Special Walk Trajectory Height Delta",
+    "tag": "TAG_POWER_SPECIAL_WALK_TRAJECTORY_HEIGHT_DELTA"
+  },
+  "332336": {
+    "name": "Special Walk Trajectory Gravity",
+    "tag": "TAG_POWER_SPECIAL_WALK_TRAJECTORY_GRAVITY"
+  },
+  "332337": {
+    "name": "Special Walk Trajectory Gravity Delta",
+    "tag": "TAG_POWER_SPECIAL_WALK_TRAJECTORY_GRAVITY_DELTA"
+  },
+  "332338": {
+    "name": "Special Walk Height Is Relative To Max",
+    "tag": "TAG_POWER_SPECIAL_WALK_TRAJECTORY_HEIGHT_IS_RELATIVE_TO_MAX"
+  },
+  "332341": {
+    "name": "Special Walk Go Through Occluded",
+    "tag": "TAG_POWER_SPECIAL_WALK_GO_THROUGH_OCCLUDED"
+  },
+  "332360": {
+    "name": "Special Walk Perturb Destination",
+    "tag": "TAG_POWER_SPECIAL_WALK_PERTURB_DESTINATION"
+  },
+  "332362": {
+    "name": "Special Walk Is Knockback",
+    "tag": "TAG_POWER_SPECIAL_WALK_IS_KNOCKBACK"
+  },
+  "332368": {
+    "name": "Crit Damage Bonus Percent",
+    "tag": "TAG_POWER_CRIT_DAMAGE_BONUS_PERCENT"
+  },
+  "332384": {
+    "name": "Dodge Travel Distance Min",
+    "tag": "TAG_POWER_DODGE_TRAVEL_DISTANCE_MIN"
+  },
+  "332400": {
+    "name": "Dodge Travel Distance Delta",
+    "tag": "TAG_POWER_DODGE_TRAVEL_DISTANCE_DELTA"
+  },
+  "332416": {
+    "name": "Run Nearby Distance Min",
+    "tag": "TAG_POWER_RUN_NEARBY_DISTANCE_MIN"
+  },
+  "332432": {
+    "name": "Run Nearby Distance Delta",
+    "tag": "TAG_POWER_RUN_NEARBY_DISTANCE_DELTA"
+  },
+  "332448": {
+    "name": "Skeleton Summon Count Per Summon",
+    "tag": "TAG_POWER_SKELETON_SUMMON_COUNT"
+  },
+  "332449": {
+    "name": "Skeleton Summon Max Count",
+    "tag": "TAG_POWER_SKELETON_MAX_SUMMON_COUNT"
+  },
+  "332450": {
+    "name": "Skeleton Summon Max Total Count",
+    "tag": "TAG_POWER_SKELETON_MAX_TOTAL_SUMMON_COUNT"
+  },
+  "332451": {
+    "name": "Summoned Animation Tag",
+    "tag": "TAG_POWER_SUMMONED_ANIMATION"
+  },
+  "332464": {
+    "name": "Mirror Image Summon Count",
+    "tag": "TAG_POWER_MIRROR_IMAGE_SUMMON_COUNT"
+  },
+  "332480": {
+    "name": "Num Crypt Kids To Spawn On Corpulent Explosion",
+    "tag": "TAG_POWER_CORPULENT_CRYPT_KID_SPAWN_COUNT"
+  },
+  "332496": {
+    "name": "Slow Time Attack Cooldown Increase In Seconds",
+    "tag": "TAG_POWER_SLOW_TIME_ATTACK_COOLDOWN_INCREASE"
+  },
+  "332512": {
+    "name": "Slow Time Projectile Speed Multiplier",
+    "tag": "TAG_POWER_SLOW_TIME_PROJECTILE_SPEED_MULTIPLIER"
+  },
+  "332528": {
+    "name": "Conduction Aura Refresh Rate Decrease Per Target",
+    "tag": "TAG_POWER_CONDUCTION_AURA_REFRESH_RATE_DECREASE_PER_TARGET"
+  },
+  "332544": {
+    "name": "Dodge Travel Angle Offset",
+    "tag": "TAG_POWER_DODGE_TRAVEL_ANGLE_OFFSET"
+  },
+  "332560": {
+    "name": "Magic Missile Jitter Angle",
+    "tag": "TAG_POWER_MAGIC_MISSILE_JITTER_ANGLE"
+  },
+  "332576": {
+    "name": "Energy Shield Mana Cost Per Damage",
+    "tag": "TAG_POWER_ENERGY_SHIELD_MANA_COST_PER_DAMAGE"
+  },
+  "332592": {
+    "name": "Ring of Frost Slow Duration",
+    "tag": "TAG_POWER_RING_OF_FROST_SLOW_DURATION"
+  },
+  "332608": {
+    "name": "Concentration Cooldown",
+    "tag": "TAG_POWER_CONCENTRATION_COOLDOWN"
+  },
+  "332624": {
+    "name": "Pummel Cooldown",
+    "tag": "TAG_POWER_PUMMEL_COOLDOWN"
+  },
+  "332640": {
+    "name": "Hitpoints That Shield Can Absorb",
+    "tag": "TAG_POWER_SHIELD_DAMAGE_ABSORB_AMOUNT"
+  },
+  "332641": {
+    "name": "Percent of Damage That Shield Can Absorb",
+    "tag": "TAG_POWER_SHIELD_DAMAGE_ABSORB_PERCENT"
+  },
+  "332656": {
+    "name": "Tornado Life Duration Min",
+    "tag": "TAG_POWER_TORNADO_LIFE_DURATION_MIN"
+  },
+  "332672": {
+    "name": "Tornado Life Duration Delta",
+    "tag": "TAG_POWER_TORNADO_LIFE_DURATION_DELTA"
+  },
+  "332688": {
+    "name": "Disintegrate Time Between Updates",
+    "tag": "TAG_POWER_DISINTEGRATE_TIME_BETWEEN_UPDATES"
+  },
+  "332704": {
+    "name": "Thunderstorm Duration",
+    "tag": "TAG_POWER_THUNDERSTORM_DURATION"
+  },
+  "332720": {
+    "name": "Thundering Cry Buff Duration",
+    "tag": "TAG_POWER_THUNDERING_CRY_BUFF_DURATION"
+  },
+  "332736": {
+    "name": "Buff Duration Min",
+    "tag": "TAG_POWER_BUFF_DURATION_MIN"
+  },
+  "332752": {
+    "name": "Buff Duration Delta",
+    "tag": "TAG_POWER_BUFF_DURATION_DELTA"
+  },
+  "332768": {
+    "name": "Buff Duration Between Pulses",
+    "tag": "TAG_POWER_BUFF_DURATION_BETWEEN_PULSES"
+  },
+  "332776": {
+    "name": "Generic Buff Max Stack 0",
+    "tag": "TAG_POWER_BUFF_MAX_STACK"
+  },
+  "332784": {
+    "name": "Paladin Dead Time Until Resurrect",
+    "tag": "TAG_POWER_DEAD_TIME_UNTIL_RESURRECT"
+  },
+  "332800": {
+    "name": "Curse Duration",
+    "tag": "TAG_POWER_CURSE_DURATION"
+  },
+  "332816": {
+    "name": "Root Duration",
+    "tag": "TAG_POWER_ROOT_DURATION"
+  },
+  "332832": {
+    "name": "Damage Aura Duration",
+    "tag": "TAG_POWER_DAMAGE_AURA_DURATION"
+  },
+  "332848": {
+    "name": "Dodge Duration",
+    "tag": "TAG_POWER_DODGE_DURATION"
+  },
+  "332849": {
+    "name": "Dodge Chance",
+    "tag": "TAG_POWER_DODGE_CHANCE"
+  },
+  "332864": {
+    "name": "AI Action Duration Min",
+    "tag": "TAG_POWER_AI_ACTION_DURATION_MIN"
+  },
+  "332880": {
+    "name": "AI Action Duration Delta",
+    "tag": "TAG_POWER_AI_ACTION_DURATION_DELTA"
+  },
+  "332896": {
+    "name": "Ring of Frost Ring Lifetime",
+    "tag": "TAG_POWER_RING_OF_FROST_DURATION"
+  },
+  "332912": {
+    "name": "Conduction Aura Base Refresh Rate",
+    "tag": "TAG_POWER_CONDUCTION_AURA_BASE_REFRESH_RATE"
+  },
+  "332928": {
+    "name": "Slow Time Duration",
+    "tag": "TAG_POWER_SLOW_TIME_DURATION"
+  },
+  "333024": {
+    "name": "Blizzard Time Between Updates",
+    "tag": "TAG_POWER_BLIZZARD_TIME_BETWEEN_UPDATES"
+  },
+  "333056": {
+    "name": "Fury Time Between Updates",
+    "tag": "TAG_POWER_FURY_TIME_BETWEEN_UPDATES"
+  },
+  "333088": {
+    "name": "Concentration Duration",
+    "tag": "TAG_POWER_CONCENTRATION_DURATION"
+  },
+  "333280": {
+    "name": "Mirror Image Bonus Life Percent",
+    "tag": "TAG_POWER_MIRROR_IMAGE_BONUS_LIFE_PERCENT"
+  },
+  "333288": {
+    "name": "Mirror Image Double Chance",
+    "tag": "TAG_POWER_MIRROR_IMAGE_DOUBLE_CHANCE"
+  },
+  "333296": {
+    "name": "Mirror Image Thorn Damage",
+    "tag": "TAG_POWER_MIRROR_IMAGE_THORN_DAMAGE"
+  },
+  "334235": {
+    "name": "Fury Reduced Degen. (Per second)",
+    "tag": "TAG_POWER_FURY_DEGENERATION_REDUCED_DECAY_RATE"
+  },
+  "337152": {
+    "name": "Summoned Ghoul Max Count",
+    "tag": "TAG_POWER_SUMMONED_GHOUL_MAX_COUNT"
+  },
+  "337408": {
+    "name": "Summoned Ghoul Decay Time",
+    "tag": "TAG_POWER_SUMMONED_GHOUL_DECAY_TIME"
+  },
+  "337664": {
+    "name": "Summoned Ghoul Disease Attack Chance",
+    "tag": "TAG_POWER_SUMMONED_GHOUL_DISEASE_ATTACK_CHANCE"
+  },
+  "337920": {
+    "name": "Totem Max Count",
+    "tag": "TAG_POWER_TOTEM_MAX_COUNT"
+  },
+  "338176": {
+    "name": "Totem Lifespan",
+    "tag": "TAG_POWER_TOTEM_LIFESPAN"
+  },
+  "338432": {
+    "name": "Death Statue Num Shots",
+    "tag": "TAG_POWER_DEATH_STATUE_NUM_SHOTS"
+  },
+  "338688": {
+    "name": "Death Statue Damage",
+    "tag": "TAG_POWER_DEATH_STATUE_DAMAGE"
+  },
+  "338944": {
+    "name": "Death Statue Ghoul Dot Chance",
+    "tag": "TAG_POWER_DEATH_STATUE_GHOUL_DOT_CHANCE"
+  },
+  "339200": {
+    "name": "Death Statue Ghoul Buff Range",
+    "tag": "TAG_POWER_DEATH_STATUE_GHOUL_BUFF_RANGE"
+  },
+  "339456": {
+    "name": "Summon Chance",
+    "tag": "TAG_POWER_SUMMON_CHANCE"
+  },
+  "340141": {
+    "name": "Is Invisible During",
+    "tag": "TAG_POWER_IS_INVISIBLE_DURING"
+  },
+  "340142": {
+    "name": "Cannot Die During",
+    "tag": "TAG_POWER_CANNOT_DIE_DURING"
+  },
+  "360448": {
+    "name": "Destination Jitter Radius",
+    "tag": "TAG_POWER_DESTINATION_JITTER_RADIUS"
+  },
+  "360704": {
+    "name": "Destination Jitter Attempts",
+    "tag": "TAG_POWER_DESTINATION_JITTER_ATTEMPTS"
+  },
+  "360960": {
+    "name": "Root Timer Modification Per Struggle",
+    "tag": "TAG_POWER_ROOT_TIMER_MODIFICATION_PER_STRUGGLE"
+  },
+  "361216": {
+    "name": "Whirlwind Range Multiplier",
+    "tag": "TAG_POWER_WHIRLWHIND_RANGE_MULTIPLIER"
+  },
+  "361472": {
+    "name": "Whirlwind Range Bonus",
+    "tag": "TAG_POWER_WHIRLWHIND_RANGE_BONUS"
+  },
+  "361488": {
+    "name": "Whirlwind Attack Pulse Rate",
+    "tag": "TAG_POWER_WHIRLWIND_PULSE_RATE"
+  },
+  "361504": {
+    "name": "Whirlwind Duration Min",
+    "tag": "TAG_POWER_WHIRLWIND_DURATION_MIN"
+  },
+  "361520": {
+    "name": "Whirlwind Duration Delta",
+    "tag": "TAG_POWER_WHIRLWIND_DURATION_DELTA"
+  },
+  "361521": {
+    "name": "Whirlwind Movement Speed",
+    "tag": "TAG_POWER_WHIRLWIND_MOVE_SPEED"
+  },
+  "361536": {
+    "name": "Whirlwind Reflect Disabled Timer",
+    "tag": "TAG_POWER_NO_REFLECT_BUFFER_TIME"
+  },
+  "361544": {
+    "name": "Reflect Damage Health Percent Cap",
+    "tag": "TAG_POWER_REFLECT_DAMAGE_HEALTH_PERCENT_CAP"
+  },
+  "361728": {
+    "name": "Enrage Amplify Damage Percent",
+    "tag": "TAG_POWER_ENRAGE_AMPLIFY_DAMAGE_PERCENT"
+  },
+  "362496": {
+    "name": "Pet Search Radius",
+    "tag": "TAG_POWER_PET_SEARCH_RADIUS"
+  },
+  "364544": {
+    "name": "Ghost Soulsiphon Slow Multiplier",
+    "tag": "TAG_POWER_GHOST_SOULSIPHON_SLOW_MULTIPLIER"
+  },
+  "364800": {
+    "name": "Ghost Soulsiphon Max Channelling Time",
+    "tag": "TAG_POWER_GHOST_SOULSIPHON_MAX_CHANNELLING_TIME"
+  },
+  "365056": {
+    "name": "Ghost Soulsiphon Max Channelling Distance",
+    "tag": "TAG_POWER_GHOST_SOULSIPHON_MAX_CHANNELLING_DISTANCE"
+  },
+  "365312": {
+    "name": "Ghost Soulsiphon Damage Per Second",
+    "tag": "TAG_POWER_GHOST_SOULSIPHON_DAMAGE_PER_SECOND"
+  },
+  "368640": {
+    "name": "Rockworm Web Spit Distance",
+    "tag": "TAG_POWER_ROCKWORM_WEB_SPIT_DISTANCE"
+  },
+  "368896": {
+    "name": "Rockworm Web Movement Speed Multiplier",
+    "tag": "TAG_POWER_ROCKWORM_WEB_SLOW_MULTIPLIER"
+  },
+  "369024": {
+    "name": "Rockworm Web Duration",
+    "tag": "TAG_POWER_ROCKWORM_WEB_DURATION"
+  },
+  "369152": {
+    "name": "Rockworm Burst Out Distance Min",
+    "tag": "TAG_POWER_ROCKWORM_BURST_OUT_DISTANCE_MIN"
+  },
+  "369408": {
+    "name": "Rockworm Burst Out Distance Max",
+    "tag": "TAG_POWER_ROCKWORM_BURST_OUT_DISTANCE_MAX"
+  },
+  "369536": {
+    "name": "Rockworm Burst Out Delay",
+    "tag": "TAG_POWER_ROCKWORM_BURST_OUT_DELAY"
+  },
+  "369664": {
+    "name": "Feast of Souls Initial Target Search Radius",
+    "tag": "TAG_POWER_FEASTOFSOULS_INITIAL_TARGET_SEARCH_RADIUS"
+  },
+  "369920": {
+    "name": "Feast of Souls Damage Per Second",
+    "tag": "TAG_POWER_FEASTOFSOULS_DAMAGE_PER_SECOND"
+  },
+  "370176": {
+    "name": "Feast of Souls Duration",
+    "tag": "TAG_POWER_FEASTOFSOULS_DURATION"
+  },
+  "370688": {
+    "name": "Stone Spike Attack Delay Time",
+    "tag": "TAG_POWER_STONESPIKE_DELAY"
+  },
+  "372736": {
+    "name": "Stone Spike Number of Spikes",
+    "tag": "TAG_POWER_STONESPIKE_NUMBER_OF_SPIKES"
+  },
+  "393216": {
+    "name": "Spectral Blade Bleed Damage",
+    "tag": "TAG_POWER_SPECTRALBLADE_BLEED_DMG"
+  },
+  "397312": {
+    "name": "Spectral Blade Bleed Duration",
+    "tag": "TAG_POWER_SPECTRALBLADE_BLEED_DURATION"
+  },
+  "397313": {
+    "name": "Spectral Blade Number of Hits",
+    "tag": "TAG_POWER_SPECTRALBLADE_NUMBER_OF_HITS"
+  },
+  "401408": {
+    "name": "Wave Of Force Projectile Percent Speed Inc",
+    "tag": "TAG_POWER_WAVEOFFORCE_PROJECTILE_PERCENT_SPEED_INC"
+  },
+  "405504": {
+    "name": "Teleport Number of Images",
+    "tag": "TAG_POWER_TELEPORT_NUMBER_OF_IMAGES"
+  },
+  "409600": {
+    "name": "Teleport Invulnerable Secs",
+    "tag": "TAG_POWER_TELEPORT_INVULNERABLE_SECS"
+  },
+  "413696": {
+    "name": "Anatomy Crit Bonus Percent",
+    "tag": "TAG_POWER_ANATOMY_CRIT_BONUS_PERCENT"
+  },
+  "417792": {
+    "name": "Rapid Fire Attack Speed Bonus Percent",
+    "tag": "TAG_POWER_RAPIDFIRE_ATTACK_SPEED_BONUS_PERCENT"
+  },
+  "421888": {
+    "name": "Find Item Magic Find Bonus",
+    "tag": "TAG_POWER_FINDITEM_MAGIC_FIND_BONUS"
+  },
+  "425984": {
+    "name": "Rain Of Gold Damage To Gold Percent",
+    "tag": "TAG_POWER_RAINOFGOLD_DAMAGE_TO_GOLD_PERCENT"
+  },
+  "430080": {
+    "name": "Feign Death Untargetable Duration",
+    "tag": "TAG_POWER_FEIGN_DEATH_UNTARGETABLE_DURATION"
+  },
+  "431360": {
+    "name": "Feign Death At Health Percent",
+    "tag": "TAG_POWER_FEIGN_DEATH_AT_HEALTH_PERCENT"
+  },
+  "458752": {
+    "name": "Vanish Duration",
+    "tag": "TAG_POWER_VANISH_DURATION"
+  },
+  "460032": {
+    "name": "Vanish At Health Percent",
+    "tag": "TAG_POWER_VANISH_AT_HEALTH_PERCENT"
+  },
+  "524288": {
+    "name": "Resistance Percent All",
+    "tag": "TAG_POWER_RESISTANCE_PERCENT_ALL"
+  },
+  "548864": {
+    "name": "DOT Duration",
+    "tag": "TAG_POWER_DOT_DURATION"
+  },
+  "552960": {
+    "name": "DOT Damage",
+    "tag": "TAG_POWER_DOT_DAMAGE"
+  },
+  "557056": {
+    "name": "Follow Stop Distance",
+    "tag": "TAG_POWER_FOLLOW_STOP_DISTANCE"
+  },
+  "561152": {
+    "name": "Follow Start Distance",
+    "tag": "TAG_POWER_FOLLOW_START_DISTANCE"
+  },
+  "561408": {
+    "name": "Follow Match Target Speed",
+    "tag": "TAG_POWER_FOLLOW_MATCH_TARGET_SPEED"
+  },
+  "561424": {
+    "name": "Follow Walk Anim Tag",
+    "tag": "TAG_POWER_FOLLOW_WALK_ANIM_TAG"
+  },
+  "565248": {
+    "name": "Run In Front Distance",
+    "tag": "TAG_POWER_RUN_IN_FRONT_DISTANCE"
+  },
+  "593920": {
+    "name": "Zombify Max Possessed",
+    "tag": "TAG_POWER_ZOMBIFY_MAX_POSSESSED"
+  },
+  "594176": {
+    "name": "Zombify Possessed Duration",
+    "tag": "TAG_POWER_ZOMBIFY_POSSESSED_DURATION"
+  },
+  "594432": {
+    "name": "Zombify Debuff Duration",
+    "tag": "TAG_POWER_ZOMBIFY_DEBUFF_DURATION"
+  },
+  "594688": {
+    "name": "Zombify Damage Per Second",
+    "tag": "TAG_POWER_ZOMBIFY_DAMAGE_PER_SECOND"
+  },
+  "600064": {
+    "name": "Plague of Toads Num Frogs",
+    "tag": "TAG_POWER_PLAGUE_OF_TOADS_NUM_FROGS"
+  },
+  "600072": {
+    "name": "Plague of Toads Toad Lifespan",
+    "tag": "TAG_POWER_PLAGUE_OF_TOADS_TOAD_LIFESPAN"
+  },
+  "600320": {
+    "name": "Fire Bats Num Bats",
+    "tag": "TAG_POWER_FIREBATS_NUM_BATS"
+  },
+  "600321": {
+    "name": "Fire Bats Refresh Rate",
+    "tag": "TAG_POWER_FIREBATS_REFRESH_RATE"
+  },
+  "600322": {
+    "name": "Fire Bats Initial Delay",
+    "tag": "TAG_POWER_FIREBATS_INITIAL_DELAY"
+  },
+  "602112": {
+    "name": "Cleave Num Targets",
+    "tag": "TAG_POWER_CLEAVE_NUM_TARGETS"
+  },
+  "606208": {
+    "name": "Root Grab Power",
+    "tag": "TAG_POWER_ROOT_GRAB_POWER"
+  },
+  "606464": {
+    "name": "Root End Func",
+    "tag": "TAG_POWER_ROOT_END_FUNC"
+  },
+  "606720": {
+    "name": "Root Is Untargetable",
+    "tag": "TAG_POWER_ROOT_IS_UNTARGETABLE"
+  },
+  "610304": {
+    "name": "Hookshot Hit Return Speed Mult",
+    "tag": "TAG_POWER_HOOKSHOT_HIT_RETURN_SPEED_MULT"
+  },
+  "610560": {
+    "name": "Hookshot Miss Return Speed Mult",
+    "tag": "TAG_POWER_HOOKSHOT_MISS_RETURN_SPEED_MULT"
+  },
+  "614400": {
+    "name": "Mass Confusion Buff Duration",
+    "tag": "TAG_POWER_MASSCONFUSION_BUFF_DURATION"
+  },
+  "615936": {
+    "name": "Bonereaver Heal Percentage",
+    "tag": "TAG_POWER_BONEREAVER_HEAL_PERCENTAGE"
+  },
+  "615937": {
+    "name": "Bonereaver Consume Heal Buff Duration",
+    "tag": "TAG_POWER_BONEREAVER_HEAL_DURATION"
+  },
+  "618496": {
+    "name": "Destructable Object Damage Delay",
+    "tag": "TAG_POWER_DESTRUCTABLE_OBJECT_DAMAGE_DELAY"
+  },
+  "622592": {
+    "name": "Controller Auto Targets",
+    "tag": "TAG_POWER_CONTROLLER_AUTO_TARGETS"
+  },
+  "622593": {
+    "name": "Controller Min Range",
+    "tag": "TAG_POWER_CONTROLLER_MIN_RANGE"
+  },
+  "622594": {
+    "name": "Controller Auto Targets W/LT",
+    "tag": "TAG_POWER_CONTROLLER_AUTO_TARGETS_LT"
+  },
+  "622595": {
+    "name": "Controller Min Range When Held",
+    "tag": "TAG_POWER_CONTROLLER_MIN_RANGE_HELD"
+  },
+  "622596": {
+    "name": "Controller Max Range When Held",
+    "tag": "TAG_POWER_CONTROLLER_MAX_RANGE"
+  },
+  "622597": {
+    "name": "Controller Offset From Auto Target",
+    "tag": "TAG_POWER_CONTROLLER_OFFSET_FROM_AUTO_TARGET"
+  },
+  "627456": {
+    "name": "Damage Display Power",
+    "tag": "TAG_POWER_DAMAGE_DISPLAY_POWER"
+  },
+  "630784": {
+    "name": "Sand Shield Duration",
+    "tag": "TAG_POWER_SAND_SHIELD_DURATION"
+  },
+  "630785": {
+    "name": "Sand Shield Projectile Reflect Chance",
+    "tag": "TAG_POWER_SAND_SHIELD_PROJECTILE_REFLECT_CHANCE"
+  },
+  "630786": {
+    "name": "Sand Shield Projectile Block Chance",
+    "tag": "TAG_POWER_SAND_SHIELD_PROJECTILE_BLOCK_CHANCE"
+  },
+  "630787": {
+    "name": "Sand Shield Dodge Chance",
+    "tag": "TAG_POWER_SAND_SHIELD_DODGE_CHANCE_BONUS"
+  },
+  "631040": {
+    "name": "Rampage Extra Attacks",
+    "tag": "TAG_POWER_RAMPAGE_EXTRA_HITS"
+  },
+  "631296": {
+    "name": "Quicksand Duration",
+    "tag": "TAG_POWER_QUICKSAND_DURATION"
+  },
+  "631297": {
+    "name": "Quicksand Slow Amount",
+    "tag": "TAG_POWER_QUICKSAND_SLOWAMOUNT"
+  },
+  "631552": {
+    "name": "Raptor Speed Duration",
+    "tag": "TAG_POWER_RAPTORSPEED_DURATION"
+  },
+  "632064": {
+    "name": "Piercing Shot Pierce Count",
+    "tag": "TAG_POWER_PIERCING_SHOT_PIERCE_COUNT"
+  },
+  "632832": {
+    "name": "Fire Grenade Countdown",
+    "tag": "TAG_POWER_FIREGRENADE_COUNTDOWN"
+  },
+  "633344": {
+    "name": "Causes Super Knockback",
+    "tag": "TAG_POWER_CAUSES_SUPER_KNOCKBACK"
+  },
+  "633345": {
+    "name": "Causes Knockdown",
+    "tag": "TAG_POWER_CAUSES_KNOCKDOWN"
+  },
+  "633360": {
+    "name": "Fallen Max Count",
+    "tag": "TAG_POWER_FALLEN_MAX_SUMMON_COUNT"
+  },
+  "633600": {
+    "name": "Shrine Buff Atttribute",
+    "tag": "TAG_POWER_SHRINE_BUFF_ATTRIBUTE"
+  },
+  "633601": {
+    "name": "Shrine Buff Bonus",
+    "tag": "TAG_POWER_SHRINE_BUFF_BONUS"
+  },
+  "633602": {
+    "name": "Shrine Buff Allies",
+    "tag": "TAG_POWER_SHRINE_BUFF_ALLIES"
+  },
+  "633603": {
+    "name": "Shrine Buff Radius",
+    "tag": "TAG_POWER_SHRINE_BUFF_RADIUS"
+  },
+  "633616": {
+    "name": "Is Untargetable During",
+    "tag": "TAG_POWER_IS_UNTARGETABLE_DURING"
+  },
+  "635648": {
+    "name": "Frozen Debuff Duration",
+    "tag": "TAG_POWER_FROZEN_DURATION"
+  },
+  "635649": {
+    "name": "Frozen Debuff Stacked Duration Max",
+    "tag": "TAG_POWER_FROZEN_STACKED_DURATION_MAX"
+  },
+  "638976": {
+    "name": "Death Nova Radius Max",
+    "tag": "TAG_POWER_DEATH_NOVA_RADIUS_MAX"
+  },
+  "639232": {
+    "name": "Death Nova Radius Ft Per Sec",
+    "tag": "TAG_POWER_DEATH_NOVA_RADIUS_FT_PER_SEC"
+  },
+  "639488": {
+    "name": "Doesn't Crit",
+    "tag": "TAG_POWER_DOESNT_CRIT"
+  },
+  "643072": {
+    "name": "Hearth Time",
+    "tag": "TAG_POWER_HEARTH_TIME"
+  },
+  "647168": {
+    "name": "Resurrection Buff Time",
+    "tag": "TAG_POWER_RESURRECTION_BUFF_TIME"
+  },
+  "651264": {
+    "name": "Resurrection Health Multiplier To Start",
+    "tag": "TAG_POWER_RESURRECTION_HEALTH_MULT_TO_START"
+  },
+  "655392": {
+    "name": "Mana Regen Time Between Updates",
+    "tag": "TAG_POWER_MANAREGEN_TIME_BETWEEN_UPDATES"
+  },
+  "655393": {
+    "name": "Mana Regen Restore % Per Second",
+    "tag": "TAG_POWER_MANAREGEN_MANA_RESTORE_PERCENT_PER_SECOND"
+  },
+  "655394": {
+    "name": "Mana Regen Time To Kick In",
+    "tag": "TAG_POWER_MANAREGEN_TIME_TO_KICK_IN"
+  },
+  "655504": {
+    "name": "Generic Buff Weapon Class Requirement",
+    "tag": "TAG_POWER_GENERIC_BUFF_WEAPON_CLASS_REQUIREMENT"
+  },
+  "655505": {
+    "name": "Generic Buff Weapon Class Requirement Offhand",
+    "tag": "TAG_POWER_GENERIC_BUFF_WEAPON_CLASS_REQUIREMENT_OFFHAND"
+  },
+  "655616": {
+    "name": "Generic Buff Attribute 0",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_0"
+  },
+  "655617": {
+    "name": "Generic Buff Attribute 0 Formula",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_FORMULA_0"
+  },
+  "655618": {
+    "name": "Generic Buff Attribute 0 And Parameter",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_0_WITH_PARAM"
+  },
+  "655632": {
+    "name": "Generic Buff Attribute 1",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_1"
+  },
+  "655633": {
+    "name": "Generic Buff Attribute 1 Formula",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_FORMULA_1"
+  },
+  "655634": {
+    "name": "Generic Buff Attribute 1 And Parameter",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_1_WITH_PARAM"
+  },
+  "655648": {
+    "name": "Generic Buff Attribute 2",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_2"
+  },
+  "655649": {
+    "name": "Generic Buff Attribute 2 Formula",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_FORMULA_2"
+  },
+  "655650": {
+    "name": "Generic Buff Attribute 2 And Parameter",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_2_WITH_PARAM"
+  },
+  "655664": {
+    "name": "Generic Buff Attribute 3",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_3"
+  },
+  "655665": {
+    "name": "Generic Buff Attribute 3 Formula",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_FORMULA_3"
+  },
+  "655666": {
+    "name": "Generic Buff Attribute 3 And Parameter",
+    "tag": "TAG_POWER_GENERIC_BUFF_ATTRIBUTE_3_WITH_PARAM"
+  },
+  "655680": {
+    "name": "Debuff Duration Min",
+    "tag": "TAG_POWER_DEBUFF_DURATION"
+  },
+  "655681": {
+    "name": "Debuff Refresh Interval In Seconds",
+    "tag": "TAG_POWER_DEBUFF_REFRESH_INTERVAL_IN_SECONDS"
+  },
+  "655728": {
+    "name": "Arcane Armor Defense Bonus Percent",
+    "tag": "TAG_POWER_ARCANE_ARMOR_DEFENSE_BONUS_PERCENT"
+  },
+  "655729": {
+    "name": "Ice Armor Defense Bonus Percent",
+    "tag": "TAG_POWER_ICE_ARMOR_DEFENSE_BONUS_PERCENT"
+  },
+  "655872": {
+    "name": "Death Proof Debuff Duration",
+    "tag": "TAG_POWER_DEATH_PROOF_DEBUFF_DURATION"
+  },
+  "655873": {
+    "name": "Death Proof Percent To Heal",
+    "tag": "TAG_POWER_DEATH_PROOF_PERCENT_TO_HEAL"
+  },
+  "655984": {
+    "name": "Pickup Items While Moving",
+    "tag": "TAG_POWER_PICKUP_ITEMS_WHILE_MOVING"
+  },
+  "655985": {
+    "name": "Nova Delay",
+    "tag": "TAG_POWER_NOVA_DELAY"
+  },
+  "659456": {
+    "name": "Lightning Speed Duration",
+    "tag": "TAG_POWER_LIGHTNING_SPEED_DURATION"
+  },
+  "661504": {
+    "name": "Lightning Speed Movement Scalar Bonus",
+    "tag": "TAG_POWER_LIGHTNING_SPEED_MOVEMENT_SCALAR_BONUS"
+  },
+  "661760": {
+    "name": "Lightning Speed Stack Count",
+    "tag": "TAG_POWER_LIGHTNING_SPEED_STACK_COUNT"
+  },
+  "663552": {
+    "name": "Static Charge Damage",
+    "tag": "TAG_POWER_STATIC_CHARGE_DAMAGE"
+  },
+  "663808": {
+    "name": "Static Charge Damage Interval",
+    "tag": "TAG_POWER_STATIC_CHARGE_DAMAGE_INTERVAL"
+  },
+  "664064": {
+    "name": "Static Charge Duration",
+    "tag": "TAG_POWER_STATIC_CHARGE_DURATION"
+  },
+  "664320": {
+    "name": "Static Charge Radius",
+    "tag": "TAG_POWER_STATIC_CHARGE_RADIUS"
+  },
+  "667648": {
+    "name": "Intensify Crit Chance Bonus",
+    "tag": "TAG_POWER_INTENSIFY_CRIT_CHANCE_BONUS"
+  },
+  "667904": {
+    "name": "Intensify Crit Duration",
+    "tag": "TAG_POWER_INTENSIFY_CRIT_DURATION"
+  },
+  "671744": {
+    "name": "Powered Impact Mana Increase",
+    "tag": "TAG_POWER_POWERED_IMPACT_MANA_INCREASE"
+  },
+  "679936": {
+    "name": "Projectile Reflect Chance",
+    "tag": "TAG_POWER_PROJECTILE_REFLECT_CHANCE"
+  },
+  "680192": {
+    "name": "Shield Angle",
+    "tag": "TAG_POWER_SHIELD_ANGLE"
+  },
+  "680448": {
+    "name": "Damage Reduction Percent",
+    "tag": "TAG_POWER_DAMAGE_REDUCTION_PERCENT"
+  },
+  "680704": {
+    "name": "Proc Chance",
+    "tag": "TAG_POWER_PROC_CHANCE"
+  },
+  "680768": {
+    "name": "Proc Cooldown Time",
+    "tag": "TAG_POWER_PROC_COOLDOWN"
+  },
+  "680832": {
+    "name": "Bouncing Ball Lifetime",
+    "tag": "TAG_POWER_BOUNCING_BALL_LIFETIME"
+  },
+  "681604": {
+    "name": "Sandshark Delay Before Sand Attack",
+    "tag": "TAG_POWER_SANDSHARK_DELAY_BEFORE_SAND_ATTACK"
+  },
+  "681728": {
+    "name": "Temporal Armor Cooldown",
+    "tag": "TAG_POWER_TEMPORAL_ARMOR_COOLDOWN"
+  },
+  "681984": {
+    "name": "Breaks Root",
+    "tag": "TAG_POWER_BREAKS_ROOT"
+  },
+  "681985": {
+    "name": "Breaks Snare",
+    "tag": "TAG_POWER_BREAKS_SNARE"
+  },
+  "681986": {
+    "name": "Breaks Stun",
+    "tag": "TAG_POWER_BREAKS_STUN"
+  },
+  "681987": {
+    "name": "Breaks Fear",
+    "tag": "TAG_POWER_BREAKS_FEAR"
+  },
+  "682240": {
+    "name": "Immune to Root during",
+    "tag": "TAG_POWER_IMMUNE_TO_ROOT_DURING"
+  },
+  "682241": {
+    "name": "Immune to Snare during",
+    "tag": "TAG_POWER_IMMUNE_TO_SNARE_DURING"
+  },
+  "682242": {
+    "name": "Immune to Stun during",
+    "tag": "TAG_POWER_IMMUNE_TO_STUN_DURING"
+  },
+  "682243": {
+    "name": "Immune to Fear during",
+    "tag": "TAG_POWER_IMMUNE_TO_FEAR_DURING"
+  },
+  "682496": {
+    "name": "Burn House Damage Per Second",
+    "tag": "TAG_POWER_BURN_HOUSE_DAMAGE_PER_SECOND"
+  },
+  "682752": {
+    "name": "Burn House Water Heal Amount",
+    "tag": "TAG_POWER_BURN_HOUSE_WATER_HEAL_AMOUNT"
+  },
+  "684032": {
+    "name": "Override Hit Effects",
+    "tag": "TAG_POWER_OVERRIDE_HIT_EFFECTS"
+  },
+  "684033": {
+    "name": "Critical Hit Effect",
+    "tag": "TAG_POWER_CRITICAL_HIT_EFFECT"
+  },
+  "684034": {
+    "name": "Hit Effect",
+    "tag": "TAG_POWER_HIT_EFFECT"
+  },
+  "684160": {
+    "name": "Pool Actor",
+    "tag": "TAG_POWER_POOL_ACTOR"
+  },
+  "684168": {
+    "name": "Pool Duration",
+    "tag": "TAG_POWER_POOL_DURATION"
+  },
+  "684176": {
+    "name": "Pool Pulse Interval",
+    "tag": "TAG_POWER_POOL_PULSE_INTERVAL"
+  },
+  "684224": {
+    "name": "Impenetrable Defense Duration",
+    "tag": "TAG_POWER_IMPENETRABLE_DEFENSE_DURATION"
+  },
+  "684544": {
+    "name": "Fallen Champion Leader Shout Effect Radius",
+    "tag": "TAG_POWER_FALLEN_CHAMPION_LEADER_SHOUT_EFFECT_RADIUS"
+  },
+  "684545": {
+    "name": "Fallen Champion Leader Shout Duration",
+    "tag": "TAG_POWER_FALLEN_CHAMPION_LEADER_SHOUT_DURATION"
+  },
+  "684546": {
+    "name": "Incoming Damage Increase",
+    "tag": "TAG_POWER_INCOMING_DAMAGE_INCREASE"
+  },
+  "684577": {
+    "name": "Blind Duration Min",
+    "tag": "TAG_BLIND_DURATION_MIN"
+  },
+  "684578": {
+    "name": "Blind Duration Delta",
+    "tag": "TAG_BLIND_DURATION_DELTA"
+  },
+  "684579": {
+    "name": "Hit Chance Decrease",
+    "tag": "TAG_POWER_HIT_CHANCE_DECREASE"
+  },
+  "684800": {
+    "name": "Tornado Damage Radius",
+    "tag": "TAG_POWER_TORNADO_RADIUS"
+  },
+  "684801": {
+    "name": "Tornado Damage Pulse Rate",
+    "tag": "TAG_POWER_TORNADO_DAMAGE_PULSE_RATE"
+  },
+  "684802": {
+    "name": "Tornado Time To Dir Change Min",
+    "tag": "TAG_POWER_TORNADO_TIME_BETWEEN_DIR_CHANGE_MIN"
+  },
+  "684803": {
+    "name": "Tornado Time To Dir Change Delta",
+    "tag": "TAG_POWER_TORNADO_TIME_BETWEEN_DIR_CHANGE_DELTA"
+  },
+  "684804": {
+    "name": "Tornado Time To Dir Change Min Growth/Change",
+    "tag": "TAG_POWER_TORNADO_TIME_BETWEEN_DIR_CHANGE_GROWTH"
+  },
+  "684805": {
+    "name": "Tornado Wander Radius Min",
+    "tag": "TAG_POWER_TORNADO_WANDER_RADIUS_MIN"
+  },
+  "684806": {
+    "name": "Tornado Wander Radius Delta",
+    "tag": "TAG_POWER_TORNADO_WANDER_RADIUS_DELTA"
+  },
+  "684807": {
+    "name": "Tornado Wander Radius Growth/Change",
+    "tag": "TAG_POWER_TORNADO_WANDER_RADIUS_GROWTH"
+  },
+  "684808": {
+    "name": "Tornado Move Speed",
+    "tag": "TAG_POWER_TORNADO_MOVE_SPEED"
+  },
+  "684848": {
+    "name": "Clips Target To Attack Radius",
+    "tag": "TAG_POWER_CLIPS_TARGET_TO_ATTACK_RADIUS"
+  },
+  "684849": {
+    "name": "Extends Target To Attack Radius",
+    "tag": "TAG_POWER_EXTENDS_TARGET_TO_ATTACK_RADIUS"
+  },
+  "684850": {
+    "name": "Check Path Then Clip To Pathable Attack Radius",
+    "tag": "TAG_POWER_CHECK_PATH_THEN_CLIP_TO_PATHABLE_ATTACK_RADIUS"
+  },
+  "684864": {
+    "name": "Lacuni Leap Target Offset",
+    "tag": "TAG_POWER_LACUNI_LEAP_TARGET_OFFSET"
+  },
+  "684880": {
+    "name": "No Interrupt Timer",
+    "tag": "TAG_POWER_NO_INTERRUPT_TIMER"
+  },
+  "684912": {
+    "name": "Sand Wall Duration",
+    "tag": "TAG_POWER_SAND_WALL_DURATION"
+  },
+  "684913": {
+    "name": "Sand Wall Deflection Jitter",
+    "tag": "TAG_POWER_SAND_WALL_DEFLECTION_JITTER"
+  },
+  "684914": {
+    "name": "Spawn Duration",
+    "tag": "TAG_POWER_SPAWN_DURATION"
+  },
+  "684915": {
+    "name": "Sand Wall Duration Delta",
+    "tag": "TAG_POWER_SAND_WALL_DURATION_DELTA"
+  },
+  "684917": {
+    "name": "Player Crit Damage Scalar",
+    "tag": "TAG_POWER_PLAYER_CRIT_DAMAGE_SCALAR"
+  },
+  "684918": {
+    "name": "Monster Crit Damage Scalar",
+    "tag": "TAG_POWER_MONSTER_CRIT_DAMAGE_SCALAR"
+  },
+  "684928": {
+    "name": "Spirit Gained",
+    "tag": "TAG_POWER_SPIRIT_GAIN"
+  },
+  "684929": {
+    "name": "Duration Min",
+    "tag": "TAG_POWER_DURATION_MIN"
+  },
+  "684930": {
+    "name": "Duration Delta",
+    "tag": "TAG_POWER_DURATION_DELTA"
+  },
+  "685056": {
+    "name": "Portal Activate Range",
+    "tag": "TAG_POWER_PORTAL_ACTIVATION_DIST"
+  },
+  "685057": {
+    "name": "Portal Spawn Range Min",
+    "tag": "TAG_POWER_PORTAL_MIN_RANGE"
+  },
+  "685058": {
+    "name": "Portal Spawn Range Delta",
+    "tag": "TAG_POWER_PORTAL_DELTA_RANGE"
+  },
+  "688128": {
+    "name": "Expel Monster Actor",
+    "tag": "TAG_POWER_EXPEL_MONSTER_SNO"
+  },
+  "688384": {
+    "name": "Expel Monster Count",
+    "tag": "TAG_POWER_EXPEL_MONSTER_COUNT"
+  },
+  "688640": {
+    "name": "Expel Monster Spawn Interval",
+    "tag": "TAG_POWER_EXPEL_MONSTER_SPAWN_INTERVAL"
+  },
+  "692224": {
+    "name": "Slow Movement Speed Multiplier",
+    "tag": "TAG_POWER_SLOW_MULTIPLIER"
+  },
+  "692240": {
+    "name": "Freeze Duration Min",
+    "tag": "TAG_POWER_FREEZE_DURATION_MIN"
+  },
+  "692256": {
+    "name": "Freeze Duration Delta",
+    "tag": "TAG_POWER_FREEZE_DURATION_DELTA"
+  },
+  "700416": {
+    "name": "Skeleton King WW APS",
+    "tag": "TAG_POWER_SKELETON_KING_WHIRLWIND_APS"
+  },
+  "700432": {
+    "name": "Arcanum Gained Per Second",
+    "tag": "TAG_POWER_ARCANUM_GAINED_PER_SECOND"
+  },
+  "700433": {
+    "name": "Spirit Generation Bonus Percent",
+    "tag": "TAG_POWER_SPIRIT_GENERATION_BONUS_PERCENT"
+  },
+  "700434": {
+    "name": "Fury Generation Bonus Percent",
+    "tag": "TAG_POWER_FURY_GENERATION_BONUS_PERCENT"
+  },
+  "700435": {
+    "name": "Power Gained Per Second",
+    "tag": "TAG_POWER_POWER_GAINED_PER_SECOND"
+  },
+  "700436": {
+    "name": "Faith Generation Bonus Percent",
+    "tag": "TAG_POWER_FAITH_GENERATION_BONUS_PERCENT"
+  },
+  "700448": {
+    "name": "Bonus Healing Received Percent",
+    "tag": "TAG_POWER_BONUS_HEALING_RECEIVED_PERCENT"
+  },
+  "700449": {
+    "name": "Reduced Healing Received Percent",
+    "tag": "TAG_POWER_REDUCED_HEALING_RECEIVED_PERCENT"
+  },
+  "704512": {
+    "name": "Summoning Machine Node Is Invulnerable",
+    "tag": "TAG_POWER_SUMMONING_MACHINE_NODE_IS_INVULNERABLE"
+  },
+  "708608": {
+    "name": "Suffocation Per Second",
+    "tag": "TAG_POWER_SUFFOCATION_PER_SECOND"
+  },
+  "708616": {
+    "name": "Leap Distance Min",
+    "tag": "TAG_POWER_LEAP_DIST_MIN"
+  },
+  "708617": {
+    "name": "Leap Distance Max",
+    "tag": "TAG_POWER_LEAP_DIST_MAX"
+  },
+  "708624": {
+    "name": "MastaBlasta Drain Mana Percent",
+    "tag": "TAG_POWER_MASTABLASTA_DRAIN_MANA_PERCENT"
+  },
+  "708640": {
+    "name": "MastaBlasta Drain Arcanum Percent",
+    "tag": "TAG_POWER_MASTABLASTA_DRAIN_ARCANUM_PERCENT"
+  },
+  "708656": {
+    "name": "MastaBlasta Drain Fury Percent",
+    "tag": "TAG_POWER_MASTABLASTA_DRAIN_FURY_PERCENT"
+  },
+  "708688": {
+    "name": "MastaBlasta Drain Spirit Percent",
+    "tag": "TAG_POWER_MASTABLASTA_DRAIN_SPIRIT_PERCENT"
+  },
+  "708704": {
+    "name": "MastaBlasta Drain Hatred Percent",
+    "tag": "TAG_POWER_MASTABLASTA_DRAIN_HATRED_PERCENT"
+  },
+  "708720": {
+    "name": "MastaBlasta Drain Discipline Percent",
+    "tag": "TAG_POWER_MASTABLASTA_DRAIN_DISCIPLINE_PERCENT"
+  },
+  "712704": {
+    "name": "Burrow Hides Actor",
+    "tag": "TAG_POWER_BURROW_HIDES_ACTOR"
+  },
+  "712960": {
+    "name": "",
+    "tag": "TAG_POWER_CONSOLE_TARGET_THETA_GROWTH_PER_KILL"
+  },
+  "712961": {
+    "name": "",
+    "tag": "TAG_POWER_CONSOLE_TARGET_DIST_GROWTH_PER_KILL"
+  },
+  "712962": {
+    "name": "",
+    "tag": "TAG_POWER_CONSOLE_TARGET_NUM_GROWS"
+  },
+  "712963": {
+    "name": "Controller Auto Target Search Angle",
+    "tag": "TAG_POWER_CONSOLE_AUTO_TARGET_SEARCH_ANGLE"
+  },
+  "712964": {
+    "name": "Controller Auto Target Search Range",
+    "tag": "TAG_POWER_CONSOLE_AUTO_TARGET_SEARCH_RANGE"
+  },
+  "712965": {
+    "name": "Controller Auto Target Close Range",
+    "tag": "TAG_POWER_CONSOLE_AUTO_TARGET_CLOSE_RANGE"
+  },
+  "713216": {
+    "name": "Controller Auto Targeting Enabled",
+    "tag": "TAG_POWER_CONSOLE_AUTO_TARGET_ENABLED"
+  },
+  "713217": {
+    "name": "Controller Auto Targeting LT Enabled",
+    "tag": "TAG_POWER_CONSOLE_AUTO_TARGET_LT_ENABLED"
+  },
+  "713218": {
+    "name": "Controller LT Finds Target If Locked Target Out Of Range",
+    "tag": "TAG_POWER_CONSOLE_LT_FIND_TARGET_IF_LOCKED_TARGET_OUT_OF_RANGE"
+  },
+  "713219": {
+    "name": "Controller Prefers Radial Targetting",
+    "tag": "TAG_POWER_CONSOLE_PREFERS_RADIAL_TARGETING"
+  },
+  "713220": {
+    "name": "Controller Fires On Button Up",
+    "tag": "TAG_POWER_CONSOLE_FIRES_ON_BUTTON_UP_ONLY"
+  },
+  "713221": {
+    "name": "Controller Uses Target Reticle When Held",
+    "tag": "TAG_POWER_CONSOLE_USES_TARGET_RETICLE_WHEN_HELD"
+  },
+  "713222": {
+    "name": "Fires At Max Range When Held",
+    "tag": "TAG_POWER_CONSOLE_USE_AT_MAX_RANGE_WHEN_HELD"
+  },
+  "713472": {
+    "name": "Refunds Resources Without Damage",
+    "tag": "TAG_POWER_CONSOLE_REFUNDS_RESOURCES_WITHOUT_DAMAGE"
+  },
+  "713488": {
+    "name": "Min Client Walk Speed",
+    "tag": "TAG_POWER_CONSOLE_MIN_CLIENT_WALK_SPEED"
+  },
+  "716800": {
+    "name": "Icon Round",
+    "tag": "TAG_POWER_ICON_ROUND"
+  },
+  "717056": {
+    "name": "Persists on World Delete",
+    "tag": "TAG_POWER_PERSISTS_ON_WORLD_DELETE"
+  },
+  "717312": {
+    "name": "Uses Power Fallback Queue",
+    "tag": "TAG_POWER_USES_POWER_FALLBACK_QUEUE"
+  },
+  "717568": {
+    "name": "Apply Passive After Item Passives",
+    "tag": "TAG_POWER_APPLY_PASSIVE_AFTER_ITEM_PASSIVES"
+  },
+  "720896": {
+    "name": "Death Portal Actor 0",
+    "tag": "TAG_POWER_DEATH_PORTAL_ACTOR_0"
+  },
+  "720912": {
+    "name": "Death Portal Actor 1",
+    "tag": "TAG_POWER_DEATH_PORTAL_ACTOR_1"
+  },
+  "720928": {
+    "name": "Death Portal Actor 2",
+    "tag": "TAG_POWER_DEATH_PORTAL_ACTOR_2"
+  },
+  "720944": {
+    "name": "Death Portal Actor 3",
+    "tag": "TAG_POWER_DEATH_PORTAL_ACTOR_3"
+  },
+  "720960": {
+    "name": "Death Portal Delay",
+    "tag": "TAG_POWER_DEATH_PORTAL_DELAY"
+  },
+  "720976": {
+    "name": "Death Portal Chance",
+    "tag": "TAG_POWER_DEATH_PORTAL_CHANCE"
+  },
+  "720977": {
+    "name": "Death Portal Chance (Special)",
+    "tag": "TAG_POWER_DEATH_PORTAL_CHANCE_SPECIAL"
+  },
+  "720992": {
+    "name": "Death Portal Limit To Players In Game",
+    "tag": "TAG_POWER_DEATH_PORTAL_LIMIT_TO_PLAYERS_IN_GAME"
+  },
+  "721008": {
+    "name": "Death Portal World Monster Power",
+    "tag": "TAG_POWER_DEATH_PORTAL_WORLD_MONSTER_POWER"
+  },
+  "721009": {
+    "name": "Death Portal World Player Power",
+    "tag": "TAG_POWER_DEATH_PORTAL_WORLD_PLAYER_POWER"
+  },
+  "721010": {
+    "name": "Death Portal World Quest Description",
+    "tag": "TAG_POWER_DEATH_PORTAL_WORLD_QUEST_DESCRIPTION"
+  },
+  "721152": {
+    "name": "NoRune Proc Scalar",
+    "tag": "TAG_POWER_NORUNE_PROC_SCALAR"
+  },
+  "721153": {
+    "name": "RuneA Proc Scalar",
+    "tag": "TAG_POWER_RUNEA_PROC_SCALAR"
+  },
+  "721154": {
+    "name": "RuneB Proc Scalar",
+    "tag": "TAG_POWER_RUNEB_PROC_SCALAR"
+  },
+  "721155": {
+    "name": "RuneC Proc Scalar",
+    "tag": "TAG_POWER_RUNEC_PROC_SCALAR"
+  },
+  "721156": {
+    "name": "RuneD Proc Scalar",
+    "tag": "TAG_POWER_RUNED_PROC_SCALAR"
+  },
+  "721157": {
+    "name": "RuneE Proc Scalar",
+    "tag": "TAG_POWER_RUNEE_PROC_SCALAR"
+  },
+  "721168": {
+    "name": "NoRune Combo1 Proc Scalar",
+    "tag": "TAG_POWER_NORUNE_COMBO1_PROC_SCALAR"
+  },
+  "721169": {
+    "name": "NoRune Combo2 Proc Scalar",
+    "tag": "TAG_POWER_NORUNE_COMBO2_PROC_SCALAR"
+  },
+  "721170": {
+    "name": "NoRune Combo3 Proc Scalar",
+    "tag": "TAG_POWER_NORUNE_COMBO3_PROC_SCALAR"
+  },
+  "721184": {
+    "name": "RuneA Combo1 Proc Scalar",
+    "tag": "TAG_POWER_RUNEA_COMBO1_PROC_SCALAR"
+  },
+  "721185": {
+    "name": "RuneA Combo2 Proc Scalar",
+    "tag": "TAG_POWER_RUNEA_COMBO2_PROC_SCALAR"
+  },
+  "721186": {
+    "name": "RuneA Combo3 Proc Scalar",
+    "tag": "TAG_POWER_RUNEA_COMBO3_PROC_SCALAR"
+  },
+  "721200": {
+    "name": "RuneB Combo1 Proc Scalar",
+    "tag": "TAG_POWER_RUNEB_COMBO1_PROC_SCALAR"
+  },
+  "721201": {
+    "name": "RuneB Combo2 Proc Scalar",
+    "tag": "TAG_POWER_RUNEB_COMBO2_PROC_SCALAR"
+  },
+  "721202": {
+    "name": "RuneB Combo3 Proc Scalar",
+    "tag": "TAG_POWER_RUNEB_COMBO3_PROC_SCALAR"
+  },
+  "721216": {
+    "name": "RuneC Combo1 Proc Scalar",
+    "tag": "TAG_POWER_RUNEC_COMBO1_PROC_SCALAR"
+  },
+  "721217": {
+    "name": "RuneC Combo2 Proc Scalar",
+    "tag": "TAG_POWER_RUNEC_COMBO2_PROC_SCALAR"
+  },
+  "721218": {
+    "name": "RuneC Combo3 Proc Scalar",
+    "tag": "TAG_POWER_RUNEC_COMBO3_PROC_SCALAR"
+  },
+  "721232": {
+    "name": "RuneD Combo1 Proc Scalar",
+    "tag": "TAG_POWER_RUNED_COMBO1_PROC_SCALAR"
+  },
+  "721233": {
+    "name": "RuneD Combo2 Proc Scalar",
+    "tag": "TAG_POWER_RUNED_COMBO2_PROC_SCALAR"
+  },
+  "721234": {
+    "name": "RuneD Combo3 Proc Scalar",
+    "tag": "TAG_POWER_RUNED_COMBO3_PROC_SCALAR"
+  },
+  "721248": {
+    "name": "RuneE Combo1 Proc Scalar",
+    "tag": "TAG_POWER_RUNEE_COMBO1_PROC_SCALAR"
+  },
+  "721249": {
+    "name": "RuneE Combo2 Proc Scalar",
+    "tag": "TAG_POWER_RUNEE_COMBO2_PROC_SCALAR"
+  },
+  "721250": {
+    "name": "RuneE Combo3 Proc Scalar",
+    "tag": "TAG_POWER_RUNEE_COMBO3_PROC_SCALAR"
+  },
+  "721264": {
+    "name": "NoRune Damage Type",
+    "tag": "TAG_POWER_NORUNE_DAMAGE_TYPE"
+  },
+  "721265": {
+    "name": "RuneA Damage Type",
+    "tag": "TAG_POWER_RUNEA_DAMAGE_TYPE"
+  },
+  "721266": {
+    "name": "RuneB Damage Type",
+    "tag": "TAG_POWER_RUNEB_DAMAGE_TYPE"
+  },
+  "721267": {
+    "name": "RuneC Damage Type",
+    "tag": "TAG_POWER_RUNEC_DAMAGE_TYPE"
+  },
+  "721268": {
+    "name": "RuneD Damage Type",
+    "tag": "TAG_POWER_RUNED_DAMAGE_TYPE"
+  },
+  "721269": {
+    "name": "RuneE Damage Type",
+    "tag": "TAG_POWER_RUNEE_DAMAGE_TYPE"
+  },
+  "721280": {
+    "name": "Ghost Wallwalk Effect",
+    "tag": "TAG_POWER_GHOST_WALLWALK_EFFECT_SNO"
+  },
+  "721312": {
+    "name": "Teleport Near Target Dist Min",
+    "tag": "TAG_POWER_TELEPORT_NEAR_TARGET_DIST_MIN"
+  },
+  "721313": {
+    "name": "Teleport Near Target Dist Delta",
+    "tag": "TAG_POWER_TELEPORT_NEAR_TARGET_DIST_DELTA"
+  },
+  "721328": {
+    "name": "Payload Pie Use Actor Facing",
+    "tag": "TAG_POWER_PAYLOAD_PIE_USE_ACTOR_FACING"
+  },
+  "721344": {
+    "name": "Hotbar Exclusive Type",
+    "tag": "TAG_POWER_HOTBAR_EXCLUSIVE_TYPE"
+  },
+  "721360": {
+    "name": "Scroll Buff Exclusive Type",
+    "tag": "TAG_POWER_SCROLL_BUFF_EXCLUSIVE_TYPE"
+  },
+  "721376": {
+    "name": "Monster Generic Summon Tags Index",
+    "tag": "TAG_POWER_MONSTER_GENERIC_SUMMON_TAGS_INDEX"
+  }
+}
