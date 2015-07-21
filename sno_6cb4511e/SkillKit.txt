@@ -1,0 +1,10 @@
+35571 Axe Bad Data
+35572 Barbarian
+35578 Monk
+35579 Templar
+35580 Demonhunter
+35582 Scoundrel
+35583 WitchDoctor
+35584 Wizard
+87094 Enchantress
+238290 X1_Crusader

@@ -50,13 +50,10 @@ public:
     , showBones(false)
   {
     int count = 0;
-    File dd("ids.txt", "w");
     for (auto& object : app.x010_Structure.x088_GeoSets[0].x10_SubObjects) {
       for (auto& v : object.x010_FatVertexs) {
         center += VertexPos(v);
       }
-      dd.printf("%d %d %s\n", HashName(object.x05C_Text), HashNameLower(object.x05C_Text), object.x05C_Text);
-      dd.printf("%d %d %s\n", HashName(object.x0DC_Text), HashNameLower(object.x0DC_Text), object.x0DC_Text);
       count += object.x010_FatVertexs.size();
     }
     center /= float(count);

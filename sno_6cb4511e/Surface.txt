@@ -1,0 +1,21 @@
+36930 Axe Bad Data
+36931 Blood
+36932 Carpet
+36933 Dirt
+36934 Grass
+36935 MetalGrate
+36936 Mud
+36937 Null
+36938 Puddle
+36939 Sand
+36940 Snow
+36941 Stone
+36942 Water
+36943 Wood
+61062 Tar
+98468 Hay
+203522 Bone
+210689 a1dun_Random
+253510 BogWater
+377685 BogMud
+414833 RottenWood

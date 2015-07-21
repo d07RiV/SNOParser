@@ -96,13 +96,9 @@ declstruct(Material::Type) {
 
   declstruct(Material) {
     DT_RGBACOLORVALUE x00_DT_RGBACOLORVALUE;
-    uint32 x0C_;
     DT_RGBACOLORVALUE x10_DT_RGBACOLORVALUE;
-    uint32 x1C_;
     DT_RGBACOLORVALUE x20_DT_RGBACOLORVALUE;
-    uint32 x2C_;
     DT_RGBACOLORVALUE x30_DT_RGBACOLORVALUE;
-    uint32 x3C_;
     float x40;
     int x44;
     void dumpfunc() {
