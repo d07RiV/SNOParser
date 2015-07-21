@@ -64,10 +64,10 @@ declstruct(Anim::Type) {
 
   declstruct(TriggerConditions) {
     int x00_Percent;
-    float x04_Time;
-    float x08_Time;
-    float x0C_Time;
-    float x10_Time;
+    int x04_Time;
+    int x08_Time;
+    int x0C_Time;
+    int x10_Time;
     float x14_Impulse;
     float x18_Impulse;
     int x1C;
@@ -104,13 +104,11 @@ declstruct(Anim::Type) {
     int x178;
     float x17C_Velocity;
     int x180;
-    float x184_Time;
+    int x184_Time;
     DT_RGBACOLOR x188_DT_RGBACOLOR;
-    uint8 x18B_;
-    float x18C_Time;
+    int x18C_Time;
     DT_RGBACOLOR x190_DT_RGBACOLOR;
-    uint8 x193_;
-    float x194_Time;
+    int x194_Time;
     void dumpfunc() {
       dumpval(x000, x004_TriggerConditions, x028, x02C_SNOName, x034, x038);
       dumpval(x03C, x040, x044_HardpointLinks, x0CC_LookLink, x10C_ConstraintLink, x14C);
@@ -129,14 +127,10 @@ declstruct(Anim::Type) {
   };
 
   declstruct(Quaternion16) {
-    int16 x00;
-    uint8 x01_;
-    int16 x02;
-    uint8 x03_;
-    int16 x04;
-    uint8 x05_;
-    int16 x06;
-    uint8 x07_;
+    float16 x00;
+    float16 x02;
+    float16 x04;
+    float16 x06;
     void dumpfunc() {
       dumpval(x00, x02, x04, x06);
     }
@@ -181,7 +175,6 @@ declstruct(Anim::Type) {
   declstruct(TranslationKey) {
     int x00;
     DT_VECTOR3D x04_DT_VECTOR3D;
-    uint32 x0C_;
     void dumpfunc() {
       dumpval(x00, x04_DT_VECTOR3D);
     }
@@ -214,8 +207,8 @@ declstruct(Anim::Type) {
     float x050;
     float x054;
     float x058;
-    float x05C_Time;
-    float x060_Time;
+    int x05C_Time;
+    int x060_Time;
     int x064;
     float x068;
     float x06C;
@@ -238,13 +231,9 @@ declstruct(Anim::Type) {
     float x0D0;
     float x0D4;
     DT_VECTOR3D x0D8_DT_VECTOR3D;
-    uint32 x0E0_;
     DT_VECTOR3D x0E4_DT_VECTOR3D;
-    uint32 x0EC_;
     DT_VECTOR3D x0F0_DT_VECTOR3D;
-    uint32 x0F8_;
     DT_VECTOR3D x0FC_DT_VECTOR3D;
-    uint32 x104_;
     float x108;
     SerializeData x10C_SerializeData;
     int x114;

@@ -48,3 +48,27 @@ void StringManager::print(uint32 value, FILE* file) {
     fprintf(file, "%d\n", value);
   }
 }
+
+ExeFile::ExeFile(std::string const& path)
+  : ptr_(nullptr)
+{
+  File file(path, "rb");
+  size_t size = file.size();
+  ptr_ = new uint8[size];
+  file.read(ptr_, size);
+  *(File*)this = File::memfile(ptr_, size);
+
+  IMAGE_DOS_HEADER dos;
+  read(&dos, sizeof dos);
+  seek(dos.e_lfanew);
+  IMAGE_NT_HEADERS nt;
+  read(&nt, sizeof nt);
+  auto& opt = nt.OptionalHeader;
+  dataPos_ = opt.SizeOfHeaders + opt.SizeOfCode;
+  dataBase_ = opt.BaseOfData + opt.ImageBase;
+  stringEnd_ = size;
+  while (stringEnd_ && ptr_[stringEnd_ - 1]) {
+    --stringEnd_;
+  }
+  stringEnd_ += dataBase_ - dataPos_;
+}

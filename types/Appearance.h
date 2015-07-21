@@ -14,12 +14,38 @@ declstruct(Appearance::Type) {
       dumpval(x00_X, x04_Y, x08_Z);
     }
   };
+  declstruct(DT_NORMAL3D) {
+    float8 x00_X;
+    float8 x01_Y;
+    float8 x02_Z;
+    float8 x03_;
+    void dumpfunc() {
+      dumpval(x00_X, x01_Y, x02_Z);
+    }
+  };
+  struct TexCoordValue {
+    uint16 raw;
+    operator uint16() const {
+      return raw;
+    }
+    float value() const {
+      return (float(raw) - 32768.0f) / 512.0f;
+    }
+    void serialize(json::Visitor* visitor) {
+      visitor->onNumber(value());
+    }
+  };
+  declstruct(DT_TEXCOORD) {
+    TexCoordValue x00_U;
+    TexCoordValue x02_V;
+    void dumpfunc() {
+      dumpval(x00_U, x02_V);
+    }
+  };
 
   declstruct(AABB) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     DT_VECTOR3D x0C_DT_VECTOR3D;
-    uint32 x14_;
     void dumpfunc() {
       dumpval(x00_DT_VECTOR3D, x0C_DT_VECTOR3D);
     }
@@ -95,9 +121,7 @@ declstruct(Appearance::Type) {
     uint32 x24_;
     Array<PolytopeData> x28_PolytopeDatas = x1C_SerializeData;
     DT_VECTOR3D x30_DT_VECTOR3D;
-    uint32 x38_;
     DT_VECTOR3D x3C_DT_VECTOR3D;
-    uint32 x44_;
     float x48;
     uint32 x4C_;
     void dumpfunc() {
@@ -108,7 +132,6 @@ declstruct(Appearance::Type) {
 
   declstruct(Quaternion) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     float x0C;
     void dumpfunc() {
       dumpval(x00_DT_VECTOR3D, x0C);
@@ -118,7 +141,6 @@ declstruct(Appearance::Type) {
   declstruct(PRTransform) {
     Quaternion x00_Quaternion;
     DT_VECTOR3D x10_DT_VECTOR3D;
-    uint32 x18_;
     void dumpfunc() {
       dumpval(x00_Quaternion, x10_DT_VECTOR3D);
     }
@@ -132,7 +154,6 @@ declstruct(Appearance::Type) {
     int x04C;
     PRTransform x050_PRTransform;
     DT_VECTOR3D x06C_DT_VECTOR3D;
-    uint32 x074_;
     PRTransform x078_PRTransform;
     PRTransform x094_PRTransform;
     float x0B0;
@@ -160,7 +181,6 @@ declstruct(Appearance::Type) {
   declstruct(PRSTransform) {
     Quaternion x00_Quaternion;
     DT_VECTOR3D x10_DT_VECTOR3D;
-    uint32 x18_;
     float x1C;
     void dumpfunc() {
       dumpval(x00_Quaternion, x10_DT_VECTOR3D, x1C);
@@ -169,7 +189,6 @@ declstruct(Appearance::Type) {
 
   declstruct(Sphere) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     float x0C;
     void dumpfunc() {
       dumpval(x00_DT_VECTOR3D, x0C);
@@ -232,7 +251,6 @@ declstruct(Appearance::Type) {
 
   declstruct(ClothFaceSerializable) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     float x0C;
     int x10;
     int x14;
@@ -253,20 +271,15 @@ declstruct(Appearance::Type) {
 
   declstruct(ClothVertexSerializable) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     DT_VECTOR3D x0C_DT_VECTOR3D;
-    uint32 x14_;
     DT_VECTOR3D x18_DT_VECTOR3D;
-    uint32 x20_;
     DT_VECTOR3D x24_DT_VECTOR3D;
-    uint32 x2C_;
     float x30;
     int x34;
     int x38;
     int x3C;
     int x40;
     DT_VECTOR3D x44_DT_VECTOR3D;
-    uint32 x4C_;
     int x50;
     void dumpfunc() {
       dumpval(x00_DT_VECTOR3D, x0C_DT_VECTOR3D, x18_DT_VECTOR3D, x24_DT_VECTOR3D, x30, x34);
@@ -314,26 +327,16 @@ declstruct(Appearance::Type) {
   };
 
   declstruct(FatVertex) {
-    DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
-    DT_RGBACOLOR x0C_DT_RGBACOLOR;
-    uint8 x0F_;
-    DT_RGBACOLOR x10_DT_RGBACOLORs[2];
-    uint8 x16_;
-    uint8 x17_;
-    DT_RGBACOLOR x18_DT_RGBACOLORs[2];
-    uint8 x1E_;
-    uint8 x1F_;
+    DT_VECTOR3D x00_Position;
+    DT_NORMAL3D x0C_Normal;
+    DT_RGBACOLOR x10_Colors[2];
+    DT_TEXCOORD x18_TexCoords[2];
     DT_RGBACOLOR x20_DT_RGBACOLOR;
-    uint8 x23_;
     DT_RGBACOLOR x24_DT_RGBACOLOR;
-    uint8 x27_;
     int16 x28;
-    uint8 x29_;
     int16 x2A;
-    uint8 x2B_;
     void dumpfunc() {
-      dumpval(x00_DT_VECTOR3D, x0C_DT_RGBACOLOR, x10_DT_RGBACOLORs, x18_DT_RGBACOLORs, x20_DT_RGBACOLOR, x24_DT_RGBACOLOR);
+      dumpval(x00_Position, x0C_Normal, x10_Colors, x18_TexCoords, x20_DT_RGBACOLOR, x24_DT_RGBACOLOR);
       dumpval(x28, x2A);
     }
   };
@@ -354,13 +357,13 @@ declstruct(Appearance::Type) {
   };
 
   declstruct(SubObject) {
-    int x000;
-    int x004;
+    int x000_ObjectType; // type
+    int x004; // nVerts
     SerializeData x008_SerializeData;
     Array<FatVertex> x010_FatVertexs = x008_SerializeData;
     SerializeData x018_SerializeData;
     Array<VertInfluences> x020_VertInfluences = x018_SerializeData;
-    int x028;
+    int x028; // nIndices
     SerializeData x02C_SerializeData;
     uint32 x034_;
     Array<int16> x038_short = x02C_SerializeData;
@@ -377,7 +380,7 @@ declstruct(Appearance::Type) {
     Array<CollisionShape> x180_CollisionShapes = x178_SerializeData;
     int64 x188;
     void dumpfunc() {
-      dumpval(x000, x004, x010_FatVertexs, x020_VertInfluences, x028, x038_short);
+      dumpval(x000_ObjectType, x004, x010_FatVertexs, x020_VertInfluences, x028, x038_short);
       dumpval(x048_ClothStructures, x050_SurfaceSno, x054, x058, x05C_Text, x0DC_Text);
       dumpval(x15C_AABB, x174, x180_CollisionShapes, x188);
     }
@@ -410,7 +413,6 @@ declstruct(Appearance::Type) {
 
   declstruct(OctreeCube) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     float x0C;
     void dumpfunc() {
       dumpval(x00_DT_VECTOR3D, x0C);
@@ -481,7 +483,6 @@ declstruct(Appearance::Type) {
     uint32 x0EC_;
     Array<Hardpoint> x0F0_Hardpoints = x0E4_SerializeData;
     DT_VECTOR3D x0F8_DT_VECTOR3D;
-    uint32 x100_;
     uint32 x104_;
     Octree x108_Octree;
     AABB x150_AABB;
@@ -512,13 +513,9 @@ declstruct(Appearance::Type) {
 
   declstruct(Material) {
     DT_RGBACOLORVALUE x00_DT_RGBACOLORVALUE;
-    uint32 x0C_;
     DT_RGBACOLORVALUE x10_DT_RGBACOLORVALUE;
-    uint32 x1C_;
     DT_RGBACOLORVALUE x20_DT_RGBACOLORVALUE;
-    uint32 x2C_;
     DT_RGBACOLORVALUE x30_DT_RGBACOLORVALUE;
-    uint32 x3C_;
     float x40;
     int x44;
     void dumpfunc() {
@@ -653,9 +650,7 @@ declstruct(Appearance::Type) {
     int x00;
     int x04;
     DT_VECTOR3D x08_DT_VECTOR3D;
-    uint32 x10_;
     DT_VECTOR3D x14_DT_VECTOR3D;
-    uint32 x1C_;
     float x20;
     int x24;
     float x28_float[3];
@@ -666,7 +661,6 @@ declstruct(Appearance::Type) {
     int x44;
     int x48;
     DT_RGBACOLORVALUE x4C_DT_RGBACOLORVALUE;
-    uint32 x58_;
     void dumpfunc() {
       dumpval(x00, x04, x08_DT_VECTOR3D, x14_DT_VECTOR3D, x20, x24);
       dumpval(x28_float, x34, x38, x3C, x40, x44);

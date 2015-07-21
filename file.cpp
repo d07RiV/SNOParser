@@ -107,6 +107,7 @@ public:
     : ptr_(ptr)
     , pos_(0)
     , size_(size)
+    , clone_(nullptr)
   {
     if (clone) {
       clone_ = new uint8[size];
@@ -159,7 +160,7 @@ public:
 };
 
 File File::memfile(void const* ptr, size_t size, bool clone) {
-  return File(new MemFileBuffer((uint8*) ptr, size, clone));
+  return File(new MemFileBuffer((uint8*)ptr, size, clone));
 }
 
 class SubFileBuffer : public FileBuffer {

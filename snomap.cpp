@@ -11,19 +11,20 @@ void SnoMap::parse(File& file, std::string const& name) {
   }
 }
 void SnoMap::save(std::string const& type) {
-  File file(path::work() / "_sno" / type + ".txt", "wt");
+  File file(path::work() / fmtstring("sno_%08x", SnoLoader::default->hash()) / type + ".txt", "wt");
   for (const auto& kv : map_) {
     file.printf("%d %s\n", kv.first, kv.second.c_str());
   }
 }
 bool SnoMap::load(std::string const& type) {
-  File file(path::work() / "_sno" / type + ".txt", "rt");
+  File file(path::work() / fmtstring("sno_%08x", SnoLoader::default->hash()) / type + ".txt", "rt");
   if (!file) return false;
   int id;
   char fname[512];
   for (auto& line : file) {
-    if (sscanf(line.c_str(), "%d %s", &id, fname) == 2) {
-      map_[id] = fname;
+    size_t space = line.find(' ');
+    if (space != std::string::npos) {
+      map_[atoi(line.c_str())] = line.substr(space + 1);
     }
   }
   return true;
@@ -41,6 +42,7 @@ const SnoMap& SnoManager::gameBalance() {
   auto it = instance_.map_.find("GameBalanceId");
   if (it == instance_.map_.end()) {
     SnoMap& map = instance_.map_["GameBalanceId"];
+    if (map.load("GameBalanceId")) return map;
     for (auto& gmb : SnoLoader::All<GameBalance>()) {
       insert(map.map_, gmb->x018_ItemTypes);
       insert(map.map_, gmb->x028_Items);
@@ -65,6 +67,7 @@ const SnoMap& SnoManager::gameBalance() {
       insert(map.map_, gmb->x1E8_LegacyItemConversionTable);
       insert(map.map_, gmb->x218_TransmuteRecipesTable);
     }
+    map.save("GameBalanceId");
     return map;
   } else {
     return it->second;

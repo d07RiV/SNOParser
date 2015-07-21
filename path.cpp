@@ -55,15 +55,10 @@ namespace path {
   };
   bool initialized = false;
 
+  extern std::vector<std::string> roots;
+  extern std::vector<std::string> cascs;
+
   Paths& Paths::get() {
-    static std::string roots[] = {
-      "C:\\Work\\junk",
-      "C:\\Webroot\\game",
-      "C:\\tmp",
-    };
-    static std::string cascs[] = {
-      "E:\\D3Ptr\\Data",
-    };
     static bool initialized = false;
     static Paths instance;
     if (initialized) return instance;

@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "parser.h"
 
 class DictionaryRef {
 public:
@@ -34,11 +35,15 @@ private:
 
 class Strings {
 public:
-  static DictionaryRef list(istring const& name);
+  static void setLoader(SnoLoader* loader) {
+    instance().loader = loader;
+  }
+  static DictionaryRef list(istring const& name, SnoLoader* loader = nullptr);
   static std::string const& get(istring const& dict, istring const& name);
   static bool has(istring const& dict, istring const& name);
 private:
   Map<Dictionary> strings_;
-  Dictionary* get(istring const& dict);
+  SnoLoader* loader = nullptr;
+  Dictionary* get(istring const& dict, SnoLoader* loader);
   static Strings& instance();
 };

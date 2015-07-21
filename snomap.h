@@ -30,13 +30,13 @@ public:
     auto it = instance_.map_.find(type);
     if (it == instance_.map_.end()) {
       SnoMap& map = instance_.map_[type];
-      //if (!map.load(type)) {
+      if (!map.load(type)) {
       for (auto& name : Logger::Loop(SnoLoader::default->list<T>(),
           fmtstring("Mapping %s", T::type()).c_str())) {
         map.parse(SnoLoader::default->load<T>(name), name);
       }
-      //  map.save(type);
-      //}
+        map.save(type);
+      }
       return map;
     } else {
       return it->second;

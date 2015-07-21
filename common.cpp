@@ -109,3 +109,34 @@ std::string strlower(std::string const& str) {
   std::transform(str.begin(), str.end(), dest.begin(), std::tolower);
   return dest;
 }
+
+std::vector<std::string> split(std::string const& str, char sep) {
+  std::vector<std::string> res;
+  std::string cur;
+  for (char c : str) {
+    if (c == sep) {
+      res.push_back(cur);
+      cur.clear();
+    } else {
+      cur.push_back(c);
+    }
+  }
+  res.push_back(cur);
+  return res;
+}
+std::string join(std::vector<std::string> const& list, char sep) {
+  std::string res;
+  for (auto& str : list) {
+    if (!res.empty()) res.push_back(' ');
+    res.append(str);
+  }
+  return res;
+}
+std::string join(std::vector<std::string> const& list, std::string const& sep) {
+  std::string res;
+  for (auto& str : list) {
+    if (!res.empty()) res.append(sep);
+    res.append(str);
+  }
+  return res;
+}

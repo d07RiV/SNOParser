@@ -9,9 +9,11 @@ struct SkillTips {
   json::Value skills;
   json::Value passives;
 
+  void generate(std::string const& cls, uint32 kitId);
   void read(std::string const& cls);
   void write();
-  void generate(std::string const& cls, uint32 kit);
-
+  static std::string format(std::string const& power);
   static void dump();
 };
+
+void simBase(std::string const& name);

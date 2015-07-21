@@ -2,6 +2,7 @@
 #include "description.h"
 #include "strings.h"
 #include "regexp.h"
+#include "affixes.h"
 #include "types/StringList.h"
 #include "types/SkillKit.h"
 #include "types/Actor.h"
@@ -11,19 +12,10 @@
 #include <cctype>
 #include <iostream>
 
-AttributeValue ParseValue(GameBalance::Type::AttributeSpecifier const& attr) {
-  std::vector<double> vals;
-  for (size_t i = 1; i < attr.x08_Data.size(); ++i) {
-    if (attr.x08_Data[i - 1].value == 6) {
-      vals.push_back(*(float*)&attr.x08_Data[i].value);
-    }
-  }
-  switch (vals.size()) {
-  case 0: return AttributeValue();
-  case 1: return AttributeValue(vals[0]);
-  case 2: return AttributeValue(vals[0], vals[1]);
-  default: return AttributeValue(vals[0] / vals[2], vals[1] / vals[2]);
-  }
+size_t totalLen(std::vector<std::string> const& list) {
+  size_t sum = 0;
+  for (auto& str : list) sum += str.length();
+  return sum;
 }
 
 struct FormatData {
@@ -36,8 +28,6 @@ struct FormatData {
   std::map<uint32, std::string> actorImages;
   std::set<uint32> charSkills;
   std::set<uint32> charTraits;
-  json::Value affixes;
-  json::Value missing;
 
   void load(DictionaryRef& dict, char const* path) {
     Logger::item(path);
@@ -53,9 +43,6 @@ struct FormatData {
     load(itemFlavor, "ItemFlavor");
     load(itemSets, "ItemSets");
     Logger::end();
-    json::parse(File("affixes.js"), affixes);
-    File fm("missing.js");
-    if (fm) json::parse(fm, missing);
 
     for (auto& kit : SnoLoader::All<SkillKit>()) {
       std::vector<std::string> skills, traits;
@@ -81,9 +68,6 @@ struct FormatData {
     }
   }
   ~FormatData() {
-    if (!missing.getMap().empty()) {
-      json::write(File("missing.js", "w"), missing);
-    }
   }
 
   static FormatData& get() {
@@ -93,97 +77,10 @@ struct FormatData {
 };
 
 #ifdef PTR
-int fixAttrId(int id) {
-  return id;
-}
+static const uint32 PowerAttribute = 1270;
 #else
-int fixAttrId(int id) {
-  if (id >= 677) {
-    return id + 5;
-  } else if (id >= 165) {
-    return id + 3;
-  } else {
-    return id;
-  }
-}
+static const uint32 PowerAttribute = 1265;
 #endif
-
-std::vector<std::string> FormatBonus(std::vector<GameBalance::Type::AttributeSpecifier const*> const& attrs, bool html, std::string const& tip = "") {
-  FormatData& stl = FormatData::get();
-  std::vector<std::string> result;
-  std::map<std::string, AttributeMap> aggregate;
-  //std::cerr << tip << std::endl;
-  for (auto& attr : attrs) {
-    std::string affix = fmtstring("%d", fixAttrId(attr->x00_Type));
-    if (!stl.affixes["Affixes"].has(affix)) {
-      stl.missing[affix] = tip;
-      continue;
-    }
-    affix = stl.affixes["Affixes"][affix].getString();
-    if (affix == "{Power}") {
-      char const* power = Power::name(attr->x04_Param);
-      if (power && stl.itemPowers.has(power)) {
-        affix = stl.itemPowers[power];
-      } else {
-        continue;
-      }
-      AttributeMap map;
-      map.emplace("value1", ParseValue(*attr));
-      result.push_back(FormatDescription(affix, html, map));
-    } else if (affix[0] == '&') {
-      char const* power = Power::name(attr->x04_Param);
-      if (!power) continue;
-      std::string name = fmtstring("%s_name", power);
-      if (!stl.powers.has(name)) continue;
-      name = stl.powers[name];
-      affix = affix.substr(1);
-      if (!stl.attributes.has(affix)) continue;
-      affix = stl.attributes[affix];
-      AttributeMap map;
-      map.emplace("value1", name);
-      map.emplace("value2", ParseValue(*attr));
-      if (strlower(affix).find("value3") != std::string::npos) {
-        std::string pwr = strlower(power);
-        for (auto& kv : stl.affixes["ResourceX"].getMap()) {
-          if (pwr.find(kv.first) != std::string::npos) {
-            map.emplace("value3", kv.second.getString());
-            break;
-          }
-        }
-      }
-      result.push_back(FormatDescription(affix, html, map));
-    } else if (affix[0] == '@') {
-      affix = affix.substr(1);
-      AttributeMap map;
-      map.emplace("value", ParseValue(*attr));
-      result.push_back(FormatDescription(affix, html, map));
-    } else {
-      static re::Prog subst(R"(\{(\w+)\})");
-      affix = subst.replace(affix, [stl, attr](re::Match const& m) {
-        std::string key = m.group(1);
-        std::string param = fmtstring("%d", attr->x04_Param);
-        return stl.affixes[key][param].getString();
-      });
-      size_t dollar = affix.find('$');
-      if (dollar != std::string::npos) {
-        int index = atoi(affix.substr(dollar + 1).c_str());
-        affix.resize(dollar);
-        aggregate[affix][index ? fmtstring("value%d", index) : "value"] = ParseValue(*attr);
-      } else {
-        if (!stl.attributes.has(affix)) continue;
-        affix = stl.attributes[affix];
-        AttributeMap map;
-        map.emplace("value", ParseValue(*attr));
-        result.push_back(FormatDescription(affix, html, map));
-      }
-    }
-  }
-  for (auto& am : aggregate) {
-    if (!stl.attributes.has(am.first)) continue;
-    result.push_back(FormatDescription(stl.attributes[am.first], html, am.second));
-  }
-  return result;
-}
 
 void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) {
   FormatData& stl = FormatData::get();
@@ -191,46 +88,103 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
   if (!stl.items.has(id)) return;
   json::Value& dst = to[id];
 
-  std::vector<GameBalance::Type::AttributeSpecifier const*> attrs;
+  if (id == "Unique_Belt_002_x1") {
+    int asdf = 0;
+  }
+
+  std::vector<AttributeSpecifier> attrs[2];
   std::set<uint32> powers;
   for (auto& attr : item.x1F8_AttributeSpecifiers) {
-    if (attr.x00_Type >= 0) {
-      attrs.push_back(&attr);
-      if (fixAttrId(attr.x00_Type) == 1270) {
+    if (attr.x00_Type != -1) {
+      attrs[GameAffixes::isSecondary(attr.x00_Type)].emplace_back(attr);
+      if (attr.x00_Type == PowerAttribute) {
         powers.insert(attr.x04_Param);
       }
     }
   }
-  if (item.x4B8_AttributeSpecifier.x00_Type >= 0) {
-    attrs.push_back(&item.x4B8_AttributeSpecifier);
-    if (fixAttrId(item.x4B8_AttributeSpecifier.x00_Type) == 1270) {
+  if (item.x4B8_AttributeSpecifier.x00_Type != -1) {
+    attrs[GameAffixes::isSecondary(item.x4B8_AttributeSpecifier.x00_Type)].emplace_back(item.x4B8_AttributeSpecifier);
+    if (item.x4B8_AttributeSpecifier.x00_Type == PowerAttribute) {
       powers.insert(item.x4B8_AttributeSpecifier.x04_Param);
     }
   }
-  if (item.x4D0_AttributeSpecifier.x00_Type >= 0) {
-    attrs.push_back(&item.x4D0_AttributeSpecifier);
-    if (fixAttrId(item.x4D0_AttributeSpecifier.x00_Type) == 1270) {
+  if (item.x4D0_AttributeSpecifier.x00_Type != -1) {
+    attrs[GameAffixes::isSecondary(item.x4D0_AttributeSpecifier.x00_Type)].emplace_back(item.x4D0_AttributeSpecifier);
+    if (item.x4D0_AttributeSpecifier.x00_Type == PowerAttribute) {
       powers.insert(item.x4D0_AttributeSpecifier.x04_Param);
     }
   }
 
-  //if (id != "Unique_Gem_018_x1") return;
   for (auto& pid : powers) {
     char const* name = Power::name(pid);
     if (name) dst["powers"].append(name);
   }
 
   dst["name"] = stl.items[id];
+  uint32 type = item.x10C_ItemTypesGameBalanceId;
+  while (true) {
+    uint32 parent = GameAffixes::itemTypeParent(type);
+    if (!parent || parent == -1) break;
+    type = parent;
+  }
+  uint32 setbonus = item.x170_SetItemBonusesGameBalanceId;
+  char const* setname = SnoManager::gameBalance()[setbonus];
+  if (setname) {
+    static re::Prog getname(R"((.*) \([0-9]+\))");
+    std::string name = getname.replace(setname, "\\1");
+    dst["set"] = stl.itemSets[name];
+  }
+  static uint32 armorIds[] = {
+    HashNameLower("Armor"),
+    HashNameLower("Jewelry"),
+    HashNameLower("Offhand"),
+    HashNameLower("Socketable"),
+    HashNameLower("Weapon"),
+  };
+  if (type != armorIds[0] && type != armorIds[1] && type != armorIds[2] && type != armorIds[3] && type != armorIds[4]) {
+    dst["trivial"] = true;
+  }
   if (stl.actorImages.count(item.x108_ActorSno)) {
     dst["icon"] = stl.actorImages[item.x108_ActorSno];
   }
-  auto bonuses = FormatBonus(attrs, html, stl.items[id]);
   if (stl.itemFlavor.has(id)) {
     dst["flavor"] = stl.itemFlavor[id];
   }
-  for (auto& str : bonuses) {
-    dst["attributes"].append(str);
+  for (int type = 0; type < 2; ++type) {
+    auto bonuses = GameAffixes::format(attrs[type], html);
+    if (bonuses.empty()) continue;
+    auto& attrDst = dst[type ? "secondary" : "primary"];
+    for (auto& str : bonuses) {
+      attrDst.append(str);
+    }
   }
+  for (int group = 0; group < 6; ++group) {
+    uint32 groupId = (&item.x3E4_AffixGroupGameBalanceId)[group];
+    if (groupId == -1) continue;
+    auto values = GameAffixes::getGroup(groupId, item.x10C_ItemTypesGameBalanceId);
+    if (values.empty()) continue;
+    bool secondary = GameAffixes::isSecondary(values[0].attributes[0].type);
+    auto& attrDst = dst[secondary ? "secondary" : "primary"];
+    if (values.size() == 1) {
+      auto effects = values[0].format(html);
+      for (auto& str : effects) {
+        attrDst.append(str);
+      }
+      continue;
+    }
+    json::Value groupVal;
+    for (auto& value : values) {
+      auto effects = value.format(html);
+      if (!effects.empty()) {
+        groupVal.append(join(effects, " and "));
+      }
+    }
+    if (groupVal.length()) {
+      attrDst.append(groupVal);
+    }
+  }
+  if (item.x128) dst["primary"].append(fmtstring("+%d Random Magic Properties", item.x128));
+  if (item.x12C) dst["secondary"].append(fmtstring("+%d Random Magic Properties", item.x12C));
 }
 void parseSetBonus(GameBalance::Type::SetItemBonusTableEntry const& bonus, json::Value& to, bool html) {
   static re::Prog getname(R"((.*) \([0-9]+\))");
@@ -243,16 +197,16 @@ void parseSetBonus(GameBalance::Type::SetItemBonusTableEntry const& bonus, json:
   std::string key = fmtstring("%d", bonus.x10C);
 
   std::set<uint32> powers;
-  std::vector<GameBalance::Type::AttributeSpecifier const*> attrs;
+  std::vector<AttributeSpecifier> attrs;
   for (auto& attr : bonus.x110_AttributeSpecifiers) {
     if (attr.x00_Type >= 0) {
-      attrs.push_back(&attr);
-      if (fixAttrId(attr.x00_Type) == 1270) {
+      attrs.emplace_back(attr);
+      if (attr.x00_Type == PowerAttribute) {
         powers.insert(attr.x04_Param);
       }
     }
   }
-  auto bonuses = FormatBonus(attrs, html, stl.itemSets[id]);
+  auto bonuses = GameAffixes::format(attrs, html);
   for (auto& str : bonuses) {
     to[id][key].append(str);
   }
@@ -267,10 +221,8 @@ void parsePower(Power::Type const& power, json::Value& to, bool html) {
   std::string id = Power::name(power.x000_Header.id);
   json::Value& dst = to[id];
   PowerTag* tag = PowerTags::get(id);
-  AttributeMap attr;
-  attr.emplace("Attacks_Per_Second_Total", 1.0);
-  attr.emplace("Level", 70.0);
-  attr.emplace("Effective_Level", 70.0);
+  AttributeMap attr = GameAffixes::defaultMap();
+  attr.emplace("sLevel", 1);
   dst["name"] = stl.powers[id + "_name"];
   std::string stats;
   if (stl.charTraits.count(power.x000_Header.id)) {
@@ -357,18 +309,33 @@ bool jsonEqual(json::Value& lhs, json::Value& rhs) {
   default: return true;
   }
 }
-void jsonCompare(json::Value& lhs, json::Value& rhs) {
+void jsonCompare(json::Value& lhs, json::Value& rhs, bool noArrays) {
   if (lhs.type() != rhs.type()) return;
   if (lhs.type() == json::Value::tArray) {
-    toObject(lhs);
-    toObject(rhs);
+    if (noArrays) {
+      toObject(lhs);
+      toObject(rhs);
+    } else {
+      bool same = true;
+      for (size_t i = 0; i < lhs.length() && i < rhs.length(); ++i) {
+        jsonCompare(lhs[i], rhs[i], noArrays);
+        if (lhs[i].type() != json::Value::tUndefined) {
+          same = false;
+        }
+      }
+      if (same && lhs.length() == rhs.length()) {
+        lhs.clear();
+        rhs.clear();
+      }
+      return;
+    }
   }
   if (lhs.type() == json::Value::tObject) {
     auto lit = lhs.begin();
     auto rit = rhs.begin();
     while (lit != lhs.end() && rit != rhs.end()) {
       if (lit.key() == rit.key()) {
-        jsonCompare(*lit, *rit);
+        jsonCompare(*lit, *rit, noArrays);
         ++lit;
         ++rit;
       } else if (lit.key() < rit.key()) {
@@ -385,42 +352,6 @@ void jsonCompare(json::Value& lhs, json::Value& rhs) {
   }
 }
 
-std::vector<std::string> split(std::string const& str) {
-  std::vector<std::string> res;
-  std::string cur;
-  for (char c : str) {
-    if (c == ' ') {
-      res.push_back(cur);
-      cur.clear();
-    } else {
-      cur.push_back(c);
-    }
-  }
-  res.push_back(cur);
-  return res;
-}
-std::string join(std::vector<std::string> const& list) {
-  std::string res;
-  for (auto& str : list) {
-    if (!res.empty()) res.push_back(' ');
-    res.append(str);
-  }
-  return res;
-}
-template<class Iter>
-std::string join(Iter left, Iter right) {
-  std::string res;
-  while (left != right) {
-    if (!res.empty()) res.push_back(' ');
-    res.append(*left++);
-  }
-  return res;
-}
-size_t totalLen(std::vector<std::string> const& list) {
-  size_t sum = 0;
-  for (auto& str : list) sum += str.length();
-  return sum;
-}
 
 double strdist(std::string const& slhs, std::string const& srhs) {
   auto lhs = split(slhs);
@@ -495,6 +426,60 @@ std::string strdiff(std::string const& slhs, std::string const& srhs) {
   }
   return result;
 }
+typedef std::vector<std::pair<json::Value const*, json::Value const*>> MergedArrays;
+MergedArrays jsonMerge(json::Value const& lhs, json::Value const& rhs, bool exact = false);
+size_t jsonLength(json::Value const& val) {
+  if (val.type() != json::Value::tArray) {
+    return firstKey(val).length();
+  }
+  size_t sum = 0;
+  for (auto& sub : val) {
+    sum += jsonLength(sub);
+  }
+  return sum;
+}
+double jsonDist(json::Value const& lhs, json::Value const& rhs) {
+  if (lhs.type() != rhs.type()) return 0;
+  if (lhs.type() != json::Value::tArray) {
+    return strdist(firstKey(lhs), firstKey(rhs));
+  }
+  auto list = jsonMerge(lhs, rhs);
+  double sum = 0;
+  for (auto& pp : list) {
+    if (pp.first && pp.second) {
+      sum += jsonDist(*pp.first, *pp.second) * std::max(jsonLength(*pp.first), jsonLength(*pp.second));
+    }
+  }
+  return sum / std::max(1u, std::max(jsonLength(lhs), jsonLength(rhs)));
+}
+MergedArrays jsonMerge(json::Value const& lhs, json::Value const& rhs, bool exact) {
+  MergedArrays list;
+  for (auto& val : lhs) {
+    list.emplace_back(&val, nullptr);
+  }
+  for (auto& val : rhs) {
+    size_t pos = 0;
+    while (pos < list.size()) {
+      if (!list[pos].second) {
+        if (exact) {
+          if (firstKey(val) == firstKey(*list[pos].first)) break;
+        } else {
+          if (jsonDist(val, *list[pos].first) > 0.5) break;
+        }
+      }
+      ++pos;
+    }
+    if (pos < list.size()) {
+      list[pos].second = &val;
+    } else {
+      list.emplace_back(nullptr, &val);
+    }
+  }
+  return list;
+}
+std::string firstKeyPtr(json::Value const* val) {
+  return (val ? firstKey(*val) : "");
+}
 
 std::vector<std::string> mergeKeys(json::Value const& lhs, json::Value const& rhs, std::set<std::string> const& excl) {
   std::set<std::string> keys;
@@ -517,7 +502,11 @@ void diff(File& file, json::Value const& lhs, json::Value const& rhs, std::vecto
   for (auto& v : order) excl.insert(v);
   for (auto& key : keys) {
     file.printf("  <a name=\"%s\"></a>\n", key.c_str());
-    file.printf("  <div>\n");
+    file.printf("  <div");
+    if (lhs[key].has("trivial") || rhs[key].has("trivial")) {
+      file.printf(" class=\"trivial\"");
+    }
+    file.printf(">\n");
     if (links) {
       file.printf("   <i><a href=\"/powers/%s\">%s</a></i>\n", key.c_str(), key.c_str());
     } else {
@@ -528,7 +517,7 @@ void diff(File& file, json::Value const& lhs, json::Value const& rhs, std::vecto
     subkeys.insert(subkeys.end(), merged.begin(), merged.end());
     for (size_t i = 0; i < subkeys.size(); ++i) {
       auto sub = subkeys[i];
-      if (!lhs[key].has(sub) && !rhs[key].has(sub)) continue;
+      if (sub == "trivial" || !lhs[key].has(sub) && !rhs[key].has(sub)) continue;
       json::Value const& lv = lhs[key][sub];
       json::Value const& rv = rhs[key][sub];
       if (sub == "icon") {
@@ -538,56 +527,65 @@ void diff(File& file, json::Value const& lhs, json::Value const& rhs, std::vecto
         continue;
       }
       if (lv.type() == json::Value::tArray || rv.type() == json::Value::tArray) {
-        std::vector<std::pair<std::string, std::string>> list;
-        for (auto& val : lv) {
-          list.emplace_back(firstKey(val), "");
-        }
+        MergedArrays list;
         if (i < order.size()) {
-          for (auto& val : rv) {
-            size_t pos = 0;
-            std::string cv = firstKey(val);
-            while (pos < list.size()) {
-              if (list[pos].second.empty()) {
-                if (sub == "powers") {
-                  if (cv == list[pos].first) break;
-                } else {
-                  if (strdist(cv, list[pos].first) > 0.5) break;
-                }
-              }
-              ++pos;
-            }
-            if (pos < list.size()) {
-              list[pos].second = cv;
-            } else {
-              list.emplace_back("", cv);
-            }
-          }
+          list = jsonMerge(lv, rv, sub == "powers");
         } else {
+          for (auto& val : lv) {
+            list.emplace_back(&val, nullptr);
+          }
           for (size_t i = 0; i < rv.length(); ++i) {
             if (i < list.size()) {
-              list[i].second = firstKey(rv[i]);
+              list[i].second = &rv[i];
             } else {
-              list.emplace_back("", firstKey(rv[i]));
+              list.emplace_back(nullptr, &rv[i]);
             }
           }
         }
-        if (!list.empty() && (i < order.size() || list[0].first != list[0].second)) {
+        if (!list.empty() && (i < order.size() || firstKeyPtr(list[0].first) != firstKeyPtr(list[0].second))) {
           file.printf("   <span class=\"label\">%s</span>: <p class=\"indent\">\n", sub.c_str());
           for (auto& lr : list) {
             if (sub == "powers") {
-              if (!lr.second.empty()) {
-                file.printf("    <a href=\"/powers/%s\">", lr.second.c_str());
+              if (lr.second) {
+                file.printf("    <a href=\"/powers/%s\">", firstKey(*lr.second).c_str());
               } else {
-                file.printf("    <a href=\"/powers/%s\">", lr.first.c_str());
+                file.printf("    <a href=\"/powers/%s\">", firstKey(*lr.first).c_str());
               }
             } else {
               file.printf("    ");
             }
-            file.printf("%s", strdiff(lr.first, lr.second).c_str());
-            if (sub == "powers") {
-              file.printf("</a>");
+            json::Value lval, rval;
+            if (lr.first && lr.second) {
+              lval = *lr.first;
+              rval = *lr.second;
+            } else if (lr.first) {
+              lval = *lr.first;
+              rval.setType(lval.type());
+            } else {
+              rval = *lr.second;
+              lval.setType(rval.type());
             }
-            file.printf("<br/>\n");
+            if (sub != "powers" && lval.type() == json::Value::tArray) {
+              while (rval.length() < lval.length()) {
+                rval.append("");
+              }
+              while (lval.length() < rval.length()) {
+                lval.append("");
+              }
+              file.printf("One of %d Magic Properties (varies)\n", lval.length());
+              file.printf("    <span class=\"indent\">");
+              for (size_t i = 0; i < lval.length(); ++i) {
+                file.printf("      %s<br/>\n", strdiff(firstKey(lval[i]), firstKey(rval[i])).c_str());
+              }
+              file.printf("    </span>\n");
+            } else {
+              file.printf("%s", strdiff(firstKey(lval), firstKey(rval)).c_str());
+            }
+            if (sub == "powers") {
+              file.printf("</a><br/>\n");
+            } else if (lval.type() != json::Value::tArray) {
+              file.printf("<br/>\n");
+            }
           }
           file.printf("   </p>\n");
         }
@@ -595,7 +593,8 @@ void diff(File& file, json::Value const& lhs, json::Value const& rhs, std::vecto
         auto a = firstKey(lv);
         auto b = firstKey(rv);
         if (i < order.size() || a != b) {
-          file.printf("   <span class=\"label\">%s</span>: %s<br/>\n", sub.c_str(), strdiff(a, b).c_str());
+          file.printf("   <span class=\"label\">%s</span>: ", sub.c_str());
+          file.printf("%s<br/>\n", strdiff(a, b).c_str());
         }
       }
     }
@@ -613,7 +612,11 @@ void makehtml(File& file, json::Value const& val, std::vector<std::string> const
       if (item["name"].getString().empty()) continue;
     }
     file.printf("  <a name=\"%s\"></a>\n", key.c_str());
-    file.printf("  <div>\n");
+    file.printf("  <div");
+    if (item.has("trivial")) {
+      file.printf(" class=\"trivial\"");
+    }
+    file.printf(">\n");
     if (links) {
       file.printf("   <i><a href=\"/powers/%s\">%s</a></i>\n", key.c_str(), key.c_str());
     } else {
@@ -629,7 +632,7 @@ void makehtml(File& file, json::Value const& val, std::vector<std::string> const
     }
     for (size_t i = 0; i < subkeys.size(); ++i) {
       auto sub = subkeys[i];
-      if (!item.has(sub)) continue;
+      if (sub == "trivial" || !item.has(sub)) continue;
       json::Value const& lv = item[sub];
       if (sub == "icon") {
         std::string id = firstKey(lv);
@@ -639,17 +642,26 @@ void makehtml(File& file, json::Value const& val, std::vector<std::string> const
       if (lv.type() == json::Value::tArray) {
         file.printf("   <span class=\"label\">%s</span>: <p class=\"indent\">\n", sub.c_str());
         for (auto& lri : lv) {
-          std::string lr = lri.getString();
           if (sub == "powers") {
-            file.printf("    <a href=\"/powers/%s\">", lr.c_str());
+            file.printf("    <a href=\"/powers/%s\">", firstKey(lri).c_str());
           } else {
             file.printf("    ");
           }
-          file.printf("%s", lr.c_str());
-          if (sub == "powers") {
-            file.printf("</a>");
+          if (lri.type() != json::Value::tArray) {
+            file.printf("%s", firstKey(lri).c_str());
+          } else {
+            file.printf("One of %d Magic Properties (varies)\n", lri.length());
+            file.printf("    <span class=\"indent\">");
+            for (size_t i = 0; i < lri.length(); ++i) {
+              file.printf("      %s<br/>\n", firstKey(lri[i]).c_str());
+            }
+            file.printf("    </span>\n");
           }
-          file.printf("<br/>\n");
+          if (sub == "powers") {
+            file.printf("</a><br/>\n");
+          } else if (lri.type() != json::Value::tArray) {
+            file.printf("<br/>\n");
+          }
         }
         file.printf("   </p>\n");
       } else {
@@ -680,4 +692,59 @@ json::Value dumpPower(json::Value const& pow) {
     }
   }
   return res;
+}
+
+namespace MinerPrivate {
+
+  void dumpfile(SnoLoader& loader, std::string const& name, ParseFunc func, std::string const& type) {
+    Logger::item(name.c_str());
+    File out("diff" / type / name + ".txt", "w");
+    json::WriterVisitor writer(out);
+    writer.setIndent(2);
+    func(loader, name, &writer);
+    writer.onEnd();
+  }
+  void readfile(SnoLoader& loader, std::string const& name, ParseFunc func, json::Value& value) {
+    json::BuilderVisitor builder(value);
+    func(loader, name, &builder);
+    builder.onEnd();
+  }
+
+  void fulldiff(SnoLoader& lhs, SnoLoader& rhs,
+    ParseFunc func, ListFunc list, std::string const& type)
+  {
+    std::set<istring> names;
+    auto lhs_list = list(lhs);
+    auto rhs_list = list(rhs);
+    for (auto& x : lhs_list) names.insert(x);
+    for (auto& x : rhs_list) names.insert(x);
+    Logger::begin(names.size(), ("Comparing " + type).c_str());
+    auto li = lhs_list.begin(), ri = rhs_list.begin();
+    while (li != lhs_list.end() || ri != rhs_list.end()) {
+      if (li == lhs_list.end()) {
+        dumpfile(rhs, *ri++, func, type);
+      } else if (ri == rhs_list.end()) {
+        dumpfile(lhs, *li++, func, type);
+      } else {
+        if (*li == *ri) {
+          auto name = *li++;
+          ri++;
+          Logger::item(name.c_str());
+          json::Value lval, rval;
+          readfile(lhs, name, func, lval);
+          readfile(rhs, name, func, rval);
+          jsonCompare(lval, rval, false);
+          if (lval.type() != json::Value::tUndefined) {
+            json::write(File("diff" / type / name + "_lhs.txt", "w"), lval);
+            json::write(File("diff" / type / name + "_rhs.txt", "w"), rval);
+          }
+        } else if (*li < *ri) {
+          dumpfile(lhs, *li++, func, type);
+        } else {
+          dumpfile(rhs, *ri++, func, type);
+        }
+      }
+    }
+    Logger::end();
+  }
 }

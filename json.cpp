@@ -423,13 +423,15 @@ Tokenizer::State Tokenizer::next() {
     return state = tEnd;
   }
   value.clear();
-  if (chr == '"') {
+  if (chr == '"' || (!strict && chr == '\'')) {
+    char init = chr;
     state = tString;
     move();
-    while (chr != '"') {
+    while (chr != init) {
       if (chr == '\\') {
         move();
         switch (chr) {
+        case '\'':
         case '"':
         case '\\':
         case '/':
@@ -536,7 +538,7 @@ Tokenizer::State Tokenizer::next() {
     } else {
       valNumber = atof(value.c_str());
     }
-  } else if (chr == '{' || chr == '}' || chr == '[' || chr == ']' || chr == ':' || chr == ',') {
+  } else if (chr == '{' || chr == '}' || chr == '[' || chr == ']' || chr == ':' || chr == ',' || chr == '(' || chr == ')') {
     state = tSymbol;
     value.push_back(move());
   } else if ((chr >= 'a' && chr <= 'z') || (chr >= 'A' && chr <= 'Z') || chr == '_') {
@@ -635,6 +637,9 @@ bool parse(File& file, Visitor* visitor, int mode, std::string* func) {
       } else if (mode != mJSON && tok.state == Tokenizer::tIdentifier) {
         if (!visitor->onMapKey(tok.value)) return false;
         state = sColon;
+      } else if (mode != mJSON && (tok.state == Tokenizer::tNumber || tok.state == Tokenizer::tInteger)) {
+        if (!visitor->onMapKey(tok.value)) return false;
+        state = sColon;
       } else if ((mode != mJSON || topEmpty) && tok.state == Tokenizer::tSymbol && tok.value == "}") {
         state = sNext;
         advance = false;
@@ -703,7 +708,7 @@ bool parse(File& file, Visitor* visitor, int mode, std::string* func) {
     }
   }
   if (mode == mJSCall) {
-    if (tok.next() != Tokenizer::tSymbol || tok.chr != ')') {
+    if (tok.next() != Tokenizer::tSymbol || tok.value != ")") {
       visitor->onError(tok.line, tok.col, "expected ')'");
       return false;
     }

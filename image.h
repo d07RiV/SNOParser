@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "file.h"
+#include <algorithm>
 
 template<
   typename p_type,
@@ -69,7 +70,7 @@ struct PixelFormat {
       (PF::green::from(a) * ka + PF::green::from(b) * kb) / (ka + kb),
       (PF::blue::from(a) * ka + PF::blue::from(b) * kb) / (ka + kb),
       (PF::alpha::from(a) * ka + PF::alpha::from(b) * kb) / (ka + kb)
-      );
+    );
   }
   static color_t mix(color_t a, int ka, color_t b, int kb) {
     return color(
@@ -78,6 +79,9 @@ struct PixelFormat {
       (blue::from(a) * ka + blue::from(b) * kb) / (ka + kb),
       (alpha::from(a) * ka + alpha::from(b) * kb) / (ka + kb)
     );
+  }
+  static color_t blend(color_t dst, color_t src) {
+    return mix(dst, 255 - alpha::from(src), src, alpha::from(src));
   }
 };
 
@@ -100,6 +104,132 @@ namespace ImageFormat {
     NumFormats
   };
 }
+
+struct ImageFilter {
+  //enum Type {
+  //  Box,
+  //  Triangle,
+  //  Hermite,
+  //  Bell,
+  //  CubicBSpline,
+  //  Lanczos3,
+  //  Mitchell,
+  //  Cosine,
+  //  CatmullRom,
+  //  Quadratic,
+  //  QuadraticBSpline,
+  //  CubicConvolution,
+  //  Lanczos8,
+  //};
+
+  typedef double(*Function)(double);
+  static double PI() { return 3.1415926535897932384626433832795; }
+
+  static struct {
+    static double radius() { return 0.5; }
+    static double value(double x) {
+      return (x <= 0.5 ? 1.0 : 0.0);
+    }
+  } Box;
+  static struct {
+    static double radius() { return 1.0; }
+    static double value(double x) {
+      return std::max(1.0 - x, 0.0);
+    }
+  } Triangle;
+  static struct {
+    static double radius() { return 1.0; }
+    static double value(double x) {
+      return (x < 1.0 ? (2 * x - 3) * x * x + 1 : 0.0);
+    }
+  } Hermite;
+  static struct {
+    static double radius() { return 1.5; }
+    static double value(double x) {
+      if (x < 0.5) return 0.75 - x * x;
+      if (x < 1.5) return 0.5 * (1.5 - x) * (1.5 - x);
+      return 0.0;
+    }
+  } Bell;
+  static struct {
+    static double radius() { return 2.0; }
+    static double value(double x) {
+      if (x < 1.0) return 0.5 * x * x * x - x * x + 2.0 / 3.0;
+      if (x < 2.0) return (2.0 - x) * (2.0 - x) * (2.0 - x) / 6.0;
+      return 0.0;
+    }
+  } CubicBSpline;
+  static struct {
+    static double radius() { return 3.0; }
+    static double sinc(double x) {
+      if (x == 0.0) return 1.0;
+      x *= PI();
+      return std::sin(x) / x;
+    }
+    static double value(double x) {
+      return (x < 3.0 ? sinc(x) * sinc(x / 3.0) : 0.0);
+    }
+  } Lanczos3;
+  static struct {
+    static double radius() { return 2.0; }
+    static double value(double x) {
+      if (x < 1.0) return 7.0 / 6.0 * x * x * x - 2.0 * x * x + 8.0 / 9.0;
+      if (x < 2.0) return -7.0 / 18.0 * x * x * x + 2.0 * x * x - 10.0 / 3.0 * x + 16.0 / 9.0;
+      return 0.0;
+    }
+  } Mitchell;
+  static struct {
+    static double radius() { return 1.0; }
+    static double value(double x) {
+      if (x < 1.0) return (std::cos(x * PI()) + 1.0) / 2.0;
+      return 0.0;
+    }
+  } Cosine;
+  static struct {
+    static double radius() { return 2.0; }
+    static double value(double x) {
+      if (x < 1.0) return 1.5 * x * x * x - 2.5 * x * x + 1.0;
+      if (x < 2.0) return -0.5 * x * x * x + 2.5 * x * x - 4.0 * x + 2.0;
+      return 0.0;
+    }
+  } CatmullRom;
+  static struct {
+    static double radius() { return 1.5; }
+    static double value(double x) {
+      if (x < 0.5) return -2.0 * x * x + 1.0;
+      if (x < 1.5) return x * x - 2.5 * x + 1.5;
+      return 0.0;
+    }
+  } Quadratic;
+  static struct {
+    static double radius() { return 1.5; }
+    static double value(double x) {
+      if (x < 0.5) return -x * x + 0.75;
+      if (x < 1.5) return 0.5 * x * x - 1.5 * x + 1.125;
+      return 0.0;
+    }
+  } QuadraticBSpline;
+  static struct {
+    static double radius() { return 3.0; }
+    static double value(double x) {
+      if (x < 1.0) return 4.0 / 3.0 * x * x * x - 7.0 / 3.0 * x * x + 1.0;
+      if (x < 2.0) return -7.0 / 12.0 * x * x * x + 3.0 * x * x - 59.0 / 12.0 * x + 2.5;
+      if (x < 3.0) return 1.0 / 12.0 * x * x * x - 2.0 / 3.0 * x * x + 1.75 * x - 1.5;
+      return 0.0;
+    }
+  } CubicConvolution;
+  static struct {
+    static double radius() { return 8.0; }
+    static double sinc(double x) {
+      if (x == 0.0) return 1.0;
+      x *= PI();
+      return std::sin(x) / x;
+    }
+    static double value(double x) {
+      return (x < 8.0 ? sinc(x) * sinc(x / 8.0) : 0.0);
+    }
+  } Lanczos8;
+};
 
 template<typename p_Format>
 class ImageBase {
@@ -192,11 +322,12 @@ public:
       data_->bits_[i] = color;
     }
   }
-  ImageBase(uint32 width, uint32 height, color_t* bits) {
+  ImageBase(uint32 width, uint32 height, color_t const* bits) {
     data_ = new Data;
     data_->width_ = width;
     data_->height_ = height;
-    data_->bits = bits;
+    data_->bits_ = new color_t[width * height];
+    memcpy(data_->bits_, bits, width * height * sizeof(color_t));
   }
 
   color_t const* bits() const {
@@ -216,7 +347,11 @@ public:
     return data_->height_;
   }
 
-  ImageBase<Format> subimage(uint32 left, uint32 top, uint32 right, uint32 bottom) const {
+  ImageBase<Format> subimage(int left, int top, int right, int bottom) const {
+    if (left < 0) left = 0;
+    if (top < 0) top = 0;
+    if (right > data_->width_) right = data_->width_;
+    if (bottom > data_->height_) bottom = data_->height_;
     ImageBase<Format> result;
     result.data_ = create(right - left, bottom - top);
     for (uint32 y = top; y < bottom; ++y) {
@@ -230,10 +365,10 @@ public:
   }
   ImageBase<Format> subimagef(float left, float top, float right, float bottom) const {
     return subimage(
-      static_cast<uint32>(data_->width_ * left + 0.5f),
-      static_cast<uint32>(data_->height_ * top + 0.5f),
-      static_cast<uint32>(data_->width_ * right + 0.5f),
-      static_cast<uint32>(data_->height_ * bottom + 0.5f)
+      static_cast<int>(data_->width_ * left + 0.5f),
+      static_cast<int>(data_->height_ * top + 0.5f),
+      static_cast<int>(data_->width_ * right + 0.5f),
+      static_cast<int>(data_->height_ * bottom + 0.5f)
     );
   }
 
@@ -243,6 +378,29 @@ public:
   bool read(File& file, ImageFormat::Type format = ImageFormat::Unknown);
   bool write(std::string const& path, ImageFormat::Type format = ImageFormat::Unknown);
   bool read(std::string const& path, ImageFormat::Type format = ImageFormat::Unknown);
+
+  template<typename Filter = decltype(ImageFilter::Lanczos3)>
+  ImageBase<Format> resize(uint32 width, uint32 height, Filter filter = ImageFilter::Lanczos3) const;
+  void blt(int x, int y, ImageBase<Format> const& src, int sx, int sy, uint32 sw, uint32 sh) {
+    int dx = x - sx, dy = y - sy;
+    int x0 = std::max(0, std::max(sx, -dx));
+    int y0 = std::max(0, std::max(sy, -dy));
+    int x1 = std::min<int>(src.width(), std::min<int>(sx + sw, data_->width_ - dx));
+    int y1 = std::min<int>(src.height(), std::min<int>(sy + sh, data_->height_ - dy));
+    if (y1 <= y0 || x1 <= x0) return;
+    splice();
+    for (int y = y0; y < y1; ++y) {
+      color_t const* psrc = src.bits() + y * src.width() + x0;
+      color_t* pdst = data_->bits_ + (y + dy) * data_->width_ + x0 + dx;
+      for (int cnt = x1 - x0; cnt--;) {
+        *pdst = Format::blend(*pdst, *psrc++);
+        ++pdst;
+      }
+    }
+  }
+  void blt(int x, int y, ImageBase<Format> const& src) {
+    blt(x, y, src, 0, 0, src.width(), src.height());
+  }
 
 private:
   struct Data : public RefCounted {
@@ -277,6 +435,80 @@ namespace ImagePrivate {
   ImageFormat::Type getFormat(std::string const& name);
   bool imWrite(Image const& image, File& file, ImageFormat::Type format);
   Image imRead(File& file, ImageFormat::Type format);
+  Image imResize(Image const& image, uint32 width, uint32 height, double radius, ImageFilter::Function filter);
+  void imBlit(Image& dst, Image const& src, int x, int y, int sx, int sy, uint32 sw, uint32 sh);
+
+  template<typename PF>
+  class Accum {
+  public:
+    void add(typename PF::color_t value, double weight) {
+      r += weight * PF::red::from(value);
+      g += weight * PF::green::from(value);
+      b += weight * PF::blue::from(value);
+      a += weight * PF::alpha::from(value);
+      w += weight;
+    }
+    typename PF::color_t get() const {
+      if (w == 0) return 0;
+      return PF::color_clamp(
+        static_cast<int>(r / w + 0.5),
+        static_cast<int>(g / w + 0.5),
+        static_cast<int>(b / w + 0.5),
+        static_cast<int>(a / w + 0.5)
+        );
+    }
+  private:
+    double r = 0, g = 0, b = 0, a = 0, w = 0;
+  };
+
+  template<class PF, class Filter>
+  class LinScaler {
+  public:
+    LinScaler(uint32 from, uint32 to) {
+      double scale = static_cast<double>(to) / from;
+      if (scale < 1) {
+        double radius = Filter::radius() / scale;
+        for (uint32 i = 0; i < to; ++i) {
+          double center = (i + 0.5) / scale;
+          int left = std::max(0, static_cast<int>(floor(center - radius)));
+          int right = std::min<int>(from, static_cast<int>(ceil(center + radius)) + 1);
+          pixels.emplace_back(left, right - left);
+          for (int j = left; j < right; ++j) {
+            factors.push_back(Filter::value(std::abs((center - j - 0.5) * scale)));
+          }
+        }
+      } else {
+        double radius = Filter::radius();
+        for (uint32 i = 0; i < to; ++i) {
+          double center = (i + 0.5) / scale;
+          int left = std::max(0, static_cast<int>(floor(center - radius)));
+          int right = std::min<int>(from, static_cast<int>(ceil(center + radius)) + 1);
+          pixels.emplace_back(left, right - left);
+          for (int j = left; j < right; ++j) {
+            factors.push_back(Filter::value(std::abs(center - j - 0.5)));
+          }
+        }
+      }
+    }
+    void scale(typename PF::color_t const* src, uint32 src_pitch,
+      typename PF::color_t* dst, uint32 dst_pitch)
+    {
+      double const* factor = &factors[0];
+      for (auto& p : pixels) {
+        typename PF::color_t const* from = src + p.first * src_pitch;
+        Accum<PF> accum;
+        for (uint32 i = p.second; i--;) {
+          accum.add(*from, *factor++);
+          from += src_pitch;
+        }
+        *dst = accum.get();
+        dst += dst_pitch;
+      }
+    }
+  private:
+    std::vector<double> factors;
+    std::vector<std::pair<uint32, uint32>> pixels;
+  };
 }
 
 template<class PF>
@@ -307,4 +539,26 @@ bool ImageBase<PF>::read(std::string const& path, ImageFormat::Type format) {
   *this = ImagePrivate::imRead(File(path),
     format == ImageFormat::Unknown ? ImagePrivate::getFormat(path) : format);
   return data_ != nullptr;
+}
+template<class PF>
+template<typename Filter>
+ImageBase<PF> ImageBase<PF>::resize(uint32 width, uint32 height, Filter filter) const {
+  ImageBase<PF> cur(*this);
+  if (cur.width() != width) {
+    ImagePrivate::LinScaler<Format, Filter> scaler(cur.width(), width);
+    ImageBase<PF> next(width, cur.height());
+    for (uint32 y = 0; y < cur.height(); ++y) {
+      scaler.scale(cur.bits() + y * cur.width(), 1, next.mutable_bits() + y * next.width(), 1);
+    }
+    cur = next;
+  }
+  if (cur.height() != height) {
+    ImagePrivate::LinScaler<Format, Filter> scaler(cur.height(), height);
+    ImageBase<PF> next(cur.width(), height);
+    for (uint32 x = 0; x < cur.width(); ++x) {
+      scaler.scale(cur.bits() + x, cur.width(), next.mutable_bits() + x, next.width());
+    }
+    cur = next;
+  }
+  return cur;
 }

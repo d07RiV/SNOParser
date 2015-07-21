@@ -39,6 +39,7 @@ public:
     return get(sfid(id), {});
   }
   AttributeValue get(istring const& formula, AttributeMap const& attr = {});
+  uint32 getint(istring const& formula);
   AttributeValue get(int id, AttributeMap const& attr = {}) {
     if (id < 0 || id > 63) return 0;
     return _get(sfid(id), attr);
@@ -73,6 +74,11 @@ public:
   }
   static AttributeValue get(istring const& name, istring const& formula, AttributeMap const& attr = {}) {
     return instance()[name].get(formula, attr);
+  }
+  static PowerTag* getraw(uint32 power_id) {
+    auto& raw = instance().raw_;
+    auto it = raw.find(power_id);
+    return (it == raw.end() ? nullptr : it->second);
   }
   static AttributeValue getraw(uint32 power_id, uint32 formula_id, AttributeMap const& attr = {}) {
     auto& raw = instance().raw_;

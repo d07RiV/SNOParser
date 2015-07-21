@@ -1563,16 +1563,16 @@ declstruct(GameBalance::Type) {
       return x08_Entries[index];
     }
 
-    typename Array<T>::ConstIterator begin() const {
+    T const* begin() const {
       return x08_Entries.begin();
     }
-    typename Array<T>::ConstIterator end() const {
+    T const* end() const {
       return x08_Entries.end();
     }
-    typename Array<T>::Iterator begin() {
+    T* begin() {
       return x08_Entries.begin();
     }
-    typename Array<T>::Iterator end() {
+    T* end() {
       return x08_Entries.end();
     }
   

@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
+#include <vector>
 #include <map>
 #define NOMINMAX
 #include <windows.h>
@@ -176,3 +177,23 @@ using Map = std::map<istring, To>;
 typedef Map<std::string> Dictionary;
 
 std::string strlower(std::string const& src);
+
+template<class T>
+inline int basic_compare(T const& lhs, T const& rhs) {
+  if (lhs < rhs) return -1;
+  if (lhs > rhs) return 1;
+  return 0;
+}
+
+std::vector<std::string> split(std::string const& str, char sep = ' ');
+std::string join(std::vector<std::string> const& list, char sep = ' ');
+std::string join(std::vector<std::string> const& list, std::string const& sep);
+template<class Iter>
+inline std::string join(Iter left, Iter right) {
+  std::string res;
+  while (left != right) {
+    if (!res.empty()) res.push_back(' ');
+    res.append(*left++);
+  }
+  return res;
+}

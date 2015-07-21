@@ -35,3 +35,29 @@ public:
 
   void print(uint32 pos, FILE* file = stdin);
 };
+
+#include <winnt.h>
+class ExeFile : public File {
+public:
+  ExeFile(std::string const& path);
+
+  uint32 dataBase() const {
+    return dataBase_;
+  }
+  uint32 dataPos() const{
+    return dataPos_;
+  }
+
+  char const* readString(uint32 offset) {
+    if (offset >= dataBase_ && offset < stringEnd_) {
+      return (char*)(ptr_ + offset - dataBase_ + dataPos_);
+    } else {
+      return nullptr;
+    }
+  }
+private:
+  uint8* ptr_;
+  uint32 dataBase_;
+  uint32 dataPos_;
+  uint32 stringEnd_;
+};

@@ -19,10 +19,13 @@ public:
   uint32 size() const {
     return data_.size();
   }
-  bool contains(uint32 offset, uint32 size) {
+  bool contains(uint32 offset, uint32 size) const {
     return size && offset <= 0xFFFFFFFF - size && offset + size <= data_.size();
   }
   uint8* data(uint32 offset) {
+    return &data_[offset];
+  }
+  uint8 const* data(uint32 offset) const {
     return &data_[offset];
   }
 
@@ -66,8 +69,14 @@ public:
   operator typename T::Type*() {
     return object_;
   }
+  operator typename T::Type const*() const {
+    return object_;
+  }
 
   typename T::Type* operator->() {
+    return object_;
+  }
+  typename T::Type const* operator->() const {
     return object_;
   }
 
@@ -88,6 +97,7 @@ protected:
   virtual std::vector<std::string> listdir(char const* type, char const* ext) = 0;
   virtual File loadfile(char const* type, char const* name, char const* ext) = 0;
 public:
+  virtual uint32 hash() const = 0;
 
   template<class T>
   std::vector<std::string> list() {
@@ -301,16 +311,23 @@ protected:
   File loadfile(char const* type, char const* name, char const* ext);
 public:
   SnoSysLoader(std::string dir = "");
+  uint32 hash() const {
+    return HashNameLower(dir_);
+  }
   static SnoSysLoader default;
 };
 
 class SnoCascLoader : public SnoLoader {
 protected:
+  uint32 hash_;
   std::string lang_;
   void* handle_;
   std::vector<std::string> listdir(char const* type, char const* ext);
   File loadfile(char const* type, char const* name, char const* ext);
 public:
+  uint32 hash() const {
+    return hash_;
+  }
   SnoCascLoader(std::string dir, std::string lang = "");
   ~SnoCascLoader();
 };

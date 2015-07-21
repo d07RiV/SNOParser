@@ -19,7 +19,7 @@ struct Logger::Task {
   typedef std::list<Task>::iterator Iter;
 
   Task();
-  Task(Task* parent, size_t count, std::string const& name);
+  Task(Task* parent, int count, std::string const& name);
   ~Task();
 
   void erase();
@@ -34,7 +34,7 @@ struct Logger::Task {
   void rupdate(Iter from);
   void rshift(Iter from);
   void remove(Task* task);
-  Task* insert(size_t count, std::string const& name);
+  Task* insert(int count, std::string const& name);
 };
 
 static Logger::Task _root;
@@ -65,7 +65,9 @@ void Logger::Task::draw() {
 }
 void Logger::Task::write(std::string const& text) {
   std::string buf;
-  if (!count || index >= count) {
+  if (count < 0) {
+    buf = "[ Log ] ";
+  } else if (!count || index >= count) {
     buf = "[ Done] ";
   } else {
     buf = fmtstring("[%4.1lf%%] ", 100.0 * std::max(index, 0) / count);
@@ -87,6 +89,9 @@ void Logger::Task::close() {
   index = count;
   write(name);
   if (sub.size()) {
+    for (auto& x : sub) {
+      x.erase();
+    }
     sub.clear();
     int delta = height - 1;
     for (Task* cur = this; cur; cur = cur->parent) {
@@ -147,11 +152,12 @@ void Logger::Task::remove(Task* task) {
   for (Task* cur = this; cur; cur = cur->parent) {
     cur->height -= task->height;
   }
+  task->erase();
   Iter next = std::next(pos);
   sub.erase(pos);
   shift(next);
 }
-Logger::Task* Logger::Task::insert(size_t count, std::string const& name) {
+Logger::Task* Logger::Task::insert(int count, std::string const& name) {
   for (Task* cur = this; cur; cur = cur->parent) {
     ++cur->height;
   }
@@ -173,7 +179,7 @@ Logger::Task::Task()
   pos.X = -2;
   pos.Y = info.dwCursorPosition.Y - 1;
 }
-Logger::Task::Task(Task* parent, size_t count, std::string const& name)
+Logger::Task::Task(Task* parent, int count, std::string const& name)
   : handle(GetStdHandle(STD_OUTPUT_HANDLE))
   , parent(parent)
   , count(count)
@@ -192,9 +198,9 @@ Logger::Task::Task(Task* parent, size_t count, std::string const& name)
   write(name);
 }
 Logger::Task::~Task() {
-  if (parent) {
-    erase();
-  }
+  //if (parent) {
+  //  erase();
+  //}
 }
 
 void* Logger::begin(size_t count, char const* name, void* task_) {
@@ -214,4 +220,11 @@ void Logger::end(bool pop, void* task_) {
   } else {
     task->close();
   }
+}
+
+void Logger::log(char const* fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  root->insert(-1, varfmtstring(fmt, ap));
+  va_end(ap);
 }

@@ -31,60 +31,6 @@ inline void _serialize(char(&x)[N], json::Visitor* visitor) {
   visitor->onString(x);
 }
 
-struct TagValue {
-  uint32 value;
-  operator uint32() const {
-    return value;
-  }
-  void serialize(json::Visitor* visitor) {
-    uint8 exponent = (value >> 23) & 0xFF;
-    if (exponent != 0 && exponent != 255) {
-      visitor->onNumber(*(float*)&value);
-    } else {
-      visitor->onInteger(value);
-    }
-  }
-};
-
-template<class T>
-struct Sno {
-  uint32 id;
-  operator uint32() const {
-    return id;
-  }
-  std::string name() const {
-    char const* name = T::name(id);
-    return (name ? name : "");
-  }
-  void serialize(json::Visitor* visitor) {
-    char const* name = T::name(id);
-    if (name) {
-      visitor->onIntegerEx(id, name);
-    } else {
-      visitor->onInteger(id);
-    }
-  }
-};
-
-struct GameBalanceId {
-  uint32 id;
-  operator uint32() const {
-    return id;
-  }
-  std::string name() const {
-    char const* name = SnoManager::gameBalance()[id];
-    return (name ? name : "");
-  }
-  void serialize(json::Visitor* visitor) {
-    char const* name = SnoManager::gameBalance()[id];
-    if (name) {
-      visitor->onIntegerEx(id, name);
-    } else {
-      visitor->onInteger(id);
-    }
-  }
-};
-
 template<class T>
 class Serializable {
 public:
@@ -225,60 +171,17 @@ public:
     return pdata()[index];
   }
 
-  class ConstIterator {
-    Array<T> const* array_;
-    uint32 index_;
-  public:
-    ConstIterator(Array<T> const* array, uint32 index)
-      : array_(array), index_(index)
-    {}
-    ConstIterator& operator++() {
-      ++index_;
-      return *this;
-    }
-    bool operator==(ConstIterator const& rhs) const {
-      return index_ == rhs.index_;
-    }
-    bool operator!=(ConstIterator const& rhs) const {
-      return index_ != rhs.index_;
-    }
-    T const& operator*() const {
-      return (*array_)[index_];
-    }
-  };
-  ConstIterator begin() const {
-    return ConstIterator(this, 0);
+  T const* begin() const {
+    return data();
   }
-  ConstIterator end() const {
-    return ConstIterator(this, size());
+  T const* end() const {
+    return data() + size();
   }
-
-  class Iterator {
-    Array<T>* array_;
-    uint32 index_;
-  public:
-    Iterator(Array<T>* array, uint32 index)
-      : array_(array), index_(index)
-    {}
-    Iterator& operator++() {
-      ++index_;
-      return *this;
-    }
-    bool operator==(Iterator const& rhs) const {
-      return index_ == rhs.index_;
-    }
-    bool operator!=(Iterator const& rhs) const {
-      return index_ != rhs.index_;
-    }
-    T& operator*() const {
-      return (*array_)[index_];
-    }
-  };
-  Iterator begin() {
-    return Iterator(this, 0);
+  T* begin() {
+    return pdata();
   }
-  Iterator end() {
-    return Iterator(this, size());
+  T* end() {
+    return pdata() + size();
   }
 };
 

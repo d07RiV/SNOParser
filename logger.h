@@ -15,6 +15,8 @@ public:
   static void item(char const* name, void* task = nullptr);
   static void end(bool pop = false, void* task = nullptr);
 
+  static void log(char const* fmt, ...);
+
   class Loop {
   public:
     typedef std::vector<std::string> List;

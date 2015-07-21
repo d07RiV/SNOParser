@@ -57,7 +57,10 @@ PowerTags::PowerTags(SnoLoader* loader) {
       }
     }
     for (size_t sf = 0; sf < pow->x438_ScriptFormulaDetails.size(); ++sf) {
-      power.formulas_.at(PowerTag::sfid(sf)).comment = pow->x438_ScriptFormulaDetails[sf].x000_Text;
+      auto it = power.formulas_.find(PowerTag::sfid(sf));
+      if (it != power.formulas_.end()) {
+        it->second.comment = pow->x438_ScriptFormulaDetails[sf].x000_Text;
+      }
     }
   }
 }
@@ -96,6 +99,15 @@ AttributeValue PowerTag::get(istring const& formula, AttributeMap const& attr) {
   auto it = tags.find(formula);
   return (it == tags.end() ? 0 : _get(it->second, attr));
 }
+uint32 PowerTag::getint(istring const& formula) {
+  auto& tags = PowerTags::instance().tags_;
+  auto it = tags.find(formula);
+  if (it == tags.end()) return 0;
+  auto it2 = formulas_.find(it->second);
+  if (it2 == formulas_.end()) return 0;
+  return (it2->second.state == sDone ? it2->second.value : 0);
+}
+
 std::string PowerTag::comment(istring const& formula) {
   auto& tags = PowerTags::instance().tags_;
   auto it = tags.find(formula);

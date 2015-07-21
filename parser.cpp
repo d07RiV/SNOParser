@@ -137,6 +137,7 @@ File SnoCascLoader::loadfile(char const* type, char const* name, char const* ext
 }
 SnoCascLoader::SnoCascLoader(std::string dir, std::string lang)
   : lang_(lang)
+  , hash_(HashNameLower(dir))
 {
   if (!CascOpenStorage(dir.c_str(), CASC_LOCALE_ALL, &handle_)) {
     throw Exception("failed to open CASC storage");

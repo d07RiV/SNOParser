@@ -82,14 +82,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="affixes.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="description.cpp" />
     <ClCompile Include="file.cpp" />
+    <ClCompile Include="garbage.cpp" />
+    <ClCompile Include="gl.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imagepng.cpp" />
+    <ClCompile Include="itemlib.cpp" />
     <ClCompile Include="json.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="math3d.cpp" />
     <ClCompile Include="miner.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="path.cpp" />
     <ClCompile Include="powertag.cpp" />
     <ClCompile Include="regexp.cpp" />
@@ -98,6 +104,7 @@
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="stringmgr.cpp" />
     <ClCompile Include="strings.cpp" />
+    <ClCompile Include="texturemgr.cpp" />
     <ClCompile Include="translations.cpp" />
     <ClCompile Include="types\Anim.cpp" />
     <ClCompile Include="types\AnimSet.cpp" />
@@ -109,11 +116,16 @@
     <ClCompile Include="utf8.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="affixes.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="description.h" />
+    <ClInclude Include="gl.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="itemlib.h" />
     <ClInclude Include="logger.h" />
+    <ClInclude Include="math3d.h" />
     <ClInclude Include="miner.h" />
+    <ClInclude Include="model.h" />
     <ClInclude Include="powertag.h" />
     <ClInclude Include="regexp.h" />
     <ClInclude Include="serialize.h" />
@@ -126,6 +138,7 @@
     <ClInclude Include="snomap.h" />
     <ClInclude Include="stringmgr.h" />
     <ClInclude Include="strings.h" />
+    <ClInclude Include="textures.h" />
     <ClInclude Include="translations.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="types\Accolade.h" />

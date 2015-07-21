@@ -2,6 +2,20 @@
 #include "path.h"
 #include <algorithm>
 
+decltype(ImageFilter::Box) ImageFilter::Box;
+decltype(ImageFilter::Triangle) ImageFilter::Triangle;
+decltype(ImageFilter::Hermite) ImageFilter::Hermite;
+decltype(ImageFilter::Bell) ImageFilter::Bell;
+decltype(ImageFilter::CubicBSpline) ImageFilter::CubicBSpline;
+decltype(ImageFilter::Lanczos3) ImageFilter::Lanczos3;
+decltype(ImageFilter::Mitchell) ImageFilter::Mitchell;
+decltype(ImageFilter::Cosine) ImageFilter::Cosine;
+decltype(ImageFilter::CatmullRom) ImageFilter::CatmullRom;
+decltype(ImageFilter::Quadratic) ImageFilter::Quadratic;
+decltype(ImageFilter::QuadraticBSpline) ImageFilter::QuadraticBSpline;
+decltype(ImageFilter::CubicConvolution) ImageFilter::CubicConvolution;
+decltype(ImageFilter::Lanczos8) ImageFilter::Lanczos8;
+
 namespace ImagePrivate {
 
   bool imReadPNG(Image& image, File& file);

@@ -1,6 +1,7 @@
 #include "description.h"
 #include "common.h"
 #include "regexp.h"
+#include "affixes.h"
 #include "powertag.h"
 #include <stack>
 #include <vector>
@@ -105,7 +106,7 @@ FormulaParser::FormulaParser(std::string const& descr, bool html, AttributeMap c
 }
 
 std::string FormulaParser::Value::format() {
-  if (text.c_str()) {
+  if (!text.empty()) {
     return text;
   } else if (min == max) {
     return fmtstring(plus ? "%+.*lf" : "%.*lf", digits, max);
@@ -458,10 +459,10 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
       uint32 w = *begin++;
       switch (x) {
       case 0:
-        switch (y) {
+        switch (fixAttrId(y)) {
         case 0: stack.push(getval(values, "Defense")); break;
         case 10: stack.push(getval(values, "Strength")); break;
-        case 57: stack.push(getval(values, "Strength")); break;
+        case 57: stack.push(getval(values, "Level")); break;
         case 102: stack.push(getval(values, "Skill_Total")); break;
         case 187: stack.push(getval(values, "Casting_Speed_Total")); break;
         case 198: stack.push(getval(values, "Attacks_Per_Second_Total")); break;
