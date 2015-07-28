@@ -7,21 +7,7 @@
 struct AttributeSpecifier;
 struct AffixValue;
 
-#ifdef PTR
-static inline int fixAttrId(int id) {
-  return id;
-}
-#else
-static inline int fixAttrId(int id) {
-  if (id >= 672) {
-    return id + 5;
-  } else if (id >= 165) {
-    return id + 3;
-  } else {
-    return id;
-  }
-}
-#endif
+int fixAttrId(int id, bool reverse = false);
 
 class GameAffixes {
 public:
@@ -67,7 +53,8 @@ struct AttributeSpecifier {
   static int compare(AttributeSpecifier const& lhs, AttributeSpecifier const& rhs) {
     if (lhs.type != rhs.type) return basic_compare(lhs.type, rhs.type);
     if (lhs.param != rhs.param) return basic_compare(lhs.param, rhs.param);
-    return basic_compare(lhs.value.max, rhs.value.max);
+    if (lhs.value.max != rhs.value.max) return basic_compare(lhs.value.max, rhs.value.max);
+    return basic_compare(lhs.value.min, rhs.value.min);
   }
   static bool less(AttributeSpecifier const& lhs, AttributeSpecifier const& rhs) {
     return compare(lhs, rhs) < 0;

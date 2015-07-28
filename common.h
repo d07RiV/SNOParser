@@ -53,8 +53,10 @@ public:
 };
 
 void _qmemset(uint32* mem, uint32 fill, uint32 count);
-uint32 gzdeflate(uint8* in, uint32 in_size, uint8* out, uint32* out_size);
-uint32 gzinflate(uint8* in, uint32 in_size, uint8* out, uint32* out_size);
+uint32 gzdeflate(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size);
+uint32 gzencode(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size);
+uint32 gzinflate(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size);
+uint32 gzdecode(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size);
 
 template<class Ret, class... Args>
 class Functor {

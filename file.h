@@ -34,6 +34,7 @@ public:
 };
 
 class File {
+protected:
   FileBuffer* file_;
 public:
   File()
@@ -164,6 +165,14 @@ public:
 
   static File memfile(void const* ptr, size_t size, bool clone = false);
   File subfile(uint64 offset, uint64 size);
+};
+
+class MemoryFile : public File {
+public:
+  MemoryFile(size_t initial = 16384, size_t grow = (1 << 20));
+  uint8 const* data() const;
+  uint8* reserve(uint32 size);
+  void resize(uint32 size);
 };
 
 class File::LineIterator {

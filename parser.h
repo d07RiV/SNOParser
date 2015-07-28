@@ -62,6 +62,9 @@ public:
   SnoFile(std::string const& name, SnoLoader* loader = SnoLoader::default)
     : SnoFile(loader->load<T>(name), name)
   {}
+  SnoFile(char const* name, SnoLoader* loader = SnoLoader::default)
+    : SnoFile(loader->load<T>(name), name ? name : "")
+  {}
 
   operator bool() const {
     return object_ != nullptr;
@@ -107,6 +110,11 @@ public:
   template<class T>
   File load(std::string const& name) {
     return loadfile(T::type(), name.c_str(), T::ext());
+  }
+
+  template<class T>
+  File load(char const* name) {
+    return name ? loadfile(T::type(), name, T::ext()) : File();
   }
 
   template<class T>
@@ -282,6 +290,10 @@ public:
   }
   template<class T>
   static File Load(std::string const& name) {
+    return default->load<T>(name);
+  }
+  template<class T>
+  static File Load(char const* name) {
     return default->load<T>(name);
   }
   template<class T>

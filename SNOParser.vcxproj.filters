@@ -120,6 +120,12 @@
     <ClCompile Include="garbage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="webgl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="snocommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="path.h">
@@ -354,6 +360,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="itemlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="webgl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,11 +37,52 @@ struct Sno {
     return (name ? name : "");
   }
   void serialize(json::Visitor* visitor) {
+    if (id == -1) {
+      visitor->onNull();
+      return;
+    }
     char const* name = T::name(id);
     if (name) {
       visitor->onIntegerEx(id, name);
     } else {
       visitor->onInteger(id);
+    }
+  }
+};
+
+struct SNOName {
+  uint32 group;
+  uint32 id;
+  char const* c_type() const;
+  char const* c_name() const;
+  std::string type() const {
+    char const* type = c_type();
+    return (type ? type : "");
+  }
+  std::string name() const {
+    char const* name = c_name();
+    return (name ? name : "");
+  }
+  void serialize(json::Visitor* visitor) {
+    if (group == -1 || id == -1) {
+      visitor->onNull();
+    } else {
+      char const* type = c_type();
+      char const* name = c_name();
+      visitor->onOpenMap();
+      visitor->onMapKey("x00_SnoGroup");
+      if (type) {
+        visitor->onIntegerEx(group, type);
+      } else {
+        visitor->onInteger(group);
+      }
+      visitor->onMapKey("x04_SnoNameHandle");
+      if (name) {
+        visitor->onIntegerEx(id, name);
+      } else {
+        visitor->onInteger(id);
+      }
+      visitor->onCloseMap();
     }
   }
 };

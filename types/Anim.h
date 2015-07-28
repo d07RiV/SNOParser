@@ -54,14 +54,6 @@ declstruct(Anim::Type) {
     }
   };
 
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(TriggerConditions) {
     int x00_Percent;
     int x04_Time;

@@ -6,14 +6,6 @@
 #pragma pack(push, 1)
 
 declstruct(Quest::Type) {
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(QuestStepFailureCondition) {
     int x00_Enum; // Monster Died = 0, Player Died = 1, Actor Died = 2, Timed Event Expired = 3, Item Used = 4, Game Flag Set = 5, Player Flag Set = 6, Event Received = 7
     int x04;

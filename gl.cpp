@@ -66,6 +66,8 @@ GL::GL(char const* title)
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   glDisable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_ALPHA_TEST);
+  glAlphaFunc(GL_GREATER, 0.01f);
   glEnable(GL_BLEND);
   glEnable(GL_NORMALIZE);
   glDepthFunc(GL_LEQUAL);
@@ -76,6 +78,7 @@ GL::GL(char const* title)
 
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHTING);
+  glEnable(GL_COLOR_MATERIAL);
 
   hFont = CreateFont(-MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), 72),
     0, 0, 0, FW_LIGHT, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
@@ -239,9 +242,9 @@ LRESULT CALLBACK GL::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   if (uMsg == WM_CREATE) {
     CREATESTRUCT* cs = (CREATESTRUCT*) lParam;
     wnd = (GL*) cs->lpCreateParams;
-    SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG) wnd);
+    SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG) wnd);
   } else {
-    wnd = (GL*) GetWindowLongPtr(hWnd, GWL_USERDATA);
+    wnd = (GL*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
   }
   switch (uMsg) {
   case WM_DESTROY:

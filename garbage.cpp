@@ -14,12 +14,12 @@
 #include "types/Appearance.h"
 #include "types/Monster.h"
 #include "types/StringList.h"
+#include "types/AnimSet.h"
 #include "regexp.h"
 #include "translations.h"
 #include "description.h"
 #include "miner.h"
 #include "powertag.h"
-#include "model.h"
 #include "itemlib.h"
 #include <map>
 #include <vector>
@@ -1006,68 +1006,111 @@ struct IconItemType {
   }
 };
 void item_flavor(SnoLoader* loader = SnoLoader::default) {
-  json::Value src, dst, iconsrc, icondst;
-  json::parse(File("itemlist.js"), src, json::mJS);
-  json::parse(File("typeicons.js"), iconsrc);
+  json::Value src, dst, iconsrc, icondst, extra, dyes;
+  json::parse(File("itemtypes.js"), src, json::mJS);
+  //json::parse(File("webgl_items.js"), extra, json::mJS);
+  //json::parse(File("typeicons.js"), iconsrc);
+  //json::parse(File("dyes.js"), dyes, json::mJS);
   DictionaryRef flavor = Strings::list("ItemFlavor", loader);
   std::map<std::string, IconItemType> types;
 
-  auto icons = get_item_icons();
-  for (auto& kv : iconsrc["sizes"].getMap()) {
-    auto& t = types[kv.first];
-    t.left = kv.second[0].getInteger();
-    t.top = kv.second[1].getInteger();
-    t.right = t.left + kv.second[2].getInteger();
-    t.bottom = t.top + kv.second[3].getInteger();
-  }
+  //auto icons = get_item_icons();
+  //for (auto& kv : iconsrc["sizes"].getMap()) {
+  //  auto& t = types[kv.first];
+  //  t.left = kv.second[0].getInteger();
+  //  t.top = kv.second[1].getInteger();
+  //  t.right = t.left + kv.second[2].getInteger();
+  //  t.bottom = t.top + kv.second[3].getInteger();
+  //}
   for (auto& kv : src["itemById"].getMap()) {
     if (flavor.has(kv.first)) {
       dst["itemById"][kv.first]["flavor"] = flavor[kv.first];
     }
-    if (icons.count(kv.first)) {
-      auto& type = types[kv.second["type"].getString()];
-      if (type.left == -1) {
-        throw Exception("unknown type %s", kv.second["type"].getString().c_str());
-      }
-      icondst[kv.first] = type.add(icons[kv.first]);
-    } else {
-      Logger::log("item not found: %s", kv.first.c_str());
-    }
+    //if (icons.count(kv.first)) {
+    //  auto& type = types[kv.second["type"].getString()];
+    //  if (type.left == -1) {
+    //    throw Exception("unknown type %s", kv.second["type"].getString().c_str());
+    //  }
+    //  icondst[kv.first] = type.add(icons[kv.first]);
+    //} else {
+    //  Logger::log("item not found: %s", kv.first.c_str());
+    //}
   }
-  for (auto& kv : src["itemTypes"].getMap()) {
-    std::string id = kv.second["generic"].getString();
-    if (icons.count(id)) {
-      auto& type = types[kv.first];
-      if (type.left == -1) {
-        throw Exception("unknown type %s", kv.first.c_str());
-      }
-      icondst[id] = type.add(icons[id]);
-    } else {
-      Logger::log("item not found: %s", id.c_str());
-    }
-  }
-  for (auto& kv : src["legendaryGems"].getMap()) {
-    std::string id = kv.second["id"].getString();
-    if (icons.count(id)) {
-      auto& type = types["gemleg"];
-      if (type.left == -1) {
-        throw Exception("unknown type gemleg");
-      }
-      icondst[id] = type.add(icons[id]);
-    } else {
-      Logger::log("item not found: %s", id.c_str());
-    }
-  }
-  for (auto& type : types) {
-    Image img = type.second.image();
-    if (img) {
-      img.write("itemtypes/" + type.first + ".png");
-    }
-  }
+  //for (auto& kv : extra.getMap()) {
+  //  if (!kv.second.has("type")) continue;
+  //  if (icons.count(kv.first)) {
+  //    auto& type = types[kv.second["type"].getString()];
+  //    if (type.left == -1) {
+  //      throw Exception("unknown type %s", kv.second["type"].getString().c_str());
+  //    }
+  //    icondst[kv.first] = type.add(icons[kv.first]);
+  //  } else {
+  //    Logger::log("item not found: %s", kv.first.c_str());
+  //  }
+  //}
+  //for (auto& kv : dyes.getMap()) {
+  //  if (icons.count(kv.first)) {
+  //    auto& type = types["dyes"];
+  //    if (type.left == -1) {
+  //      throw Exception("unknown type dyes");
+  //    }
+  //    icondst[kv.first] = type.add(icons[kv.first]);
+  //  } else {
+  //    Logger::log("item not found: %s", kv.first.c_str());
+  //  }
+  //}
+  ////for (auto& kv : src["itemTypes"].getMap()) {
+  ////  std::string id = kv.second["generic"].getString();
+  ////  if (icons.count(id)) {
+  ////    auto& type = types[kv.first];
+  ////    if (type.left == -1) {
+  ////      throw Exception("unknown type %s", kv.first.c_str());
+  ////    }
+  ////    icondst[id] = type.add(icons[id]);
+  ////  } else {
+  ////    Logger::log("item not found: %s", id.c_str());
+  ////  }
+  ////}
+  //for (auto& kv : src["legendaryGems"].getMap()) {
+  //  std::string id = kv.second["id"].getString();
+  //  if (icons.count(id)) {
+  //    auto& type = types["gemleg"];
+  //    if (type.left == -1) {
+  //      throw Exception("unknown type gemleg");
+  //    }
+  //    icondst[id] = type.add(icons[id]);
+  //  } else {
+  //    Logger::log("item not found: %s", id.c_str());
+  //  }
+  //}
+  //for (auto& type : types) {
+  //  Image img = type.second.image();
+  //  if (img) {
+  //    img.write("itemtypes/" + type.first + ".png");
+  //  }
+  //}
   json::write(File("itemflavor.js", "w"), dst, json::mJSCall, "_L.patch.add");
-  File df("item_icons.js", "w");
-  df.printf("DiabloCalc.itemIcons = ");
-  json::write(df, icondst, json::mJS);
+  //File df("item_icons.js", "w");
+  //df.printf("DiabloCalc.itemIcons = ");
+  //json::write(df, icondst, json::mJS);
+}
+void translate_extra() {
+  json::Value dst, extra, dyesrc, dyedst;
+  json::parse(File("webgl_items.js"), extra, json::mJS);
+  json::parse(File("dyes.js"), dyesrc, json::mJS);
+  DictionaryRef names = Strings::list("Items", &cnLoader());
+  for (auto& kv : extra.getMap()) {
+    if (!kv.second.has("name")) continue;
+    dst[kv.first]["name"] = names[kv.first];
+  }
+  for (auto& kv : dyesrc.getMap()) {
+    if (!kv.second.has("name")) continue;
+    dyedst[kv.first]["name"] = names[kv.first];
+  }
+  json::Value out;
+  out["webglItems"] = dst;
+  out["webglDyes"] = dyedst;
+  json::write(File("extra_names.js", "w"), out, json::mJSCall, "_L.patch.add");
 }
 Image image_resize(Image src, int width, int height) {
   int nw = src.width() * height / src.height();
@@ -1135,15 +1178,15 @@ void dirlower(std::string const& path) {
 }
 
 void archon() {
-  Image src("class-wizard.png");
-  Image dst(src.width(), src.height());
-  dst.blt(0, 0, src, 0, 0, src.width(), src.height() - 84);
+  Image src("class-witchdoctor.png");
+  Image dst(src.width(), src.height() + 84);
+  dst.blt(0, 0, src, 0, 0, src.width(), src.height());
   std::string powers[] = {
-    "Wizard_Archon_ArcaneStrike",
-    "Wizard_Archon_DisintegrationWave",
-    "Wizard_Archon_ArcaneBlast",
-    "Wizard_Archon_Teleport",
-    "Wizard_Archon_SlowTime",
+    //"Wizard_Archon_ArcaneStrike",
+    //"Wizard_Archon_DisintegrationWave",
+    //"Wizard_Archon_ArcaneBlast",
+    //"Wizard_Archon_Teleport",
+    //"Wizard_Archon_SlowTime",
     "Witchdoctor_Hex_Explode",
   };
   int index = 0;
@@ -1151,17 +1194,17 @@ void archon() {
   auto names = Strings::list("Powers");
   for (auto& power : powers) {
     PowerTag* tag = PowerTags::get(power);
-    dst.blt(index * 42, src.height() - 84, GameTextures::get(tag->getint("Icon Normal")).resize(42, 42));
-    dst.blt(index * 42, src.height() - 42, GameTextures::get(tag->getint("Icon Inactive")).resize(42, 42));
+    dst.blt(index * 42, dst.height() - 84, GameTextures::get(tag->getint("Icon Normal")).resize(42, 42));
+    dst.blt(index * 42, dst.height() - 42, GameTextures::get(tag->getint("Icon Inactive")).resize(42, 42));
     size_t pos = power.find('_');
     auto& val = out[strlower(power.substr(pos + 1))];
     val["name"] = names[power + "_name"];
     val["tip"] = SkillTips::format(power);
-    val["row"] = src.height() / 84 - 1;
+    val["row"] = dst.height() / 84 - 1;
     val["col"] = index;
     ++index;
   }
-  dst.write("class-wizard.png");
+  dst.write("class-witchdoctor.png");
   json::write(File("extra.js", "w"), out, json::mJS);
 }
 
@@ -1178,18 +1221,21 @@ void progress(std::string const& suffix) {
 struct MonValue {
   istring name;
   double lhs, rhs;
+  double delta;
   MonValue() {}
   MonValue(istring const& name, double lhs, double rhs)
     : name(name), lhs(lhs), rhs(rhs)
-  {}
+  {
+    delta = rhs / lhs - 1;
+  }
 };
 bool operator < (MonValue const& lhs, MonValue const& rhs) {
-  return lhs.rhs > rhs.rhs;
+  return lhs.delta > rhs.delta;
 }
 void progress_comp(bool trans) {
   json::Value lhs, rhs;
   json::parse(File("monsters_live.js"), lhs);
-  json::parse(File("monsters_ptr.js"), rhs);
+  json::parse(File("monsters_latest.js"), rhs);
   std::map<istring, std::pair<double, double>> values;
   for (auto& kv : lhs.getMap()) {
     values[kv.first].first = kv.second.getNumber();
@@ -1211,12 +1257,13 @@ void progress_comp(bool trans) {
   for (auto& kv : values) {
     auto name = kv.first;
     if (trans && transl.count(name)) name = transl[name];
+    if (!kv.second.first || !kv.second.second) continue;
     monsters.emplace_back(name, kv.second.first, kv.second.second);
   }
   std::sort(monsters.begin(), monsters.end());
   File dst("monsters_diff.csv", "w");
   for (auto& mon : monsters) {
-    dst.printf("%s,%lf,%lf\n", mon.name.c_str(), mon.lhs, mon.rhs);
+    if (mon.delta) dst.printf("%s,%lf,%lf,%lf\n", mon.name.c_str(), mon.lhs, mon.rhs, mon.delta*100);
   }
 }
 
@@ -1241,3 +1288,53 @@ void json_map(std::string const& dir, bool mag) {
   FindClose(hFind);
 }
 
+void dump_affixes() {
+  SnoFile<GameBalance> gmb("1xx_AffixList");
+  json::Value value;
+  for (auto& affix : gmb->x078_AffixTable) {
+    for (auto& attr : affix.x260_AttributeSpecifiers) {
+      value[fmtstring("%d", attr.x00_Type)] = affix.x000_Text;
+    }
+  }
+  json::write(File("affixlist.js", "w"), value);
+}
+
+void dump_animset(File& file, std::string const& name) {
+  std::map<uint32, uint32> result;
+  SnoFile<AnimSet> animSet(name);
+  for (auto& tm : animSet->x010_AnimSetTagMaps) {
+    for (uint32 i = 0; i < tm.x08_TagMap[0]; ++i) {
+      uint32 type = tm.x08_TagMap[i * 3 + 2];
+      uint32 id = tm.x08_TagMap[i * 3 + 3];
+      if (Anim::name(id) && !result.count(type)) result[type] = id;
+    }
+  }
+  for (auto& kv : result) {
+    file.printf("%-8d %s\n", kv.first, Anim::name(kv.second));
+  }
+}
+void dump_animsets() {
+  SnoFile<GameBalance> gmb("Characters");
+  for (auto& hero : gmb->x088_Heros) {
+    SnoFile<Actor> actor_m(hero.x108_ActorSno.name());
+    dump_animset(File(fmtstring("animset_%s_male.txt", hero.x000_Text), "w"), actor_m->x068_AnimSetSno.name());
+    SnoFile<Actor> actor_f(hero.x10C_ActorSno.name());
+    dump_animset(File(fmtstring("animset_%s_female.txt", hero.x000_Text), "w"), actor_f->x068_AnimSetSno.name());
+  }
+}
+std::string canonize(std::string const& str);
+void write_skill_anim() {
+  SnoFile<GameBalance> gmb("Characters");
+  auto dictPowers = Strings::list("Powers");
+  json::Value output;
+  for (auto& hero : gmb->x088_Heros) {
+    SnoFile<SkillKit> kit(hero.x120_SkillKitSno.name());
+    for (auto& skill : kit->x20_ActiveSkillEntries) {
+      std::string power = skill.x00_PowerSno.name();
+      PowerTag* tag = PowerTags::get(power);
+      std::string name = dictPowers[power + "_name"];
+      output[canonize(name)] = tag->getint("Animation Tag");
+    }
+  }
+  json::write(File("skillanim.js", "w"), output, json::mJS);
+}

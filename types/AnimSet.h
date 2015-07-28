@@ -16,11 +16,9 @@ declstruct(AnimSet::Type) {
 
   SnoHeader x000_Header;
   Sno<AnimSet> x00C_AnimSetSno;
-  SerializeData x010_SerializeData;
-  Array<int> x018_TagMap = x010_SerializeData; // type: 0x000C0000
-  AnimSetTagMap x020_AnimSetTagMaps[28];
+  AnimSetTagMap x010_AnimSetTagMaps[29];
   void dumpfunc() {
-    dumpval(x000_Header, x00C_AnimSetSno, x018_TagMap, x020_AnimSetTagMaps);
+    dumpval(x000_Header, x00C_AnimSetSno, x010_AnimSetTagMaps);
   }
 };
 

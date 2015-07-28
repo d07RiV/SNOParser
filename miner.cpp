@@ -76,11 +76,10 @@ struct FormatData {
   }
 };
 
-#ifdef PTR
-static const uint32 PowerAttribute = 1270;
-#else
-static const uint32 PowerAttribute = 1265;
-#endif
+uint32 PowerAttribute() {
+  static uint32 attr = fixAttrId(1270, true);
+  return attr;
+}
 
 void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) {
   FormatData& stl = FormatData::get();
@@ -97,20 +96,20 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
   for (auto& attr : item.x1F8_AttributeSpecifiers) {
     if (attr.x00_Type != -1) {
       attrs[GameAffixes::isSecondary(attr.x00_Type)].emplace_back(attr);
-      if (attr.x00_Type == PowerAttribute) {
+      if (attr.x00_Type == PowerAttribute()) {
         powers.insert(attr.x04_Param);
       }
     }
   }
   if (item.x4B8_AttributeSpecifier.x00_Type != -1) {
     attrs[GameAffixes::isSecondary(item.x4B8_AttributeSpecifier.x00_Type)].emplace_back(item.x4B8_AttributeSpecifier);
-    if (item.x4B8_AttributeSpecifier.x00_Type == PowerAttribute) {
+    if (item.x4B8_AttributeSpecifier.x00_Type == PowerAttribute()) {
       powers.insert(item.x4B8_AttributeSpecifier.x04_Param);
     }
   }
   if (item.x4D0_AttributeSpecifier.x00_Type != -1) {
     attrs[GameAffixes::isSecondary(item.x4D0_AttributeSpecifier.x00_Type)].emplace_back(item.x4D0_AttributeSpecifier);
-    if (item.x4D0_AttributeSpecifier.x00_Type == PowerAttribute) {
+    if (item.x4D0_AttributeSpecifier.x00_Type == PowerAttribute()) {
       powers.insert(item.x4D0_AttributeSpecifier.x04_Param);
     }
   }
@@ -201,7 +200,7 @@ void parseSetBonus(GameBalance::Type::SetItemBonusTableEntry const& bonus, json:
   for (auto& attr : bonus.x110_AttributeSpecifiers) {
     if (attr.x00_Type >= 0) {
       attrs.emplace_back(attr);
-      if (attr.x00_Type == PowerAttribute) {
+      if (attr.x00_Type == PowerAttribute()) {
         powers.insert(attr.x04_Param);
       }
     }
@@ -450,7 +449,7 @@ double jsonDist(json::Value const& lhs, json::Value const& rhs) {
       sum += jsonDist(*pp.first, *pp.second) * std::max(jsonLength(*pp.first), jsonLength(*pp.second));
     }
   }
-  return sum / std::max(1u, std::max(jsonLength(lhs), jsonLength(rhs)));
+  return sum / std::max((size_t) 1, std::max(jsonLength(lhs), jsonLength(rhs)));
 }
 MergedArrays jsonMerge(json::Value const& lhs, json::Value const& rhs, bool exact) {
   MergedArrays list;

@@ -98,8 +98,9 @@ typedef FormatARGB<8,8,8,8> DefaultFormat;
 
 namespace ImageFormat {
   enum Type {
-    Unknown     = 0,
-    PNG         = 1,
+    Unknown       = 0,
+    PNG           = 1,
+    PNGGrayscale  = 2,
 
     NumFormats
   };

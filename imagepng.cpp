@@ -276,7 +276,7 @@ namespace ImagePrivate {
 
   using namespace _png;
 
-  bool imWritePNG(Image const& image, File& file) {
+  bool imWritePNG(Image const& image, File& file, bool gray) {
     file.write(pngSignature, 8);
 
     uint32 width = image.width();
@@ -287,23 +287,30 @@ namespace ImagePrivate {
     hdr.width = _byteswap_ulong(width);
     hdr.height = _byteswap_ulong(height);
     hdr.bitDepth = 8;
-    hdr.colorType = 6;
+    hdr.colorType = (gray ? 0 : 6);
     hdr.compressionMethod = 0;
     hdr.filterMethod = 0;
     hdr.interlaceMethod = 0;
     write_chunk('IHDR', sizeof hdr, &hdr, file);
 
-    uint32 usize = (width * 4 + 1) * height;
+    uint32 usize = (width * (gray ? 1 : 4) + 1) * height;
     std::vector<uint8> udata(usize);
     uint8* dst = &udata[0];
     for (int y = 0; y < height; y++) {
       *dst++ = 0;
       for (int x = 0; x < width; x++) {
         Image::Format::color_t color = *bits++;
-        *dst++ = Image::Format::red::from(color);
-        *dst++ = Image::Format::green::from(color);
-        *dst++ = Image::Format::blue::from(color);
-        *dst++ = Image::Format::alpha::from(color);
+        if (gray) {
+          int sum = Image::Format::red::from(color) +
+                    Image::Format::green::from(color) +
+                    Image::Format::blue::from(color);
+          *dst++ = sum / 3;
+        } else {
+          *dst++ = Image::Format::red::from(color);
+          *dst++ = Image::Format::green::from(color);
+          *dst++ = Image::Format::blue::from(color);
+          *dst++ = Image::Format::alpha::from(color);
+        }
       }
     }
     uint32 csize = (usize * 11) / 10 + 32;

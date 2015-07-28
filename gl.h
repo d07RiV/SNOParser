@@ -31,6 +31,8 @@ class GL {
 protected:
   virtual void render() {}
   virtual void onKey(int vk) {}
+public:
+
   void text(int x, int y, wchar_t const* str);
   void text(int x, int y, char const* str);
   void text(Vector const& v, char const* str);
@@ -42,7 +44,7 @@ protected:
 
   void sphere(Vector const& c, float r);
   void capsule(Vector const& a, Vector const& b, float r);
-public:
+
   GL(char const* title = "SnoGl");
   ~GL();
 

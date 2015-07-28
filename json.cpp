@@ -914,7 +914,7 @@ bool WriterVisitor::onInteger(int val) {
 }
 bool WriterVisitor::onNumber(double val) {
   onValue();
-  file_.printf("%lf", val);
+  file_.printf("%.14g", val);
   return true;
 }
 bool WriterVisitor::onString(std::string const& val) {

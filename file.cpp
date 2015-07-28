@@ -227,3 +227,104 @@ public:
 File File::subfile(uint64 offset, uint64 size) {
   return File(new SubFileBuffer(*this, offset, size));
 }
+
+class MemoryBuffer : public FileBuffer {
+  size_t pos_;
+  uint8* data_;
+  size_t size_;
+  size_t alloc_;
+  size_t grow_;
+public:
+  MemoryBuffer(size_t size, size_t grow)
+    : alloc_(size)
+    , grow_(grow)
+    , size_(0)
+    , pos_(0)
+  {
+    data_ = new uint8[size];
+  }
+  ~MemoryBuffer() {
+    delete[] data_;
+  }
+
+  int getc() {
+    if (pos_ < size_) return data_[pos_++];
+    return EOF;
+  }
+
+  uint64 tell() const {
+    return pos_;
+  }
+  void seek(int64 pos, int mode) {
+    switch (mode) {
+    case SEEK_CUR:
+      pos += pos_;
+      break;
+    case SEEK_END:
+      pos += size_;
+      break;
+    }
+    if (pos < 0) pos = 0;
+    if (pos > size_) pos = size_;
+    pos_ = pos;
+  }
+  uint64 size() {
+    return size_;
+  }
+
+  size_t read(void* ptr, size_t size) {
+    if (size + pos_ > size_) {
+      size = size_ - pos_;
+    }
+    if (size) {
+      memcpy(ptr, data_ + pos_, size);
+      pos_ += size;
+    }
+    return size;
+  }
+
+  size_t write(void const* ptr, size_t size) {
+    memcpy(reserve(size), ptr, size);
+    return size;
+  }
+
+  uint8 const* data() const {
+    return data_;
+  }
+  uint8* reserve(uint32 size) {
+    if (pos_ + size > alloc_) {
+      while (alloc_ < pos_ + size) {
+        if (alloc_ < grow_) alloc_ *= 2;
+        else alloc_ += grow_;
+      }
+      uint8* temp = new uint8[alloc_];
+      memcpy(temp, data_, size_);
+      delete[] data_;
+      data_ = temp;
+    }
+    uint8* res = data_ + pos_;
+    pos_ += size;
+    if (pos_ > size_) size_ = pos_;
+    return res;
+  }
+  void resize(uint32 size) {
+    size_ = size;
+    if (pos_ > size) pos_ = size;
+  }
+};
+
+MemoryFile::MemoryFile(size_t initial, size_t grow)
+  : File(new MemoryBuffer(initial, grow))
+{}
+uint8 const* MemoryFile::data() const {
+  MemoryBuffer* buffer = dynamic_cast<MemoryBuffer*>(file_);
+  return (buffer ? buffer->data() : nullptr);
+}
+uint8* MemoryFile::reserve(uint32 size) {
+  MemoryBuffer* buffer = dynamic_cast<MemoryBuffer*>(file_);
+  return (buffer ? buffer->reserve(size) : nullptr);
+}
+void MemoryFile::resize(uint32 size) {
+  MemoryBuffer* buffer = dynamic_cast<MemoryBuffer*>(file_);
+  if (buffer) buffer->resize(size);
+}

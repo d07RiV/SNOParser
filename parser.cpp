@@ -47,7 +47,11 @@ SnoSysLoader SnoSysLoader::default("");
 SnoLoader* SnoLoader::default = &SnoSysLoader::default;
 
 #pragma warning(disable: 4005)
+#ifdef _WIN64
+#include "CascLib64/CascLib.h"
+#else
 #include "CascLib/CascLib.h"
+#endif
 
 static bool stringMatch(char const* pattern, char const* str) {
   for (int i = 0; pattern[i] && pattern[i] != '*'; ++i) {

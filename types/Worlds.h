@@ -218,14 +218,6 @@ declstruct(Worlds::Type) {
     }
   };
 
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(AABB) {
     DT_VECTOR3D x00_DT_VECTOR3D;
     uint32 x08_;

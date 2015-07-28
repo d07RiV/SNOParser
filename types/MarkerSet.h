@@ -41,14 +41,6 @@ declstruct(MarkerSet::Type) {
     }
   };
 
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(Marker) {
     char x00_Text[128];
     int x80;

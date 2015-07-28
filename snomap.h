@@ -14,6 +14,9 @@ public:
     auto it = map_.find(id);
     return (it == map_.end() ? nullptr : it->second.c_str());
   }
+  std::map<uint32, std::string> const& get() const {
+    return map_;
+  }
 private:
   friend class SnoManager;
   std::map<uint32, std::string> map_;

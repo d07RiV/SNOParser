@@ -6,14 +6,6 @@
 #pragma pack(push, 1)
 
 declstruct(LevelArea::Type) {
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(GizmoLocSpawnChoice) {
     SNOName x00_SNOName;
     int x08;

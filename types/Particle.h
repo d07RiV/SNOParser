@@ -160,9 +160,7 @@ declstruct(Particle::Type) {
 
   declstruct(VectorNode) {
     DT_VECTOR3D x00_DT_VECTOR3D;
-    uint32 x08_;
     DT_VECTOR3D x0C_DT_VECTOR3D;
-    uint32 x14_;
     float x18;
     void dumpfunc() {
       dumpval(x00_DT_VECTOR3D, x0C_DT_VECTOR3D, x18);
@@ -191,13 +189,9 @@ declstruct(Particle::Type) {
 
   declstruct(Material) {
     DT_RGBACOLORVALUE x00_DT_RGBACOLORVALUE;
-    uint32 x0C_;
     DT_RGBACOLORVALUE x10_DT_RGBACOLORVALUE;
-    uint32 x1C_;
     DT_RGBACOLORVALUE x20_DT_RGBACOLORVALUE;
-    uint32 x2C_;
     DT_RGBACOLORVALUE x30_DT_RGBACOLORVALUE;
-    uint32 x3C_;
     float x40;
     int x44;
     void dumpfunc() {
@@ -320,9 +314,7 @@ declstruct(Particle::Type) {
 
   declstruct(ColorNode) {
     DT_RGBACOLOR x00_DT_RGBACOLOR;
-    uint8 x03_;
     DT_RGBACOLOR x04_DT_RGBACOLOR;
-    uint8 x07_;
     float x08;
     void dumpfunc() {
       dumpval(x00_DT_RGBACOLOR, x04_DT_RGBACOLOR, x08);
@@ -408,14 +400,6 @@ declstruct(Particle::Type) {
     }
   };
 
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(TriggerConditions) {
     int x00_Percent;
     float x04_Time;
@@ -460,10 +444,8 @@ declstruct(Particle::Type) {
     int x180;
     float x184_Time;
     DT_RGBACOLOR x188_DT_RGBACOLOR;
-    uint8 x18B_;
     float x18C_Time;
     DT_RGBACOLOR x190_DT_RGBACOLOR;
-    uint8 x193_;
     float x194_Time;
     void dumpfunc() {
       dumpval(x000, x004_TriggerConditions, x028, x02C_SNOName, x034, x038);

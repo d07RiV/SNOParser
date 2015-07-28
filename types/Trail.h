@@ -18,9 +18,7 @@ declstruct(Trail::Type) {
 
   declstruct(ColorNode) {
     DT_RGBACOLOR x00_DT_RGBACOLOR;
-    uint8 x03_;
     DT_RGBACOLOR x04_DT_RGBACOLOR;
-    uint8 x07_;
     float x08;
     void dumpfunc() {
       dumpval(x00_DT_RGBACOLOR, x04_DT_RGBACOLOR, x08);
@@ -88,13 +86,9 @@ declstruct(Trail::Type) {
 
   declstruct(Material) {
     DT_RGBACOLORVALUE x00_DT_RGBACOLORVALUE;
-    uint32 x0C_;
     DT_RGBACOLORVALUE x10_DT_RGBACOLORVALUE;
-    uint32 x1C_;
     DT_RGBACOLORVALUE x20_DT_RGBACOLORVALUE;
-    uint32 x2C_;
     DT_RGBACOLORVALUE x30_DT_RGBACOLORVALUE;
-    uint32 x3C_;
     float x40;
     int x44;
     void dumpfunc() {

@@ -47,26 +47,26 @@ uint32 RefCounted::release() {
 }
 
 void _qmemset(uint32* mem, uint32 fill, uint32 count) {
-  _asm {
-    cld
-    mov edi, mem
-    mov ecx, count
-    mov eax, fill
-    rep stosd
+  while (count--) {
+    *mem++ = fill;
   }
 }
 
 #include "zlib/zlib.h"
+#ifdef _WIN64
+#pragma comment(lib, "zlib/zlib64.lib")
+#else
 #ifdef _DEBUG
 #pragma comment(lib, "zlib/zlib.lib")
 #else
 #pragma comment(lib, "zlib/zlib_r.lib")
 #endif
+#endif
 
-uint32 gzdeflate(uint8* in, uint32 in_size, uint8* out, uint32* out_size) {
+uint32 gzdeflate(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size) {
   z_stream z;
   memset(&z, 0, sizeof z);
-  z.next_in = in;
+  z.next_in = const_cast<Bytef*>(in);
   z.avail_in = in_size;
   z.total_in = in_size;
   z.next_out = out;
@@ -83,10 +83,28 @@ uint32 gzdeflate(uint8* in, uint32 in_size, uint8* out, uint32* out_size) {
   }
   return (result == Z_STREAM_END ? 0 : -1);
 }
-uint32 gzinflate(uint8* in, uint32 in_size, uint8* out, uint32* out_size) {
+uint32 gzencode(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size) {
   z_stream z;
   memset(&z, 0, sizeof z);
-  z.next_in = in;
+  z.next_in = const_cast<Bytef*>(in);
+  z.avail_in = in_size;
+  z.total_in = in_size;
+  z.next_out = out;
+  z.avail_out = *out_size;
+  z.total_out = 0;
+
+  int result = deflateInit2(&z, 6, Z_DEFLATED, 16 + MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
+  if (result == Z_OK) {
+    result = deflate(&z, Z_FINISH);
+    *out_size = z.total_out;
+    deflateEnd(&z);
+  }
+  return ((result == Z_OK || result == Z_STREAM_END) ? 0 : 1);
+}
+uint32 gzinflate(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size) {
+  z_stream z;
+  memset(&z, 0, sizeof z);
+  z.next_in = const_cast<Bytef*>(in);
   z.avail_in = in_size;
   z.total_in = in_size;
   z.next_out = out;
@@ -102,6 +120,24 @@ uint32 gzinflate(uint8* in, uint32 in_size, uint8* out, uint32* out_size) {
     inflateEnd(&z);
   }
   return (z.avail_out == 0 ? 0 : -1);
+}
+uint32 gzdecode(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size) {
+  z_stream z;
+  memset(&z, 0, sizeof z);
+  z.next_in = const_cast<Bytef*>(in);
+  z.avail_in = in_size;
+  z.total_in = in_size;
+  z.next_out = out;
+  z.avail_out = *out_size;
+  z.total_out = 0;
+
+  int result = inflateInit2(&z, 16 + MAX_WBITS);
+  if (result == Z_OK) {
+    result = inflate(&z, Z_FINISH);
+    *out_size = z.total_out;
+    deflateEnd(&z);
+  }
+  return (z.avail_out == 0 ? 0 : 1);
 }
 
 std::string strlower(std::string const& str) {

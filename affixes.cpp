@@ -5,6 +5,67 @@
 #include "regexp.h"
 #include <algorithm>
 
+int fixAttrId(int id, bool reverse) {
+  static enum { Unknown, Live, Ptr, Ptr2 } version = Unknown;
+  if (version == Unknown) {
+    SnoFile<GameBalance> gmb("1xx_AffixList");
+    for (auto& affix : gmb->x078_AffixTable) {
+      if (!strcmp(affix.x000_Text, "1xx_CCReduction 0.1 Legendary")) {
+        switch (affix.x260_AttributeSpecifiers[0].x00_Type) {
+        case 683: version = Live; break;
+        case 689: version = Ptr; break;
+        case 690: version = Ptr2; break;
+        default: throw Exception("unknown build version");
+        }
+        break;
+      }
+    }
+  }
+  if (reverse) {
+    switch (version) {
+    case Live:
+      if (id >= 677) {
+        return id - 5;
+      } else if (id >= 168) {
+        return id - 3;
+      } else {
+        return id;
+      }
+    case Ptr:
+      return id;
+    case Ptr2:
+      if (id >= 677) {
+        return id + 1;
+      } else {
+        return id;
+      }
+    default:
+      return id;
+    }
+  } else {
+    switch (version) {
+    case Live:
+      if (id >= 672) {
+        return id + 5;
+      } else if (id >= 165) {
+        return id + 3;
+      } else {
+        return id;
+      }
+    case Ptr:
+      return id;
+    case Ptr2:
+      if (id >= 678) {
+        return id - 1;
+      } else {
+        return id;
+      }
+    default:
+      return id;
+    }
+  }
+}
+
 bool GameAffixes::isSecondary(uint32 attr) {
   return instance().affixData_.secondary.count(fixAttrId(attr)) != 0;
 }

@@ -279,7 +279,7 @@ void simBase(std::string const& name) {
   };
   std::reverse(prio, prio + 29);
   for (uint32 id : prio) {
-    auto& tag = (id == 0 ? animSet->x018_TagMap : animSet->x020_AnimSetTagMaps[id - 1].x08_TagMap);
+    auto& tag = animSet->x010_AnimSetTagMaps[id].x08_TagMap;
     if (tag.size() == 0 || tag.size() != tag[0] * 3 + 1) continue;
     for (uint32 i = 0; i < tag[0]; ++i) {
       if (tag[i * 3 + 1] != 2) break;

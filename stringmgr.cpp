@@ -61,7 +61,7 @@ ExeFile::ExeFile(std::string const& path)
   IMAGE_DOS_HEADER dos;
   read(&dos, sizeof dos);
   seek(dos.e_lfanew);
-  IMAGE_NT_HEADERS nt;
+  IMAGE_NT_HEADERS32 nt;
   read(&nt, sizeof nt);
   auto& opt = nt.OptionalHeader;
   dataPos_ = opt.SizeOfHeaders + opt.SizeOfCode;

@@ -53,7 +53,7 @@ Image GameTextures::get(uint32 id) {
       if (fid == inst.files_.end()) return Image();
       auto& tex = inst.textures_[id];
       SnoFile<Textures> texture(inst.files_[id]);
-      tex.image = texture->load();
+      if (texture) tex.image = texture->load();
       return tex.image;
     }
     return fit->second.image;

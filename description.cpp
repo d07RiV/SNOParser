@@ -479,7 +479,8 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
         case 748: stack.push(getval(values, "Buff_Icon_Count3")); break;
         case 1056: stack.push(getval(values, "Resource_Gain_Bonus_Percent")); break;
         case 1377: stack.push(getval(values, "Effective_Level")); break;
-        default: stack.push(0);
+        //default: stack.push(0);
+        default: throw Exception("unknown attribute id %u", fixAttrId(y));
         }
         break;
       case 1: stack.push(getval(values, "sLevel")); break;
@@ -532,6 +533,7 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
         if (x >= 23 && x <= 86) {
           stack.push(context ? context->get(x - 23, values) : 0); break;
         } else {
+          throw Exception("unknown value id %u", x);
           stack.push(0);
         }
       }
@@ -581,6 +583,7 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
       stack.push(a.max ? b : c);
       break;
     default:
+      throw Exception("unknown opcode %u", begin[-1]);
       return 0;
     }
   }

@@ -44,7 +44,6 @@ declstruct(Shaders::Type) {
     int x54;
     int x58;
     DT_RGBACOLOR x5C_DT_RGBACOLOR;
-    uint8 x5F_;
     void dumpfunc() {
       dumpval(x00, x04, x08, x0C, x10, x14);
       dumpval(x18, x1C, x20, x24, x28, x2C);

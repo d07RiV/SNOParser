@@ -72,14 +72,6 @@ declstruct(Actor::Type) {
     }
   };
 
-  declstruct(SNOName) {
-    int x00_SnoGroup;
-    int x04_SnoNameHandle;
-    void dumpfunc() {
-      dumpval(x00_SnoGroup, x04_SnoNameHandle);
-    }
-  };
-
   declstruct(TriggerConditions) {
     int x00_Percent;
     float x04_Time;
@@ -124,10 +116,8 @@ declstruct(Actor::Type) {
     int x180;
     float x184_Time;
     DT_RGBACOLOR x188_DT_RGBACOLOR;
-    uint8 x18B_;
     float x18C_Time;
     DT_RGBACOLOR x190_DT_RGBACOLOR;
-    uint8 x193_;
     float x194_Time;
     void dumpfunc() {
       dumpval(x000, x004_TriggerConditions, x028, x02C_SNOName, x034, x038);

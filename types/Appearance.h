@@ -380,7 +380,7 @@ declstruct(Appearance::Type) {
     Array<CollisionShape> x180_CollisionShapes = x178_SerializeData;
     int64 x188;
     void dumpfunc() {
-      dumpval(x000_ObjectType, x004, x010_FatVertexs, x020_VertInfluences, x028, x038_short);
+      dumpval(x000_ObjectType, x004, /*x010_FatVertexs, x020_VertInfluences,*/ x028/*, x038_short*/);
       dumpval(x048_ClothStructures, x050_SurfaceSno, x054, x058, x05C_Text, x0DC_Text);
       dumpval(x15C_AABB, x174, x180_CollisionShapes, x188);
     }
@@ -618,7 +618,7 @@ declstruct(Appearance::Type) {
     int x00;
     Sno<Cloth> x04_ClothSno;
     SerializeData x08_SerializeData;
-    Array<int> x10_TagMap = x08_SerializeData; // type: 0x000A0000
+    Array<TagValue> x10_TagMap = x08_SerializeData; // type: 0x000A0000
     UberMaterial x18_UberMaterial;
     Sno<::Material> x80_MaterialSno;
     uint32 x84_;
