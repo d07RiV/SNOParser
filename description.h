@@ -1,3 +1,18 @@
+// description.h
+//
+// calculate formulas and format attribute descriptions
+//
+// struct AttributeValue - generic attribute value
+//   double min, max - value range, or single value (if min=max)
+//   double const* table - power table reference (used in formulas)
+//   std::string text - text (i.e. skill name in some attributes)
+//
+// AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap const& values = {}, PowerTag* context = nullptr)
+//   execute a 'binary' formula
+//
+// std::string FormatDescription(std::string const& descr, bool html, AttributeMap const& values = {}, PowerTag* context = nullptr)
+//   format a description from StringLists
+
 #pragma once
 #include <string>
 #include <map>

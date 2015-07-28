@@ -1,3 +1,7 @@
+// translations.h
+//
+// SkillTips::dump() - generate skill tooltips JS files for all classes (for d3planner)
+
 #pragma once
 #include "common.h"
 #include "json.h"

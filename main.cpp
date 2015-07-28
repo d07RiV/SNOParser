@@ -179,7 +179,10 @@ int do_main() {
   SnoCascLoader casc(path::casc(), "enUS");
   //SnoCascLoader casc("G:\\D3Live\\Data", "enUS");
   SnoLoader::default = &casc;
-  WebGL::AllItems(true, false, false);
+  //WebGL::AllItems(true, false, false);
+  casc.dump<Particle>();
+  casc.dump<Trail>();
+  casc.dump<Appearance>("twoHandedSword_norm_unique_04");
   //WebGL::Archive lhs(File("textures2.wgz"), false), rhs(File("textures.wgz"), false);
   //WebGL::Archive::compare(File("texturediff.txt", "w"), lhs, rhs, Textures::name);
   return 0;

@@ -1,3 +1,7 @@
+// webgl.h
+//
+// dump character/item models, textures and animations into binary archives
+
 #pragma once
 #include "common.h"
 #include "math3d.h"

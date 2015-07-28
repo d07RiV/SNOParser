@@ -1,3 +1,10 @@
+// strings.h
+//
+// manages StringLists
+//
+// Strings::list(istring const& name, SnoLoader* loader = nullptr) - get string list by file name
+// Strings::get(istring const& dict, istring const& name) - get specific string
+
 #pragma once
 #include "common.h"
 #include "parser.h"

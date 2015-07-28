@@ -1,3 +1,9 @@
+// textures.h
+//
+// Image GameTextures::get(uint32 id)
+//   get texture by file id, or by subimage id
+//   takes a very long time to build the cache on the first run
+
 #pragma once
 #include "types/Textures.h"
 #include "common.h"

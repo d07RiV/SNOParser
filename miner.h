@@ -1,3 +1,18 @@
+// miner.h
+//
+// dump item/set/skill into json
+// compare json files
+//
+// parseItem, parseSetBonus, parsePower - parse into json
+//
+// jsonCompare - compare two json values, only leave different entries
+//
+// diff, makehtml - generate diff/dump json as html, json values must have a certain structure:
+//   id: {name1: value1, name2: value2, ...}, where values are plain numbers/strings, or arrays of numbers/strings
+//   see uses in garbage.cpp for details
+//
+// fulldiff<T> - find *all* differences between two game versions (in files of type T)
+
 #pragma once
 #include "types/GameBalance.h"
 #include "types/Power.h"

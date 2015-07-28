@@ -1,3 +1,16 @@
+// model.h
+//
+// model viewer
+//
+// class Model
+//   Model(char const* name) - create model from Appearance file
+//   void appearance(uint32 subObject, uint32 index) - enable subObject with certain appearance material
+//     (Appearance files consist of multiple sub objects, each object can be displayed with different materials)
+//   void setAnimation(char const* name) - load animation from Anim file
+//
+// void ViewModel(Model& model)
+//   run the model viewer
+
 #pragma once
 #include "types/Appearance.h"
 #include "types/Anim.h"

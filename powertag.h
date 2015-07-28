@@ -1,3 +1,22 @@
+// powertag.h
+//
+// power formula manager
+//
+// PowerTag* PowerTags::get(istring const& name) - get power tag by name
+// PowerTag* PowerTags::getraw(uint32 power_id) - get power tag by id
+// AttributeValue PowerTags::get(istring const& name, istring const& formula, AttributeMap const& attr = {})
+//   get formula value by name
+// AttributeValue PowerTags::get(istring const& name, int id, AttributeMap const& attr = {})
+//   get Script Formula # value
+//
+// AttributeValue PowerTag::get(istring const& formula, AttributeMap const& attr = {})
+// AttributeValue PowerTag::get(int id, AttributeMap const& attr = {})
+//   get formula by name, or Script Formula #
+// AttributeValue PowerTag::getraw(uint32 id, AttributeMap const& attr = {})
+//   get formula by raw id
+// uint32 getint(istring const& formula)
+//   get constant value (no formulas)
+
 #include "common.h"
 #include "parser.h"
 #include "description.h"

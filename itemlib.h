@@ -1,3 +1,10 @@
+// itemlib.h
+//
+// item library (access item data by text ID)
+//
+// GameBalance::Type::Item* ItemLibrary::get(istring const& id)
+//   get item data
+
 #pragma once
 #include "types/GameBalance.h"
 #include <list>
