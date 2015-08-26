@@ -205,3 +205,19 @@ public:
     return *this;
   }
 };
+
+class Archive {
+  std::map<uint32, MemoryFile> files_;
+public:
+  Archive() {}
+  Archive(File& file, bool compression = true) {
+    load(file, compression);
+  }
+  void load(File& file, bool compression = true);
+  bool has(uint32 id);
+  File& create(uint32 id);
+
+  static void compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)(uint32) = nullptr);
+
+  void write(File& file, bool compression = true);
+};

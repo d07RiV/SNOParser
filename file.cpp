@@ -1,5 +1,6 @@
 #include "file.h"
 #include <windows.h>
+#include <set>
 
 class StdFileBuffer : public FileBuffer {
   FILE* file_;
@@ -327,4 +328,92 @@ uint8* MemoryFile::reserve(uint32 size) {
 void MemoryFile::resize(uint32 size) {
   MemoryBuffer* buffer = dynamic_cast<MemoryBuffer*>(file_);
   if (buffer) buffer->resize(size);
+}
+
+#include "zlib/zlib.h"
+
+File& Archive::create(uint32 id) {
+  auto& file = files_[id];
+  file.resize(0);
+  return file;
+}
+void Archive::write(File& file, bool compression) {
+  std::map<uint32, std::vector<uint8>> data;
+  for (auto& kv : files_) {
+    auto& vec = data[kv.first];
+    uint32 outSize = kv.second.size();
+    vec.resize(outSize);
+    if (compression) {
+      gzencode(kv.second.data(), kv.second.size(), vec.data(), &outSize);
+      vec.resize(outSize);
+    } else {
+      memcpy(vec.data(), kv.second.data(), outSize);
+    }
+  }
+  uint32 count = data.size();
+  file.write32(count);
+  uint32 offset = count * 12 + 4;
+  for (auto& kv : data) {
+    file.write32(kv.first);
+    file.write32(offset);
+    file.write32(kv.second.size());
+    offset += kv.second.size();
+  }
+  for (auto& kv : data) {
+    file.write(kv.second.data(), kv.second.size());
+  }
+}
+void Archive::load(File& file, bool compression) {
+  if (file) {
+    uint32 count = file.read32();
+    for (uint32 i = 0; i < count; ++i) {
+      file.seek(i * 12 + 4);
+      uint32 id = file.read32();
+      uint32 offset = file.read32();
+      uint32 size = file.read32();
+      file.seek(offset);
+      MemoryFile& mem = files_[id];
+      if (compression) {
+        std::vector<uint8> temp(size);
+        file.read(temp.data(), size);
+        z_stream z;
+        memset(&z, 0, sizeof z);
+        z.next_in = temp.data();
+        z.avail_in = size;
+        z.total_in = size;
+        z.next_out = nullptr;
+        z.avail_out = 0;
+        z.total_out = 0;
+
+        int result = inflateInit2(&z, 16 + MAX_WBITS);
+        if (result == Z_OK) {
+          do {
+            uint32 pos = mem.size();
+            z.avail_out = size;
+            z.next_out = mem.reserve(size);
+            result = inflate(&z, Z_NO_FLUSH);
+            mem.resize(pos + size - z.avail_out);
+            if (result == Z_NEED_DICT || result == Z_DATA_ERROR || result == Z_MEM_ERROR) break;
+          } while (result != Z_STREAM_END);
+        }
+      } else {
+        file.read(mem.reserve(size), size);
+      }
+    }
+  }
+}
+bool Archive::has(uint32 id) {
+  return files_.count(id) != 0;
+}
+
+void Archive::compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)(uint32)) {
+  std::set<uint32> files;
+  for (auto& kv : lhs.files_) files.insert(kv.first);
+  for (auto& kv : rhs.files_) files.insert(kv.first);
+  for (uint32 id : files) {
+    uint32 lsize = (lhs.has(id) ? lhs.files_[id].size() : 0);
+    uint32 rsize = (rhs.has(id) ? rhs.files_[id].size() : 0);
+    char const* name = (Func ? Func(id) : nullptr);
+    if (lsize != rsize) diff.printf("%-8u %-8u %-8u%s\n", id, lsize, rsize, name ? name : "");
+  }
 }

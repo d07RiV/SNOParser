@@ -65,8 +65,8 @@ declstruct(Particle::Type) {
   };
 
   declstruct(TimeNode) {
-    float x00_Time;
-    float x04_Time;
+    int x00_Time;
+    int x04_Time;
     float x08;
     void dumpfunc() {
       dumpval(x00_Time, x04_Time, x08);
@@ -402,10 +402,10 @@ declstruct(Particle::Type) {
 
   declstruct(TriggerConditions) {
     int x00_Percent;
-    float x04_Time;
-    float x08_Time;
-    float x0C_Time;
-    float x10_Time;
+    int x04_Time;
+    int x08_Time;
+    int x0C_Time;
+    int x10_Time;
     float x14_Impulse;
     float x18_Impulse;
     int x1C;
@@ -442,11 +442,11 @@ declstruct(Particle::Type) {
     int x178;
     float x17C_Velocity;
     int x180;
-    float x184_Time;
+    int x184_Time;
     DT_RGBACOLOR x188_DT_RGBACOLOR;
-    float x18C_Time;
+    int x18C_Time;
     DT_RGBACOLOR x190_DT_RGBACOLOR;
-    float x194_Time;
+    int x194_Time;
     void dumpfunc() {
       dumpval(x000, x004_TriggerConditions, x028, x02C_SNOName, x034, x038);
       dumpval(x03C, x040, x044_HardpointLinks, x0CC_LookLink, x10C_ConstraintLink, x14C);
@@ -467,9 +467,9 @@ declstruct(Particle::Type) {
   SnoHeader x000_Header;
   int x00C;
   int x010;
-  float x014_Time;
-  float x018_Time;
-  float x01C_Time;
+  int x014_Time;
+  int x018_Time;
+  int x01C_Time;
   InterpolationScalar x020_InterpolationScalar;
   int x02C;
   FloatPath x030_FloatPath;

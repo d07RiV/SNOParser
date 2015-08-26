@@ -7,9 +7,9 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "math3d.h"
+#include "frameui/framewnd.h"
 
-class GL {
-  HWND hWnd;
+class GL : public WindowFrame {
   HDC hDC;
   HGLRC hRC;
   HFONT hFont;
@@ -21,17 +21,22 @@ class GL {
   float dist;
   bool active;
   int northo;
+  uint32 color;
   struct Trackable {
     Vector pos;
     float radius;
     std::string text;
   };
   std::vector<Trackable> trackables;
-  static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+  LRESULT onMessage(uint32 message, WPARAM wParam, LPARAM lParam) override;
 protected:
-  virtual void render() {}
+  virtual void doRender() {}
   virtual void onKey(int vk) {}
 public:
+
+  void setColor(uint32 color_) {
+    color = color_;
+  }
 
   void text(int x, int y, wchar_t const* str);
   void text(int x, int y, char const* str);
@@ -45,9 +50,12 @@ public:
   void sphere(Vector const& c, float r);
   void capsule(Vector const& a, Vector const& b, float r);
 
-  GL(char const* title = "SnoGl");
+  GL(Frame* parent);
   ~GL();
 
   uint32 genTexture(Image const& img);
-  void loop();
+
+  Image capture();
+
+  void render();
 };

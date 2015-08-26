@@ -5,8 +5,8 @@
 
 static const int TextBase = 1000;
 
-GL::GL(char const* title)
-  : hWnd(NULL)
+GL::GL(Frame* parent)
+  : WindowFrame(parent)
   , hDC(NULL)
   , hRC(NULL)
   , hFont(NULL)
@@ -17,21 +17,14 @@ GL::GL(char const* title)
   , dragY(0)
   , drag(false)
   , northo(0)
+  , color(0)
 {
   static std::string regClass;
-  if (regClass.empty()) {
-    regClass = "SnoGlWcx";
-    WNDCLASSEX wcex;
-    memset(&wcex, 0, sizeof wcex);
-    wcex.cbSize = sizeof wcex;
-    wcex.lpfnWndProc = WndProc;
-    wcex.hInstance = GetModuleHandle(NULL);
-    wcex.lpszClassName = regClass.c_str();
-    wcex.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW));
-    RegisterClassEx(&wcex);
+  if (WNDCLASSEX* wcx = createclass("GlViewClass")) {
+    wcx->hCursor = LoadCursor(NULL, IDC_ARROW);
+    RegisterClassEx(wcx);
   }
-  hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, regClass.c_str(), title, WS_OVERLAPPEDWINDOW,
-    CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, GetConsoleWindow(), NULL, GetModuleHandle(NULL), this);
+  create("", WS_CHILD | WS_VISIBLE, WS_EX_CLIENTEDGE);
 
   typedef Image::Format Fmt;
   PIXELFORMATDESCRIPTOR pfd;
@@ -95,57 +88,49 @@ GL::~GL() {
   if (hRC) wglDeleteContext(hRC);
   if (hFont) DeleteObject(hFont);
   if (hWnd && hDC) ReleaseDC(hWnd, hDC);
-  if (hWnd) DestroyWindow(hWnd);
 }
 
-void GL::loop() {
-  while (hWnd) {
-    MSG msg;
-    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-      if (msg.message == WM_QUIT) {
-        DestroyWindow(hWnd);
-      }
-    }
-    if (hWnd) {
-      wglMakeCurrent(hDC, hRC);
-      RECT rc;
-      GetClientRect(hWnd, &rc);
-      glViewport(0, 0, rc.right, rc.bottom);
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
-      gluPerspective(90, 1.0 * rc.right / rc.bottom, 1.0f, 50.0f);
-      glMatrixMode(GL_MODELVIEW);
-      glLoadIdentity();
-      static Matrix mfix(0, 1, 0, 0,
-                         0, 0, 1, 0,
-                         1, 0, 0, 0,
-                         0, 0, 0, 1);
-      glMultMatrixf((Matrix::translate(0, 0, -dist) * quat.matrix() * mfix).transposed());
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      glColor3d(1, 1, 1);
-      active = true;
+void GL::render() {
+  wglMakeCurrent(hDC, hRC);
 
-      render();
-      uint32 time = GetTickCount();
-      while (frames.size() > 1 && time - frames[1] > 1000) {
-        frames.pop_front();
-      }
-      if (!frames.empty() && time > frames.front()) {
-        char buf[256];
-        sprintf(buf, "FPS: %.1lf", 1000.0 * frames.size() / (time - frames.front()));
-        glColor3d(1, 1, 0);
-        text(10, 10, buf);
-      }
-      frames.push_back(time);
+  float _r = (color & 0xFF) / 255.0f, _g = ((color >> 8) & 0xFF) / 255.0f,
+    _b = ((color >> 16) & 0xFF) / 255.0f;
+  glClearColor(_r, _g, _b, 0);
 
-      active = false;
-      glFlush();
-      SwapBuffers(hDC);
-      wglMakeCurrent(NULL, NULL);
-    }
-  }
+  RECT rc;
+  GetClientRect(hWnd, &rc);
+  glViewport(0, 0, rc.right, rc.bottom);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(90, 1.0 * rc.right / rc.bottom, 1.0f, 50.0f);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  static Matrix mfix(0, 1, 0, 0,
+                      0, 0, 1, 0,
+                      1, 0, 0, 0,
+                      0, 0, 0, 1);
+  glMultMatrixf((Matrix::translate(0, 0, -dist) * quat.matrix() * mfix).transposed());
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glColor3d(1, 1, 1);
+  active = true;
+
+  doRender();
+  //uint32 time = GetTickCount();
+  //while (frames.size() > 1 && time - frames[1] > 1000) {
+  //  frames.pop_front();
+  //}
+  //if (!frames.empty() && time > frames.front()) {
+  //  char buf[256];
+  //  sprintf(buf, "FPS: %.1lf", 1000.0 * frames.size() / (time - frames.front()));
+  //  glColor3d(1 - _r, 1 - _g, 1 - _b);
+  //  text(10, 10, buf);
+  //}
+  //frames.push_back(time);
+
+  active = false;
+  glFlush();
+  SwapBuffers(hDC);
+  wglMakeCurrent(NULL, NULL);
 }
 
 void GL::startOrtho() {
@@ -236,37 +221,26 @@ static float toSphere(float r, float x, float y) {
   }
 }
 
-LRESULT CALLBACK GL::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  GL* wnd;
-  static Matrix prev;
-  if (uMsg == WM_CREATE) {
-    CREATESTRUCT* cs = (CREATESTRUCT*) lParam;
-    wnd = (GL*) cs->lpCreateParams;
-    SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG) wnd);
-  } else {
-    wnd = (GL*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
-  }
+LRESULT GL::onMessage(uint32 uMsg, WPARAM wParam, LPARAM lParam) {
   switch (uMsg) {
-  case WM_DESTROY:
-    wnd->hWnd = nullptr;
-    return 0;
   case WM_LBUTTONDOWN:
-    wnd->dragX = GET_X_LPARAM(lParam);
-    wnd->dragY = GET_Y_LPARAM(lParam);
-    wnd->drag = true;
+    SetFocus(hWnd);
+    dragX = GET_X_LPARAM(lParam);
+    dragY = GET_Y_LPARAM(lParam);
+    drag = true;
     break;
   case WM_MOUSEMOVE:
     if (wParam & MK_LBUTTON) {
       int x = GET_X_LPARAM(lParam);
       int y = GET_Y_LPARAM(lParam);
-      if (wnd->drag && (x != wnd->dragX || y != wnd->dragY)) {
+      if (drag && (x != dragX || y != dragY)) {
         const float tbSize = 0.7f;
         RECT rc;
         GetClientRect(hWnd, &rc);
         float x0 = float(rc.right) / 2, y0 = float(rc.bottom) / 2;
         float ws = float(std::min(rc.right, rc.bottom)) / 2;
-        float x1 = (float(wnd->dragX) - x0) / ws, x2 = (float(x) - x0) / ws,
-              y1 = (y0 - float(wnd->dragY)) / ws, y2 = (y0 - float(y)) / ws;
+        float x1 = (float(dragX) - x0) / ws, x2 = (float(x) - x0) / ws,
+              y1 = (y0 - float(dragY)) / ws, y2 = (y0 - float(y)) / ws;
         float z1 = toSphere(tbSize, x1, y1), z2 = toSphere(tbSize, x2, y2);
         Vector p1(x1, y1, z1);
         Vector p2(x2, y2, z2);
@@ -275,25 +249,25 @@ LRESULT CALLBACK GL::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         float dist = (p1 - p2).length() / (2.0f * tbSize);
         if (dist > 1.0f) dist = 1.0f;
         if (dist < -1.0f) dist = -1.0f;
-        wnd->quat = Quaternion(2.0f * asin(dist), dir) * wnd->quat;
-        wnd->quat.normalize();
+        quat = Quaternion(2.0f * asin(dist), dir) * quat;
+        quat.normalize();
       }
-      wnd->dragX = x;
-      wnd->dragY = y;
-      wnd->drag = true;
+      dragX = x;
+      dragY = y;
+      drag = true;
     }
     break;
   case WM_KEYDOWN:
-    wnd->onKey(wParam);
+    onKey(wParam);
     break;
   case WM_LBUTTONUP:
-    wnd->drag = false;
+    drag = false;
     break;
   case WM_MOUSEWHEEL:
-    wnd->dist /= pow(1.2, GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
+    dist /= pow(1.2, GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
     break;
   default:
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    return M_UNHANDLED;
   }
   return 0;
 }
@@ -465,4 +439,24 @@ void GL::endTrackables() {
     text(tr.pos, str.c_str());
     glPopAttrib();
   }
+}
+
+Image GL::capture() {
+  if (!active) wglMakeCurrent(hDC, hRC);
+  RECT rc;
+  GetClientRect(hWnd, &rc);
+  Image img(rc.right, rc.bottom);
+  glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  glReadBuffer(GL_FRONT);
+  std::vector<uint8> buf(rc.right * rc.bottom * 3);
+  glReadPixels(0, 0, rc.right, rc.bottom, GL_RGB, GL_UNSIGNED_BYTE, &buf[0]);
+  size_t index = 0;
+  for (int y = rc.bottom - 1; y >= 0; --y) {
+    for (int x = 0; x < rc.right; ++x) {
+      int index = (x + (rc.bottom - y - 1) * rc.right) * 3;
+      img.mutable_bits()[x + y * rc.right] = Image::Format::color(buf[index], buf[index + 1], buf[index + 2]);
+    }
+  }
+  if (!active) wglMakeCurrent(NULL, NULL);
+  return img;
 }

@@ -27,17 +27,11 @@ declstruct(PhysMesh::Type) {
 
   declstruct(dmMeshNode) {
     int16 x00;
-    uint8 x01_;
     int16 x02;
-    uint8 x03_;
     int16 x04;
-    uint8 x05_;
     int16 x06;
-    uint8 x07_;
     int16 x08;
-    uint8 x09_;
     int16 x0A;
-    uint8 x0B_;
     int x0C;
     void dumpfunc() {
       dumpval(x00, x02, x04, x06, x08, x0A);
@@ -53,9 +47,7 @@ declstruct(PhysMesh::Type) {
     int x10;
     int x14;
     int16 x18;
-    uint8 x19_;
     int16 x1A;
-    uint8 x1B_;
     void dumpfunc() {
       dumpval(x00, x04, x08, x0C, x10, x14);
       dumpval(x18, x1A);

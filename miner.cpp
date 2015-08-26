@@ -87,7 +87,7 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
   if (!stl.items.has(id)) return;
   json::Value& dst = to[id];
 
-  if (id == "Unique_Belt_002_x1") {
+  if (id == "Lewis_Test_Dagger") {
     int asdf = 0;
   }
 

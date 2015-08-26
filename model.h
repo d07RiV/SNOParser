@@ -29,6 +29,10 @@ public:
     Bone* parent = nullptr;
     Vector pos;
 
+    bool capsule = false;
+    Vector capA, capB;
+    double capR;
+
     Matrix invTransform;
     Matrix curTransform;
     Matrix finalTransform;
@@ -173,3 +177,4 @@ private:
 };
 
 void ViewModel(Model& model);
+void ViewModels();

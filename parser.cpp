@@ -43,8 +43,8 @@ File SnoSysLoader::loadfile(char const* type, char const* name, char const* ext)
   return File(dir_ / type / name + ext, "rb");
 }
 
-SnoSysLoader SnoSysLoader::default("");
-SnoLoader* SnoLoader::default = &SnoSysLoader::default;
+//SnoSysLoader SnoSysLoader::default("");
+SnoLoader* SnoLoader::default = nullptr;// &SnoSysLoader::default;
 
 #pragma warning(disable: 4005)
 #ifdef _WIN64

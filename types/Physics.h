@@ -15,7 +15,6 @@ declstruct(Physics::Type) {
   float x20;
   float x24;
   int16 x28;
-  uint8 x29_;
   uint8 x2A_;
   uint8 x2B_;
   float x2C;

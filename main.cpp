@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <clocale>
+#include <conio.h>
 #include <set>
 #include "snomap.h"
 #include "strings.h"
@@ -24,13 +25,17 @@
 #include "model.h"
 #include "itemlib.h"
 #include "webgl.h"
+#include "frameui/searchlist.h"
 #include <map>
 #include <vector>
 #include <algorithm>
 #include <stdarg.h>
 using namespace std;
 
+#define MODELVIEWER
+
 namespace path {
+#ifndef MODELVIEWER
   std::vector<std::string> roots {
     "C:\\Work\\junk",
     "C:\\Webroot\\game",
@@ -45,6 +50,10 @@ namespace path {
     "G:\\D3Live\\Data",
 #endif
   };
+#else
+  std::vector<std::string> roots;
+  std::vector<std::string> cascs;
+#endif
 }
 
 Model* ShowModel(Model* model) {
@@ -174,84 +183,252 @@ void dump_animsets();
 void progress(std::string const& suffix);
 void progress_comp(bool trans);
 void write_skill_anim();
+void write_item_icons();
+
+uint8 zeroes[65536];
+
+class Mem32;
+class MemValue {
+public:
+  MemValue(uint8 const* ptr, uint32 offset) : ptr_(ptr), offset_(offset) {}
+  MemValue operator[](uint32 offset) const {
+    return MemValue(ptr_, offset_ + offset);
+  }
+
+  uint8 get() const {
+    return ptr_[offset_];
+  }
+  uint16 get16() const {
+    return *(uint16*) (ptr_ + offset_);
+  }
+  uint32 get32() const {
+    return *(uint32*) (ptr_ + offset_);
+  }
+  uint64 get64() const {
+    return *(uint64*) (ptr_ + offset_);
+  }
+  uint32 offset() const {
+    return offset_;
+  }
+  MemValue ptr() const {
+    return MemValue(ptr_, get32());
+  }
+  char const* string() const {
+    return (char*) (ptr_ + offset_);
+  }
+  char const* stringPtr() const {
+    return (char*) (ptr_ + get32());
+  }
+private:
+  uint8 const* ptr_;
+  uint32 offset_;
+};
+
+class Mem32 {
+public:
+  Mem32(File& file, uint32 size = 0x02000000)
+    : size_(size)
+  {
+    ptr_ = new uint8[size];
+    file.read(ptr_, size);
+  }
+  Mem32(std::string const& path, uint32 size = 0x02000000)
+    : Mem32(File(path))
+  {}
+  ~Mem32() {
+    delete[] ptr_;
+  }
+  MemValue operator[](uint32 offset) const {
+    return MemValue(ptr_, offset);
+  }
+
+  bool valid(uint32 offset) const {
+    return offset < size_;
+  }
+  bool valid(MemValue value) const {
+    return valid(value.offset());
+  }
+private:
+  uint8* ptr_;
+  uint32 size_;
+};
+
+bool goodString(char const* str) {
+  uint32 len = 0;
+  while (len < 64 && str[len]) {
+    if (!isalnum((uint8) str[len])) return false;
+    ++len;
+  }
+  return (len > 0 && len < 64);
+}
+
+Map<uint32> numTypes;
+std::map<uint32, std::string> typeMap;
+
+std::string const& DiscoverType(MemValue data, json::Value& root) {
+  if (typeMap.count(data.offset())) {
+    return typeMap[data.offset()];
+  }
+  auto& name = typeMap[data.offset()];
+  name = data[4].stringPtr();
+  uint32& index = numTypes[name];
+  if (index) name.append(fmtstring("_%d", index));
+  ++index;
+
+  auto& res = root[name];
+  auto fields = data[12].ptr();
+  if (fields.offset() == 0) {
+    res["basic"] = true;
+    return name;
+  }
+  while (fields.get32() != 1) {
+    auto type = DiscoverType(fields[4].ptr(), root);
+    if (type == "DT_NULL") break;
+    auto& dst = res["fields"].append(json::Value::tObject);
+    auto name = fields.stringPtr();
+    if (*name) dst["name"] = name;
+    dst["type"] = type;
+    dst["offset"] = fields[8].get32();
+    if (fields[0x10].get32()) dst["min"] = fields[0x10].get32();
+    if (fields[0x14].get32()) dst["max"] = fields[0x14].get32();
+    if (fields[0x18].get32() != 1) dst["flags"] = fields[0x18].get32();
+    auto sub = DiscoverType(fields[0x1C].ptr(), root);
+    if (sub != "DT_NULL") dst["subtype"] = sub;
+    if (fields[0x20].get32()) dst["varOffset"] = (int) fields[0x20].get32();
+    if (fields[0x24].get32() != -1) dst["arrayLength"] = (int) fields[0x24].get32();
+    if (fields[0x28].get32()) dst["arrayLengthOffset"] = (int) fields[0x28].get32();
+    if (fields[0x2C].get16()) dst["encodedBits"] = fields[0x2C].get16();
+    if (fields[0x2E].get16()) dst["encodedBits2"] = fields[0x2E].get16();
+    if (fields[0x30].get32() != -1) dst["snoType"] = (int) fields[0x30].get32();
+    if (fields[0x34].get32()) dst["tagMapRelated"] = (int) fields[0x34].get32();
+    auto enumFields = fields[0x38].ptr();
+    if (enumFields.offset()) {
+      auto& ef = dst["enumFields"];
+      while (enumFields[4].get32()) {
+        ef[fmtstring("%d", enumFields.get32())] = enumFields[4].stringPtr();
+        enumFields = enumFields[8];
+      }
+    }
+    if (fields[0x3C].get32()) dst["flagIndex"] = (int) fields[0x3C].get32();
+    if (fields[0x48].get32() != -1) dst["dspIndex"] = (int) fields[0x48].get32();
+    fields = fields[140];
+  }
+
+  return name;
+}
+
+std::string _sanitize(std::string const& str) {
+  std::string res;
+  for (auto chr : str) {
+    if (chr != '"') res += chr;
+  }
+  return res;
+}
+void str_comp() {
+  SnoSysLoader cnLoader(path::root());
+  for (auto& en : SnoLoader::All<StringList>()) {
+    if (en.name().find("Conv_") != std::string::npos || en.name().find("Quest_") != std::string::npos) continue;
+    SnoFile<StringList> cn(en.name(), &cnLoader);
+    if (!cn) continue;
+    Map<std::string> nameCn;
+    for (auto& it : cn->x10_StringTableEntries) {
+      nameCn[it.x00_Text.text()] = it.x10_Text.text();
+    }
+    File output("strings/" + en.name() + ".csv", "wb");
+    output.putc(0xEF);
+    output.putc(0xBB);
+    output.putc(0xBF);
+    for (auto& it : en->x10_StringTableEntries) {
+      auto ci = nameCn.find(it.x00_Text.text());
+      if (ci != nameCn.end()) {
+        output.printf("\"%s\",\"%s\"\r\n", _sanitize(it.x10_Text.text()).c_str(), _sanitize(ci->second).c_str());
+      }
+    }
+  }
+}
 
 int do_main() {
   SnoCascLoader casc(path::casc(), "enUS");
-  //SnoCascLoader casc("G:\\D3Live\\Data", "enUS");
   SnoLoader::default = &casc;
-  //WebGL::AllItems(true, false, false);
-  casc.dump<Particle>();
-  casc.dump<Trail>();
-  casc.dump<Appearance>("twoHandedSword_norm_unique_04");
-  //WebGL::Archive lhs(File("textures2.wgz"), false), rhs(File("textures.wgz"), false);
-  //WebGL::Archive::compare(File("texturediff.txt", "w"), lhs, rhs, Textures::name);
+  //SnoCascLoader casc("G:\\D3Live\\Data", "enUS");
+#ifdef MODELVIEWER
+  ViewModels();
   return 0;
-
-  //Model model("Monk_Female");
-  //model.setAnimation("Monk_Female_DW_SS_Idle_01");
-  //Equip(model, "HP_rightWeapon", "Unique_Sword_1H_021_x1");
-  //Equip(model, "HP_leftWeapon", "Unique_Sword_1H_101_x1");
-  //Equip(model, "HP_Head", "x1_SpiritStone_monkF_norm_unique_16");
-  //auto* item = ItemLibrary::get("Unique_Shoulder_Set_02_p3");
-  //SnoFile<Actor> metaActor(item->x108_ActorSno.name());
-  //std::map<uint32, uint32> tagMap;
-  //for (uint32 i = 0; i < metaActor->x060_TagMap[0]; ++i) {
-  //  tagMap[metaActor->x060_TagMap[i * 3 + 2]] = metaActor->x060_TagMap[i * 3 + 3];
-  //}
-  //SnoFile<Actor> actor(Actor::name(tagMap[94720 + 4]));
-  //SnoFile<AnimSet> animSet(actor->x068_AnimSetSno.name());
-  //uint32 tag = 0;
-  //for (auto& maps : animSet->x010_AnimSetTagMaps) {
-  //  for (uint32 i = 0; i < maps.x08_TagMap[0]; ++i) {
-  //    tag = maps.x08_TagMap[i * 3 + 3];
-  //    if (Anim::name(tag)) break;
-  //  }
-  //  if (Anim::name(tag)) break;
-  //}
-  //SnoFile<Actor> actor(Actor::name(368562));
-  //casc.dump<Appearance>(actor->x014_AppearanceSno.name());
-  //return 0;
-  Model model("Monk_Male");
-  //model.setAnimation(Anim::name(440419));
-  //model.appearance(0, 0);
-  //Model model(ActorApp(6485).c_str());
-  //model.setAnimation(Anim::name(220044));
-  //model.appearance(4, 0);
-  //model.appearance(8, 0);
-  //model.appearance(12, 0);
-  //model.appearance(19, 0);
-  //model.appearance(20, 0);
-  //Model* sub = model.attach("hp_right_shoulderpad", ActorApp(440417).c_str());
-  //sub->setAnimation(Anim::name(440419));
-  //sub->appearance(0, 0);
-  //model.setAnimation("Wizard_Female_HTH_recall_channel");
-  //model.appearance(14, 81);
-  //model.appearance(10, 81);
-  //model.appearance(19, 81);
-  //model.appearance(6, 81);
-  //model.appearance(3, 0);
-  //Equip(model, "HP_rightWeapon", "Unique_Wand_101_x1");
-  //Equip(model, "HP_leftWeapon", Actor::name(184199));// ->setAnimation("orb_norm_base_rotateOrb_idle_01");
-  //Equip(model, "HP_Head", "x1_SpiritStone_monkF_norm_unique_16");
-  //if (File cache = "model.json") {
-  //  json::Value value;
-  //  json::parse(cache, value);
-  //  model.restore(value);
-  //}
-  ViewModel(model);
-  json::Value value;
-  model.store(value);
-  json::write(File("model.json", "w"), value);
-
+#endif
+  simBase("crusader");
   return 0;
+}
+
+#include <shlobj.h>
+bool browseForFolder(wchar_t const* prompt, std::string& result) {
+  IFileDialog* pfd;
+  if (FAILED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd)))) {
+    return false;
+  }
+  DWORD dwOptions;
+  if (SUCCEEDED(pfd->GetOptions(&dwOptions))) {
+    pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+  }
+  pfd->SetTitle(prompt);
+  if (FAILED(pfd->Show(NULL))) {
+    pfd->Release();
+    return false;
+  }
+  IShellItem* psi;
+  if (FAILED(pfd->GetResult(&psi))) {
+    pfd->Release();
+    return false;
+  }
+  wchar_t* str;
+  if (FAILED(psi->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &str)) || !str) {
+    psi->Release();
+    pfd->Release();
+    return false;
+  }
+  std::wstring ws(str);
+  result = std::string(ws.begin(), ws.end());
+  psi->Release();
+  pfd->Release();
+  return true;
 }
 
 int main() {
   std::setlocale(LC_ALL, "eu_US.UTF-8");
+
+  INITCOMMONCONTROLSEX iccex;
+  iccex.dwSize = sizeof iccex;
+  iccex.dwICC = ICC_STANDARD_CLASSES | ICC_PROGRESS_CLASS |
+    ICC_BAR_CLASSES | ICC_TREEVIEW_CLASSES | ICC_LISTVIEW_CLASSES |
+    ICC_TAB_CLASSES | ICC_UPDOWN_CLASS | ICC_DATE_CLASSES;
+  InitCommonControlsEx(&iccex);
+  OleInitialize(NULL);
+
+#ifdef MODELVIEWER
+  char myPath[512];
+  //GetModuleFileName(NULL, myPath, 512);
+  GetCurrentDirectory(sizeof myPath, myPath);
+  path::roots.push_back(myPath);// path::path(myPath));
+
+  std::string line;
+  {
+    File fpath(path::roots[0] / "path.txt", "rt");
+    if (fpath) fpath.getline(line);
+  }
+  uint32 attr = GetFileAttributes(line.c_str());
+  if (attr == INVALID_FILE_ATTRIBUTES || !(attr & FILE_ATTRIBUTE_DIRECTORY)) {
+    if (!browseForFolder(L"Locate D3 Data", line)) return 0;
+    File fpath(path::roots[0] / "path.txt", "wt");
+    fpath.printf("%s", line.c_str());
+  }
+  path::cascs.push_back(line);
+#endif
+
   try {
     return do_main();
   } catch (Exception& ex) {
     fprintf(stderr, "Exception: %s\n", ex.what());
+    fprintf(stderr, "Press any key to continue...\n");
+    getch();
     return 1;
   }
 }

@@ -4,7 +4,6 @@
 #include "types/Actor.h"
 #include "types/Particle.h"
 #include "types/AnimSet.h"
-#include "zlib/zlib.h"
 #include "itemlib.h"
 #include "strings.h"
 #include <set>
@@ -178,19 +177,28 @@ namespace WebGL {
     if (vCount) header.center /= static_cast<float>(vCount);
     uint32 fileSize = header.materialOffset + sizeof(Material) * header.numAppearances * header.numMaterials;
     file.write(header);
-    std::vector<Bone> bones;
+    std::vector<Matrix> bones;
     for (auto& src : app->x010_Structure.x010_BoneStructures) {
-      bones.emplace_back();
-      Bone& dst = bones.back();
+      Bone dst;
       memset(dst.name, 0, sizeof dst.name);
       strcpy(dst.name, src.x000_Text);
       dst.parent = src.x040;
-      dst.bind = Matrix::scale(1.0f / src.x06C_PRSTransform.x1C) *
-                 Read(src.x06C_PRSTransform.x00_Quaternion).conj().matrix() *
-                 Matrix::translate(-Read(src.x06C_PRSTransform.x10_DT_VECTOR3D));
-      dst.bind.transpose();
+      dst.transform.translate = Read(src.x06C_PRSTransform.x10_DT_VECTOR3D);
+      dst.transform.rotate = Read(src.x06C_PRSTransform.x00_Quaternion);
+      dst.transform.scale = src.x06C_PRSTransform.x1C;
+      dst.capsuleOffset = 0;
+      dst.constraintOffset = 0;
+      bones.push_back(Matrix::scale(1.0f / dst.transform.scale) *
+        dst.transform.rotate.conj().matrix() * Matrix::translate(-dst.transform.translate));
+      if (src.x118_CollisionShapes.size()) {
+        dst.capsuleOffset = fileSize;
+        fileSize += sizeof(CapsuleInfo);
+      }
+      if (src.x128_ConstraintParameters.size()) {
+        dst.constraintOffset = fileSize;
+        fileSize += sizeof(Constraint);
+      }
       file.write(dst);
-      dst.bind.transpose();
     }
     for (auto& src : app->x010_Structure.x0F0_Hardpoints) {
       Hardpoint dst;
@@ -199,7 +207,7 @@ namespace WebGL {
       dst.parent = src.x40;
       dst.transform = Matrix::translate(Read(src.x44_PRTransform.x10_DT_VECTOR3D)) *
                       Read(src.x44_PRTransform.x00_Quaternion).matrix();
-      if (dst.parent != -1) dst.transform = bones[dst.parent].bind * dst.transform;
+      if (dst.parent != -1) dst.transform = bones[dst.parent] * dst.transform;
       dst.transform.transpose();
       file.write(dst);
     }
@@ -249,6 +257,30 @@ namespace WebGL {
         dst.specular = AddTexture(texSpecular);
         dst.tintBase = AddTexture(texTintBase);
         dst.tintMask = AddTexture(texTintMask);
+        file.write(dst);
+      }
+    }
+    for (auto& src : app->x010_Structure.x010_BoneStructures) {
+      if (src.x118_CollisionShapes.size()) {
+        CapsuleInfo dst;
+        auto& col = src.x118_CollisionShapes[0];
+        dst.start = Read(col.x30_DT_VECTOR3D);
+        dst.end = Read(col.x3C_DT_VECTOR3D);
+        dst.radius = col.x48;
+        file.write(dst);
+      }
+      if (src.x128_ConstraintParameters.size()) {
+        Constraint dst;
+        auto& data = src.x128_ConstraintParameters[0];
+        dst.parent.rotate = Read(data.x078_PRTransform.x00_Quaternion);
+        dst.parent.translate = Read(data.x078_PRTransform.x10_DT_VECTOR3D);
+        dst.local.rotate = Read(data.x094_PRTransform.x00_Quaternion);
+        dst.local.translate = Read(data.x094_PRTransform.x10_DT_VECTOR3D);
+        dst.angles[0] = data.x0B0;
+        dst.angles[1] = data.x0B4;
+        dst.angles[2] = data.x0B8;
+        dst.angles[3] = data.x0BC;
+        dst.angles[4] = data.x0C0;
         file.write(dst);
       }
     }
@@ -658,33 +690,40 @@ namespace WebGL {
       Logger::item("animations"); ani.load(File("animations.wgz"), true);
       Logger::end();
     }
-    //texArchive = &tex;
-
-    SnoFile<GameBalance> gmb("Characters");
-    Logger::begin(gmb->x088_Heros.size(), "Dumping characters");
-    for (auto& hero : gmb->x088_Heros) {
-      Logger::item(hero.x000_Text);
-      DumpActorData(mdl, ani, hero.x108_ActorSno);
-      DumpActorData(mdl, ani, hero.x10C_ActorSno);
-    }
-    Logger::end();
+    texArchive = &tex;
+    
+    //SnoFile<GameBalance> gmb("Characters");
+    //Logger::begin(gmb->x088_Heros.size(), "Dumping characters");
+    //for (auto& hero : gmb->x088_Heros) {
+    //  Logger::item(hero.x000_Text);
+    //  DumpActorData(mdl, ani, hero.x108_ActorSno);
+    //  DumpActorData(mdl, ani, hero.x10C_ActorSno);
+    //}
+    //Logger::end();
 
     json::Value items, itemsout, actors;
-    if (info) json::parse(File("d3gl_actors.js"), actors, json::mJS);
-    json::parse(File("itemtypes.js"), items, json::mJS);
-    Logger::begin(items["itemById"].getMap().size(), "Dumping items");
+    //if (info) json::parse(File("d3gl_actors.js"), actors, json::mJS);
+    //json::parse(File("itemtypes.js"), items, json::mJS);
+    //Logger::begin(items["itemById"].getMap().size(), "Dumping items");
     std::set<uint32> done;
-    for (auto& kv : items["itemById"].getMap()) {
-      Logger::item(kv.first.c_str());
-      auto* item = ItemLibrary::get(kv.first);
-      if (!item) continue;
-      std::string type = kv.second["type"].getString();
-      std::string slot = items["itemTypes"][type]["slot"].getString();
+    //for (auto& kv : items["itemById"].getMap()) {
+    //  Logger::item(kv.first.c_str());
+    //  auto* item = ItemLibrary::get(kv.first);
+    //  if (!item) continue;
+    //  std::string type = kv.second["type"].getString();
+    //  std::string slot = items["itemTypes"][type]["slot"].getString();
+    //  if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
+    //  if (info) FillItemInfo(itemsout[item->x000_Text], actors, *item, type, slot);
+    //}
+    {
+      auto* item = ItemLibrary::get("Unique_Offhand_001_x1");
+      std::string type = "dagger";
+      std::string slot = "onehand";
       if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
       if (info) FillItemInfo(itemsout[item->x000_Text], actors, *item, type, slot);
     }
-    Logger::end();
-
+    //Logger::end();
+    /*
     json::Value genitems;
     json::Value generic;
     json::parse(File("d3gl_items.js"), generic, json::mJS);
@@ -705,112 +744,53 @@ namespace WebGL {
       dst["type"] = type;
       dst["promo"] = true;
       FillItemInfo(dst, actors, *item, type, slot);
-    }
+    }*/
     if (info) {
       json::write(File("extra_actors.js", "w"), actors, json::mJS);
-      json::write(File("extra_items.js", "w"), genitems, json::mJS);
+      //json::write(File("extra_items.js", "w"), genitems, json::mJS);
       json::write(File("extra_items_orig.js", "w"), itemsout, json::mJS);
     }
 
     if (models) {
       Logger::begin(3, "Writing assets");
-      //Logger::item("textures");   tex.write(File("textures.wgz", "wb"), false);
+      Logger::item("textures");   tex.write(File("textures.wgz", "wb"), false);
       Logger::item("models");     mdl.write(File("models.wgz", "wb"), true);
-     // Logger::item("animations"); ani.write(File("animations.wgz", "wb"), true);
+      Logger::item("animations"); ani.write(File("animations.wgz", "wb"), true);
       Logger::end();
       texArchive = nullptr;
     }
   }
 
-  File& Archive::create(uint32 id) {
-    auto& file = files_[id];
-    file.resize(0);
-    return file;
-  }
-  void Archive::write(File& file, bool compression) {
-    std::map<uint32, std::vector<uint8>> data;
-    for (auto& kv : files_) {
-      auto& vec = data[kv.first];
-      uint32 outSize = kv.second.size();
-      vec.resize(outSize);
-      if (compression) {
-        gzencode(kv.second.data(), kv.second.size(), vec.data(), &outSize);
-        vec.resize(outSize);
+  void AddPhysics() {
+    json::Value actors, phys;
+    json::Value items;
+    json::parse(File("d3gl_actors.js"), actors, json::mJS);
+    json::parse(File("d3gl_items.js"), items, json::mJS);
+    std::map<uint32, std::string> actor2item;
+    for (auto& kv : items.getMap()) {
+      auto& actor = kv.second["actor"];
+      std::string name = Strings::get("Items", kv.first);
+      if (actor.type() == json::Value::tObject) {
+        for (auto& sub : actor) {
+          actor2item[sub.getInteger()] = name;
+        }
       } else {
-        memcpy(vec.data(), kv.second.data(), outSize);
+        actor2item[actor.getInteger()] = name;
       }
     }
-    uint32 count = data.size();
-    file.write32(count);
-    uint32 offset = count * 12 + 4;
-    for (auto& kv : data) {
-      file.write32(kv.first);
-      file.write32(offset);
-      file.write32(kv.second.size());
-      offset += kv.second.size();
-    }
-    for (auto& kv : data) {
-      file.write(kv.second.data(), kv.second.size());
-    }
-  }
-  void Archive::load(File& file, bool compression) {
-    if (file) {
-      uint32 count = file.read32();
-      uint32 prev = count * 12 + 4;
-      for (uint32 i = 0; i < count; ++i) {
-        file.seek(i * 12 + 4);
-        uint32 id = file.read32();
-        uint32 offset = file.read32();
-        uint32 size = file.read32();
-        if (offset != prev) {
-          Logger::log("%4d gap: %d bytes\n", i, offset - prev);
-        }
-        prev += size;
-        file.seek(offset);
-        MemoryFile& mem = files_[id];
-        if (compression) {
-          std::vector<uint8> temp(size);
-          file.read(temp.data(), size);
-          z_stream z;
-          memset(&z, 0, sizeof z);
-          z.next_in = temp.data();
-          z.avail_in = size;
-          z.total_in = size;
-          z.next_out = nullptr;
-          z.avail_out = 0;
-          z.total_out = 0;
-
-          int result = inflateInit2(&z, 16 + MAX_WBITS);
-          if (result == Z_OK) {
-            do {
-              uint32 pos = mem.size();
-              z.avail_out = size;
-              z.next_out = mem.reserve(size);
-              result = inflate(&z, Z_NO_FLUSH);
-              mem.resize(pos + size - z.avail_out);
-              if (result == Z_NEED_DICT || result == Z_DATA_ERROR || result == Z_MEM_ERROR) break;
-            } while (result != Z_STREAM_END);
-          }
-        } else {
-          file.read(mem.reserve(size), size);
+    for (auto it = actors.begin(); it != actors.end(); ++it) {
+      uint32 id = atoi(it.key().c_str());
+      SnoFile<Actor> actor(Actor::name(id));
+      if (!actor) continue;
+      uint32 physics = actor->x2B4_PhysicsSno;
+      if (Physics::name(physics)) {
+        (*it)["physics"] = physics;
+        if (actor2item.count(id)) {
+          phys[actor2item[id]] = Physics::name(physics);
         }
       }
-    Logger::log("total: %d bytes\n", prev);
     }
-  }
-  bool Archive::has(uint32 id) {
-    return files_.count(id) != 0;
-  }
-
-  void Archive::compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)(uint32)) {
-    std::set<uint32> files;
-    for (auto& kv : lhs.files_) files.insert(kv.first);
-    for (auto& kv : rhs.files_) files.insert(kv.first);
-    for (uint32 id : files) {
-      uint32 lsize = (lhs.has(id) ? lhs.files_[id].size() : 0);
-      uint32 rsize = (rhs.has(id) ? rhs.files_[id].size() : 0);
-      char const* name = (Func ? Func(id) : nullptr);
-      if (lsize != rsize) diff.printf("%-8u %-8u %-8u%s\n", id, lsize, rsize, name ? name : "");
-    }
+    json::write(File("d3gl_actors.js", "w"), actors, json::mJS);
+    json::write(File("d3gl_physics.js", "w"), phys, json::mJS);
   }
 }

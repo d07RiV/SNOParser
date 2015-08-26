@@ -83,6 +83,14 @@ struct PixelFormat {
   static color_t blend(color_t dst, color_t src) {
     return mix(dst, 255 - alpha::from(src), src, alpha::from(src));
   }
+  static color_t modulate(color_t lhs, color_t rhs) {
+    return color(
+      red::from(lhs) * red::from(rhs) / 255,
+      green::from(lhs) * green::from(rhs) / 255,
+      blue::from(lhs) * blue::from(rhs) / 255,
+      alpha::from(lhs) * alpha::from(rhs) / 255
+    );
+  }
 };
 
 template<int A, int B, int G, int R>
@@ -346,6 +354,21 @@ public:
   }
   uint32 height() const {
     return data_->height_;
+  }
+
+  uint32* begin() {
+    splice();
+    return data_->bits_;
+  }
+  uint32* end() {
+    splice();
+    return data_->bits_ + data_->width_ * data_->height_;
+  }
+  uint32 const* begin() const {
+    return data_->bits_;
+  }
+  uint32 const* end() const {
+    return data_->bits_ + data_->width_ * data_->height_;
   }
 
   ImageBase<Format> subimage(int left, int top, int right, int bottom) const {

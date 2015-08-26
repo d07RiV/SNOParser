@@ -22,10 +22,30 @@ namespace WebGL {
     uint32 materialOffset;
     Vector center;
   };
+  struct PRSTransform {
+    Quaternion rotate;
+    Vector translate;
+    float scale;
+  };
+  struct PRTransform {
+    Quaternion rotate;
+    Vector translate;
+  };
+  struct CapsuleInfo {
+    Vector start, end;
+    float radius;
+  };
+  struct Constraint {
+    PRTransform parent;
+    PRTransform local;
+    float angles[5];
+  };
   struct Bone {
     char name[64];
     uint32 parent;
-    Matrix bind;
+    PRSTransform transform;
+    uint32 capsuleOffset;
+    uint32 constraintOffset;
   };
   struct Hardpoint {
     char name[64];
@@ -99,19 +119,5 @@ namespace WebGL {
   void ClassInfo();
   void GenericItems();
 
-  class Archive {
-    std::map<uint32, MemoryFile> files_;
-  public:
-    Archive() {}
-    Archive(File& file, bool compression = true) {
-      load(file, compression);
-    }
-    void load(File& file, bool compression = true);
-    bool has(uint32 id);
-    File& create(uint32 id);
-
-    static void compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)(uint32) = nullptr);
-
-    void write(File& file, bool compression = true);
-  };
+  void AddPhysics();
 }

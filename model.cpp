@@ -1,4 +1,10 @@
 #include "model.h"
+#include "frameui/searchlist.h"
+#include "types/Actor.h"
+#include "types/AnimSet.h"
+#include "types/Monster.h"
+#include "strings.h"
+#include <set>
 
 static Vector Read(Anim::Type::DT_VECTOR3D const& v) {
   return Vector(v.x00_X, v.x04_Y, v.x08_Z);
@@ -37,18 +43,18 @@ Model::Model(char const* name)
     count += object.x010_FatVertexs.size();
   }
   center_ /= float(count);
-  File ff(fmtstring("%s.txt", name), "w");
-  for (auto& name : app_->x010_Structure.x088_GeoSets[0].x10_SubObjects) {
-    ff.printf("%s %s\n", name.x05C_Text, name.x0DC_Text);
-  }
-  File ff2(fmtstring("app.txt", name), "w");
-  for (auto& name : app_->x1C0_AppearanceLooks) {
-    ff2.printf("%d %s\n", HashName(name.x00_Text), name.x00_Text);
-  }
-  ff = File(fmtstring("hardpoints.txt", name), "w");
-  for (auto& name : app_->x010_Structure.x0F0_Hardpoints) {
-    ff.printf("%s\n", name.x00_Text);
-  }
+  //File ff(fmtstring("%s.txt", name), "w");
+  //for (auto& name : app_->x010_Structure.x088_GeoSets[0].x10_SubObjects) {
+  //  ff.printf("%s %s\n", name.x05C_Text, name.x0DC_Text);
+  //}
+  //File ff2(fmtstring("app.txt", name), "w");
+  //for (auto& name : app_->x1C0_AppearanceLooks) {
+  //  ff2.printf("%d %s\n", HashName(name.x00_Text), name.x00_Text);
+  //}
+  //ff = File(fmtstring("hardpoints.txt", name), "w");
+  //for (auto& name : app_->x010_Structure.x0F0_Hardpoints) {
+  //  ff.printf("%s\n", name.x00_Text);
+  //}
 
   bones_.resize(app_->x010_Structure.x010_BoneStructures.size());
   for (size_t i = 0; i < bones_.size(); ++i) {
@@ -63,6 +69,12 @@ Model::Model(char const* name)
       Matrix::scale(src.x06C_PRSTransform.x1C);
     dst.invTransform = dst.curTransform.inverse();
     dst.finalTransform = Matrix::identity();
+    if (src.x118_CollisionShapes.size()) {
+      dst.capsule = true;
+      dst.capA = Read(src.x118_CollisionShapes[0].x30_DT_VECTOR3D);
+      dst.capB = Read(src.x118_CollisionShapes[0].x3C_DT_VECTOR3D);
+      dst.capR = src.x118_CollisionShapes[0].x48;
+    }
   }
 
   for (auto& src : app_->x010_Structure.x0F0_Hardpoints) {
@@ -106,7 +118,7 @@ void Model::store(json::Value& value) const {
 }
 
 void Model::setAnimation(char const* name) {
-  animation_.reset(new Animation(name));
+  animation_.reset(name ? new Animation(name) : nullptr);
 }
 
 void Model::attach(char const* hardpoint, Model* model) {
@@ -280,6 +292,44 @@ void Model::render(GL& gl, float time, bool showBones) {
       gl.trackable(bone.finalTransform * bone.pos, 0.1f, bone.name.c_str());
     }
     gl.endTrackables();
+    for (Bone& bone : bones_) {
+      size_t index = &bone - &bones_[0];
+      auto& params = app_->x010_Structure.x010_BoneStructures[index].x128_ConstraintParameters;
+      if (params.size() && bone.parent) {
+        auto& data = params[0];
+        auto& pr1 = data.x050_PRTransform;
+        auto& pr2 = data.x078_PRTransform;
+        auto& pr3 = data.x094_PRTransform;
+        Matrix mat1 = /*bone.parent->curTransform * */Matrix::translate(Read(pr1.x10_DT_VECTOR3D)) * Read(pr1.x00_Quaternion).matrix();
+        Matrix mat2 = bone.parent->curTransform * Matrix::translate(Read(pr2.x10_DT_VECTOR3D)) * Read(pr2.x00_Quaternion).matrix();
+        Matrix mat3 = bone.curTransform * Matrix::translate(Read(pr3.x10_DT_VECTOR3D)) * Read(pr3.x00_Quaternion).matrix();
+        Matrix mat;
+        Vector v0(0, 0, 0), vx(1, 0, 0), vy(0, 1, 0), vz(0, 0, 1);
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_LIGHTING);
+        glBegin(GL_LINES);
+        if (GetTickCount() % 3000 < 1000) {
+          mat = mat1;
+          glColor3d(1, 0, 0);
+        } else if (GetTickCount() % 3000 < 2000) {
+          mat = mat2;
+          glColor3d(0, 1, 0);
+        } else {
+          mat = mat3;
+          glColor3d(1, 1, 1);
+        }
+        glVertex3fv(mat * v0); glVertex3fv(mat * vx);
+        glVertex3fv(mat * v0); glVertex3fv(mat * vy);
+        glVertex3fv(mat * v0); glVertex3fv(mat * vz);
+        glEnd();
+        glColor3f(1, 1, 1);
+        gl.text(mat * vx, "x");
+        gl.text(mat * vy, "y");
+        gl.text(mat * vz, "z");
+        glPopAttrib();
+      }
+      if (bone.capsule) gl.capsule(bone.curTransform * bone.capA, bone.curTransform * bone.capB, bone.capR);
+    }
   }
 }
 
@@ -330,7 +380,6 @@ void Animation::update(float time, Map<Model::Bone*>& bones) {
   float frame = time * 60.0f * perm.x048_Velocity;
   uint32 base = (static_cast<uint32>(frame) / (perm.x090 - 1)) * (perm.x090 - 1);
   frame -= static_cast<float>(base);
-  frame = 109.10408999305218f;
 
   std::vector<Model::Bone*> boneRef;
   for (uint32 i = 0; i < perm.x088_BoneNames.size(); ++i) {
@@ -357,13 +406,13 @@ void Animation::update(float time, Map<Model::Bone*>& bones) {
 
 class ModelViewer : public GL {
 public:
-  ModelViewer(Model& model)
-    : GL(model.name())
+  ModelViewer(Frame* parent, Model& model)
+    : GL(parent)
     , model_(model)
     , prevTime_(GetTickCount())
     , animCounter_(0)
     , subObject_(0)
-    , paused_(true)
+    , paused_(false)
     , showBones_(false)
   {
   }
@@ -393,7 +442,7 @@ public:
     }
   }
 
-  void render() {
+  void doRender() {
     uint32 curTime = GetTickCount();
     if (!paused_) animCounter_ += curTime - prevTime_;
     prevTime_ = curTime;
@@ -422,7 +471,316 @@ private:
   bool showBones_;
 };
 
+class SimpleModelViewer : public RootWindow {
+  ModelViewer* viewer;
+public:
+  SimpleModelViewer(Model& model) {
+    if (WNDCLASSEX* wcx = createclass("MainWndClass")) {
+      wcx->hbrBackground = HBRUSH(COLOR_BTNFACE + 1);
+      wcx->hCursor = LoadCursor(NULL, IDC_ARROW);
+      RegisterClassEx(wcx);
+    }
+    create(CW_USEDEFAULT, 0, 400, 700, "Model Viewer",
+      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, 0);
+
+    viewer = new ModelViewer(this, model);
+    viewer->setAllPoints();
+  }
+
+  LRESULT onMessage(uint32 message, WPARAM wParam, LPARAM lParam) override {
+    if (message == WM_KEYDOWN) {
+      viewer->onKey(wParam);
+      return 0;
+    }
+    if (message == WM_MOUSEWHEEL) {
+      SetFocus(viewer->getHandle());
+      return 0;
+    }
+    return M_UNHANDLED;
+  }
+
+  void loop() {
+    ShowWindow(hWnd, SW_SHOW);
+    while (hWnd) {
+      MSG msg;
+      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+        if (msg.message == WM_QUIT) {
+          DestroyWindow(hWnd);
+        }
+      }
+      viewer->render();
+    }
+  }
+};
+
+class ModelViewer2 : public GL {
+public:
+  ModelViewer2(Frame* parent)
+    : GL(parent)
+    , model_(nullptr)
+    , prevTime_(GetTickCount())
+    , animCounter_(0)
+    , paused_(false)
+    , showBones_(false)
+  {
+  }
+  ~ModelViewer2() {
+    delete model_;
+  }
+
+  Model* model() const {
+    return model_;
+  }
+  void setModel(char const* name) {
+    if (model_) delete model_;
+    model_ = nullptr;
+    if (name) model_ = new Model(name);
+    if (model_ && model_->numAppearances() && model_->numSubObjects() == 1) {
+      model_->appearance(0, 0);
+    }
+  }
+
+  void onKey(int vk) {
+    switch (vk) {
+    case VK_SPACE:
+      paused_ = !paused_;
+      break;
+    case 'B':
+      showBones_ = !showBones_;
+      break;
+    }
+  }
+
+  void doRender() {
+    uint32 curTime = GetTickCount();
+    if (!paused_) animCounter_ += curTime - prevTime_;
+    prevTime_ = curTime;
+
+    if (model_) {
+      glPushMatrix();
+      Vector center = model_->center();
+      glTranslatef(-center.x, -center.y, -center.z);
+      model_->render(*this, animCounter_ * 0.001f, showBones_);
+      glPopMatrix();
+    }
+  }
+private:
+  Model* model_;
+  uint32 prevTime_;
+  uint32 animCounter_;
+  uint32 subObject_;
+  bool paused_;
+  bool showBones_;
+};
+
+class SuperModelViewer : public RootWindow {
+  ModelViewer2* viewer;
+  ComboFrame* mode;
+  EditFrame* actorName;
+  SearchList* actors;
+  EditFrame* animName;
+  SearchList* anims;
+  OptionList* objects;
+  ColorFrame* bgcolor;
+  ButtonFrame* capBtn;
+  EditFrame* capSize;
+public:
+  SuperModelViewer() {
+    if (WNDCLASSEX* wcx = createclass("MainWndClass")) {
+      wcx->hbrBackground = HBRUSH(COLOR_BTNFACE + 1);
+      wcx->hCursor = LoadCursor(NULL, IDC_ARROW);
+      RegisterClassEx(wcx);
+    }
+    create(CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, "Model Viewer",
+      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, 0);
+
+    mode = new ComboFrame(this, 99);
+    mode->setPoint(PT_TOPLEFT, 0, 0);
+    mode->setWidth(300);
+    mode->addString("All actors", 0);
+    mode->addString("Monster names", 1);
+    mode->setCurSel(0);
+
+    actorName = new EditFrame(this, 100);
+    actorName->setPoint(PT_TOPLEFT, mode, PT_BOTTOMLEFT, 0, 4);
+    actorName->setSize(300, 21);
+    actors = new SearchList(this, 101);
+    actors->setPoint(PT_TOPLEFT, actorName, PT_BOTTOMLEFT, 0, 4);
+    actors->setPoint(PT_TOPRIGHT, actorName, PT_BOTTOMRIGHT, 0, 4);
+    actors->setPointEx(PT_BOTTOM, 0, 0.38, 0, 0);
+
+    animName = new EditFrame(this, 102);
+    animName->setPoint(PT_TOPLEFT, actors, PT_BOTTOMLEFT, 0, 4);
+    animName->setSize(300, 21);
+    anims = new SearchList(this, 103);
+    anims->setPoint(PT_TOPLEFT, animName, PT_BOTTOMLEFT, 0, 4);
+    anims->setPoint(PT_TOPRIGHT, animName, PT_BOTTOMRIGHT, 0, 4);
+    anims->setPointEx(PT_BOTTOM, 0, 0.6, 0, 0);
+
+    objects = new OptionList(this, 104);
+    objects->setPoint(PT_TOPLEFT, anims, PT_BOTTOMLEFT, 0, 4);
+
+    bgcolor = new ColorFrame(0x000000, this, 105);
+    bgcolor->setPoint(PT_BOTTOMLEFT, 0, 0);
+    bgcolor->setSize(300, 21);
+    bgcolor->setText("Background");
+
+    capSize = new EditFrame(this, 98, ES_NUMBER | ES_AUTOHSCROLL);
+    capSize->setText("256");
+    capBtn = new ButtonFrame("Save", this, 97);
+    capSize->setSize(160, 21);
+    capBtn->setSize(136, 21);
+    capSize->setPoint(PT_BOTTOMLEFT, bgcolor, PT_TOPLEFT, 0, -4);
+    capBtn->setPoint(PT_BOTTOMRIGHT, bgcolor, PT_TOPRIGHT, 0, -4);
+
+    objects->setPoint(PT_BOTTOMRIGHT, capBtn, PT_TOPRIGHT, 0, -4);
+
+    viewer = new ModelViewer2(this);
+    viewer->setPoint(PT_TOPLEFT, actorName, PT_TOPRIGHT, 4, 0);
+    viewer->setPoint(PT_BOTTOMRIGHT, 0, 0);
+
+    listActors();
+  }
+
+  void listActors() {
+    int m = mode->getCurSel();
+    actors->clear();
+    if (m == 1) {
+      auto stl = Strings::list("Monsters");
+      for (auto& mon : SnoLoader::All<Monster>()) {
+        uint32 id = mon->x010_ActorSno;
+        std::string name = mon.name();
+        if (stl.has(name)) name = stl[name];
+        if (!name.empty()) actors->insert(id, name);
+      }
+    } else {
+      for (auto& acr : SnoLoader::All<Actor>()) {
+        actors->insert(acr->x000_Header.id, acr.name());
+      }
+    }
+    actors->sort();
+    actors->update();
+  }
+
+  void setActor(uint32 id) {
+    SnoFile<Actor> actor(Actor::name(id));
+    anims->clear();
+    objects->clear();
+    viewer->setModel(nullptr);
+    if (actor) {
+      SnoFile<AnimSet> animSet(AnimSet::name(actor->x068_AnimSetSno));
+      if (animSet) {
+        std::set<uint32> ids;
+        for (auto& tm : animSet->x010_AnimSetTagMaps) {
+          for (uint32 i = 0; i < tm.x08_TagMap[0]; ++i) {
+            ids.insert(tm.x08_TagMap[i * 3 + 3]);
+          }
+        }
+        for (uint32 id : ids) {
+          char const* name = Anim::name(id);
+          if (name) {
+            anims->insert(id, name);
+          }
+        }
+        anims->sort();
+      }
+      viewer->setModel(Appearance::name(actor->x014_AppearanceSno));
+      Model* model = viewer->model();
+      if (model) {
+        for (uint32 i = 0; i < model->numSubObjects(); ++i) {
+          objects->addItem(model->subObjectName(i));
+        }
+        for (uint32 i = 0; i < model->numAppearances(); ++i) {
+          objects->addOption(model->appearanceName(i));
+        }
+      }
+    }
+    anims->update();
+    objects->update();
+  }
+
+  LRESULT onMessage(uint32 message, WPARAM wParam, LPARAM lParam) override {
+    int id;
+    switch (message) {
+    case WM_COMMAND:
+      id = LOWORD(wParam);
+      if (id == 99 && HIWORD(wParam) == CBN_SELCHANGE) {
+        listActors();
+      } else if (id == 100 && HIWORD(wParam) == EN_CHANGE) {
+        actors->search(actorName->getText());
+      } else if (id == 101) {
+        int sel = actors->selected();
+        setActor(sel >= 0 ? actors->itemdata(sel) : 0);
+      } else if (id == 103) {
+        int sel = anims->selected();
+        char const* name = Anim::name(sel >= 0 ? anims->itemdata(sel) : 0);
+        if (viewer->model()) {
+          viewer->model()->setAnimation(name);
+        }
+      } else if (id == 102 && HIWORD(wParam) == EN_CHANGE) {
+        anims->search(animName->getText());
+      } else if (id == 105) {
+        viewer->setColor(bgcolor->getColor());
+      } else if (id == 97 && HIWORD(wParam) == BN_CLICKED) {
+        Image img = viewer->capture();
+        static char path[512];
+        path[0] = 0;
+        OPENFILENAME ofn;
+        memset(&ofn, 0, sizeof ofn);
+        ofn.lStructSize = sizeof ofn;
+        ofn.hwndOwner = hWnd;
+        ofn.lpstrFilter = "PNG files (*.png)\0*.png\0All Files\0*\0\0";
+        ofn.lpstrFile = path;
+        ofn.nMaxFile = 512;
+        ofn.lpstrDefExt = "png";
+        ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+        if (!GetSaveFileName(&ofn)) return 0;
+        int size = atoi(capSize->getText().c_str());
+        if (!size) size = 256;
+        int osize = std::min(img.width(), img.height());
+        Image dst(osize, osize);
+        dst.blt(int(osize - img.width()) / 2, int(osize - img.height()) / 2, img);
+        dst.resize(size, size).write(path, ImageFormat::PNG);
+      }
+      return 0;
+    case WM_OPTIONCHANGE:
+      if (viewer->model()) {
+        viewer->model()->appearance(lParam, objects->getOption(lParam));
+      }
+      return 0;
+    case WM_KEYDOWN:
+      viewer->onKey(wParam);
+      return 0;
+    case WM_MOUSEWHEEL:
+      SetFocus(viewer->getHandle());
+      return 0;
+    }
+    return M_UNHANDLED;
+  }
+
+  void loop() {
+    ShowWindow(hWnd, SW_SHOW);
+    while (hWnd) {
+      MSG msg;
+      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+        if (msg.message == WM_QUIT) {
+          DestroyWindow(hWnd);
+        }
+      }
+      viewer->render();
+    }
+  }
+};
+
 void ViewModel(Model& model) {
-  ModelViewer viewer(model);
+  SimpleModelViewer viewer(model);
+  viewer.loop();
+}
+void ViewModels() {
+  SuperModelViewer viewer;
   viewer.loop();
 }

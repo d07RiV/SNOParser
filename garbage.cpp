@@ -1008,91 +1008,91 @@ struct IconItemType {
 void item_flavor(SnoLoader* loader = SnoLoader::default) {
   json::Value src, dst, iconsrc, icondst, extra, dyes;
   json::parse(File("itemtypes.js"), src, json::mJS);
-  //json::parse(File("webgl_items.js"), extra, json::mJS);
-  //json::parse(File("typeicons.js"), iconsrc);
-  //json::parse(File("dyes.js"), dyes, json::mJS);
+  json::parse(File("webgl_items.js"), extra, json::mJS);
+  json::parse(File("typeicons.js"), iconsrc);
+  json::parse(File("dyes.js"), dyes, json::mJS);
   DictionaryRef flavor = Strings::list("ItemFlavor", loader);
   std::map<std::string, IconItemType> types;
 
-  //auto icons = get_item_icons();
-  //for (auto& kv : iconsrc["sizes"].getMap()) {
-  //  auto& t = types[kv.first];
-  //  t.left = kv.second[0].getInteger();
-  //  t.top = kv.second[1].getInteger();
-  //  t.right = t.left + kv.second[2].getInteger();
-  //  t.bottom = t.top + kv.second[3].getInteger();
-  //}
+  auto icons = get_item_icons();
+  for (auto& kv : iconsrc["sizes"].getMap()) {
+    auto& t = types[kv.first];
+    t.left = kv.second[0].getInteger();
+    t.top = kv.second[1].getInteger();
+    t.right = t.left + kv.second[2].getInteger();
+    t.bottom = t.top + kv.second[3].getInteger();
+  }
   for (auto& kv : src["itemById"].getMap()) {
     if (flavor.has(kv.first)) {
       dst["itemById"][kv.first]["flavor"] = flavor[kv.first];
     }
-    //if (icons.count(kv.first)) {
-    //  auto& type = types[kv.second["type"].getString()];
-    //  if (type.left == -1) {
-    //    throw Exception("unknown type %s", kv.second["type"].getString().c_str());
-    //  }
-    //  icondst[kv.first] = type.add(icons[kv.first]);
-    //} else {
-    //  Logger::log("item not found: %s", kv.first.c_str());
-    //}
+    if (icons.count(kv.first)) {
+      auto& type = types[kv.second["type"].getString()];
+      if (type.left == -1) {
+        throw Exception("unknown type %s", kv.second["type"].getString().c_str());
+      }
+      icondst[kv.first] = type.add(icons[kv.first]);
+    } else {
+      Logger::log("item not found: %s", kv.first.c_str());
+    }
   }
-  //for (auto& kv : extra.getMap()) {
-  //  if (!kv.second.has("type")) continue;
-  //  if (icons.count(kv.first)) {
-  //    auto& type = types[kv.second["type"].getString()];
-  //    if (type.left == -1) {
-  //      throw Exception("unknown type %s", kv.second["type"].getString().c_str());
-  //    }
-  //    icondst[kv.first] = type.add(icons[kv.first]);
-  //  } else {
-  //    Logger::log("item not found: %s", kv.first.c_str());
-  //  }
-  //}
-  //for (auto& kv : dyes.getMap()) {
-  //  if (icons.count(kv.first)) {
-  //    auto& type = types["dyes"];
-  //    if (type.left == -1) {
-  //      throw Exception("unknown type dyes");
-  //    }
-  //    icondst[kv.first] = type.add(icons[kv.first]);
-  //  } else {
-  //    Logger::log("item not found: %s", kv.first.c_str());
-  //  }
-  //}
-  ////for (auto& kv : src["itemTypes"].getMap()) {
-  ////  std::string id = kv.second["generic"].getString();
-  ////  if (icons.count(id)) {
-  ////    auto& type = types[kv.first];
-  ////    if (type.left == -1) {
-  ////      throw Exception("unknown type %s", kv.first.c_str());
-  ////    }
-  ////    icondst[id] = type.add(icons[id]);
-  ////  } else {
-  ////    Logger::log("item not found: %s", id.c_str());
-  ////  }
-  ////}
-  //for (auto& kv : src["legendaryGems"].getMap()) {
-  //  std::string id = kv.second["id"].getString();
+  for (auto& kv : extra.getMap()) {
+    if (!kv.second.has("type")) continue;
+    if (icons.count(kv.first)) {
+      auto& type = types[kv.second["type"].getString()];
+      if (type.left == -1) {
+        throw Exception("unknown type %s", kv.second["type"].getString().c_str());
+      }
+      icondst[kv.first] = type.add(icons[kv.first]);
+    } else {
+      Logger::log("item not found: %s", kv.first.c_str());
+    }
+  }
+  for (auto& kv : dyes.getMap()) {
+    if (icons.count(kv.first)) {
+      auto& type = types["dyes"];
+      if (type.left == -1) {
+        throw Exception("unknown type dyes");
+      }
+      icondst[kv.first] = type.add(icons[kv.first]);
+    } else {
+      Logger::log("item not found: %s", kv.first.c_str());
+    }
+  }
+  //for (auto& kv : src["itemTypes"].getMap()) {
+  //  std::string id = kv.second["generic"].getString();
   //  if (icons.count(id)) {
-  //    auto& type = types["gemleg"];
+  //    auto& type = types[kv.first];
   //    if (type.left == -1) {
-  //      throw Exception("unknown type gemleg");
+  //      throw Exception("unknown type %s", kv.first.c_str());
   //    }
   //    icondst[id] = type.add(icons[id]);
   //  } else {
   //    Logger::log("item not found: %s", id.c_str());
   //  }
   //}
-  //for (auto& type : types) {
-  //  Image img = type.second.image();
-  //  if (img) {
-  //    img.write("itemtypes/" + type.first + ".png");
-  //  }
-  //}
+  for (auto& kv : src["legendaryGems"].getMap()) {
+    std::string id = kv.second["id"].getString();
+    if (icons.count(id)) {
+      auto& type = types["gemleg"];
+      if (type.left == -1) {
+        throw Exception("unknown type gemleg");
+      }
+      icondst[id] = type.add(icons[id]);
+    } else {
+      Logger::log("item not found: %s", id.c_str());
+    }
+  }
+  for (auto& type : types) {
+    Image img = type.second.image();
+    if (img) {
+      img.write("itemtypes/" + type.first + ".png");
+    }
+  }
   json::write(File("itemflavor.js", "w"), dst, json::mJSCall, "_L.patch.add");
-  //File df("item_icons.js", "w");
-  //df.printf("DiabloCalc.itemIcons = ");
-  //json::write(df, icondst, json::mJS);
+  File df("item_icons.js", "w");
+  df.printf("DiabloCalc.itemIcons = ");
+  json::write(df, icondst, json::mJS);
 }
 void translate_extra() {
   json::Value dst, extra, dyesrc, dyedst;
@@ -1234,7 +1234,7 @@ bool operator < (MonValue const& lhs, MonValue const& rhs) {
 }
 void progress_comp(bool trans) {
   json::Value lhs, rhs;
-  json::parse(File("monsters_live.js"), lhs);
+  json::parse(File("monsters_second.js"), lhs);
   json::parse(File("monsters_latest.js"), rhs);
   std::map<istring, std::pair<double, double>> values;
   for (auto& kv : lhs.getMap()) {
@@ -1337,4 +1337,94 @@ void write_skill_anim() {
     }
   }
   json::write(File("skillanim.js", "w"), output, json::mJS);
+}
+
+void write_item_icon(json::Value& dst, Archive& dsticons, std::string const& id, bool torso) {
+  auto* item = ItemLibrary::get(id);
+  if (!item) {
+    Logger::log("item not found: %s", id.c_str());
+    return;
+  }
+  SnoFile<Actor> actor(item->x108_ActorSno.name());
+  if (!actor) {
+    Logger::log("actor not found for %s", id.c_str());
+    return;
+  }
+  auto& images = actor->x310_InventoryImages;
+  std::set<uint32> icons;
+  for (auto& inv : images) {
+    if (inv.x00 != 0 && inv.x00 != -1) icons.insert(inv.x00);
+    if (inv.x04 != 0 && inv.x04 != -1) icons.insert(inv.x04);
+  }
+  for (uint32 id : icons) {
+    Image image = GameTextures::get(id);
+    if (image) {
+      if (torso && (image.width() != 82 || image.height() != 164)) {
+        Image tmp(82, 164);
+        tmp.blt(41 - image.width() / 2, 82 - image.height() / 2, image);
+        image = tmp;
+      }
+      image.write(dsticons.create(id), ImageFormat::PNG);
+    }
+  }
+  auto& data = dst[id];
+  if (data.type() != json::Value::tArray) {
+    data.append(0);
+  }
+  if (icons.size() == 1) {
+    data.append(*icons.begin());
+  } else if (!icons.empty()) {
+    auto& value = data.append(json::Value::tObject);
+    for (size_t i = 0; i < 6; ++i) {
+      auto& inv = images[i];
+      if (inv.x00 != 0 && inv.x00 != -1) value[fmtstring("%d", i * 2 + 0)] = (uint32)inv.x00;
+      if (inv.x04 != 0 && inv.x04 != -1) value[fmtstring("%d", i * 2 + 1)] = (uint32)inv.x04;
+    }
+  }
+}
+
+void write_item_icons() {
+  json::Value src, srcextra, dst;
+  json::parse(File("itemtypes.js"), src, json::mJS);
+  json::parse(File("webgl_items.js"), srcextra, json::mJS);
+  json::parse(File("item_icons.js"), dst, json::mJS);
+  for (auto& val : dst) {
+    if (val.type() != json::Value::tArray) {
+      json::Value tmp = val;
+      val.append(tmp);
+    } else {
+      json::Value tmp = (val.length() < 1 ? 0 : val[0]);
+      val.clear();
+      val.append(tmp);
+    }
+  }
+  Archive dsticons;
+  dsticons.load(File("item_icons.wgz"), false);
+  //for (auto& kv : src["itemById"].getMap()) {
+  //  std::string id = kv.first;
+  //  std::string type = kv.second["type"].getString();
+  //  std::string slot = src["itemTypes"][type]["slot"].getString();
+  //  write_item_icon(dst, dsticons, id, slot == "torso");
+  //}
+  //for (auto& kv : src["legendaryGems"].getMap()) {
+  //  std::string id = kv.second["id"].getString();
+  //  write_item_icon(dst, dsticons, id, false);
+  //}
+  //uint32 numQualities = src["gemQualities"].length();
+  //for (auto& kv : src["gemColors"].getMap()) {
+  //  std::string id = kv.second["id"].getString();
+  //  for (uint32 level = 1; level <= numQualities; ++level) {
+  //    write_item_icon(dst, dsticons, id + fmtstring("%02d", level), false);
+  //  }
+  //}
+  //for (auto& kv : srcextra.getMap()) {
+  //  if (!kv.second.has("type")) continue;
+  //  std::string id = kv.first;
+  //  std::string type = kv.second["type"].getString();
+  //  std::string slot = src["itemTypes"][type]["slot"].getString();
+  //  write_item_icon(dst, dsticons, id, slot == "torso");
+  //}
+  write_item_icon(dst, dsticons, "Unique_Offhand_001_x1", false);
+  json::write(File("item_icons.js", "w"), dst, json::mJS);
+  dsticons.write(File("item_icons.wgz", "wb"), false);
 }

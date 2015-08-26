@@ -22,6 +22,12 @@
     <Filter Include="Source Files\types">
       <UniqueIdentifier>{e53585cb-c795-4b0a-ac68-e4ef3f4801a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\frameui">
+      <UniqueIdentifier>{4b83b3b5-551c-4fc2-8285-148abc2537b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\frameui">
+      <UniqueIdentifier>{03b119c1-7376-41e8-a342-e09109da116f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -125,6 +131,24 @@
     </ClCompile>
     <ClCompile Include="snocommon.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="frameui\window.cpp">
+      <Filter>Source Files\frameui</Filter>
+    </ClCompile>
+    <ClCompile Include="frameui\fontsys.cpp">
+      <Filter>Source Files\frameui</Filter>
+    </ClCompile>
+    <ClCompile Include="frameui\frame.cpp">
+      <Filter>Source Files\frameui</Filter>
+    </ClCompile>
+    <ClCompile Include="frameui\framewnd.cpp">
+      <Filter>Source Files\frameui</Filter>
+    </ClCompile>
+    <ClCompile Include="frameui\controlframes.cpp">
+      <Filter>Source Files\frameui</Filter>
+    </ClCompile>
+    <ClCompile Include="frameui\searchlist.cpp">
+      <Filter>Source Files\frameui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -364,6 +388,24 @@
     </ClInclude>
     <ClInclude Include="webgl.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="frameui\window.h">
+      <Filter>Header Files\frameui</Filter>
+    </ClInclude>
+    <ClInclude Include="frameui\fontsys.h">
+      <Filter>Header Files\frameui</Filter>
+    </ClInclude>
+    <ClInclude Include="frameui\frame.h">
+      <Filter>Header Files\frameui</Filter>
+    </ClInclude>
+    <ClInclude Include="frameui\framewnd.h">
+      <Filter>Header Files\frameui</Filter>
+    </ClInclude>
+    <ClInclude Include="frameui\controlframes.h">
+      <Filter>Header Files\frameui</Filter>
+    </ClInclude>
+    <ClInclude Include="frameui\searchlist.h">
+      <Filter>Header Files\frameui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
