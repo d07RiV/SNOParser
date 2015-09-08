@@ -2,11 +2,18 @@
 
 #include <string>
 #include <vector>
+#include "file.h"
 
 class Logger {
 public:
   struct Task;
   static Task* root;
+  File* logfile;
+  Logger() : logfile(nullptr) {}
+  ~Logger() {
+    delete logfile;
+  }
+  static Logger instance;
 private:
   friend struct Task;
   static Task* top;

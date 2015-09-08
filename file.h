@@ -171,6 +171,7 @@ class MemoryFile : public File {
 public:
   MemoryFile(size_t initial = 16384, size_t grow = (1 << 20));
   uint8 const* data() const;
+  size_t csize() const;
   uint8* reserve(uint32 size);
   void resize(uint32 size);
 };
@@ -220,4 +221,8 @@ public:
   static void compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)(uint32) = nullptr);
 
   void write(File& file, bool compression = true);
+
+  std::map<uint32, MemoryFile> const& files() const {
+    return files_;
+  }
 };

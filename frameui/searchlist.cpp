@@ -105,6 +105,9 @@ void SearchList::clear() {
 void SearchList::insert(uint32 id, std::string const& text) {
   items.emplace_back(id, text);
 }
+void SearchList::insertEx(uint32 id, std::string const& text) {
+  itemsEx.emplace_back(id, text);
+}
 
 static bool contains(std::vector<size_t> const& kmp, std::string const& query, std::string const& text) {
   if (kmp.empty()) return true;
@@ -135,7 +138,11 @@ void SearchList::search(std::string const& query_) {
   cursel = -1;
   scrollPos = 0;
   scrollAccum = 0;
-  for (auto& item : items) {
+  auto* list = &items;
+  if (query.length() && itemsEx.size()) {
+    list = &itemsEx;
+  }
+  for (auto& item : *list) {
     if (contains(kmp, query, item.text)) {
       if (&item == sel) cursel = display.size();
       display.push_back(&item);
@@ -146,6 +153,9 @@ void SearchList::search(std::string const& query_) {
 
 void SearchList::sort() {
   std::sort(items.begin(), items.end());
+}
+void SearchList::sortEx() {
+  std::sort(itemsEx.begin(), itemsEx.end());
 }
 void SearchList::update() {
   search(query);

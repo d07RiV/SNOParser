@@ -176,7 +176,7 @@ GameAffixes& GameAffixes::instance() {
   return inst;
 }
 
-std::vector<std::string> GameAffixes::format(AttributeSpecifier const* begin, AttributeSpecifier const* end, bool html) {
+std::vector<std::string> GameAffixes::format(AttributeSpecifier const* begin, AttributeSpecifier const* end, FormatFlags flags) {
   auto& affixData = instance().affixData_;
   AttributeMap& defaultMap = instance().defaultMap_;
   DictionaryRef itemPowers = Strings::list("ItemPassivePowerDescriptions");
@@ -198,7 +198,7 @@ std::vector<std::string> GameAffixes::format(AttributeSpecifier const* begin, At
       }
       AttributeMap map = defaultMap;
       map.emplace("value1", begin->value);
-      result.push_back(FormatDescription(affix, html, map, PowerTags::getraw(begin->param)));
+      result.push_back(FormatDescription(affix, flags, map, PowerTags::getraw(begin->param)));
     } else if (affix[0] == '&') {
       char const* power = Power::name(begin->param);
       if (!power) continue;
@@ -220,12 +220,12 @@ std::vector<std::string> GameAffixes::format(AttributeSpecifier const* begin, At
           }
         }
       }
-      result.push_back(FormatDescription(affix, html, map));
+      result.push_back(FormatDescription(affix, flags, map));
     } else if (affix[0] == '@') {
       affix = affix.substr(1);
       AttributeMap map;
       map.emplace("value", begin->value);
-      result.push_back(FormatDescription(affix, html, map));
+      result.push_back(FormatDescription(affix, flags, map));
     } else {
       static re::Prog subst(R"(\{(\w+)\})");
       affix = subst.replace(affix, [&affixData, begin](re::Match const& m) {
@@ -244,17 +244,17 @@ std::vector<std::string> GameAffixes::format(AttributeSpecifier const* begin, At
         AttributeMap map = defaultMap;
         map.emplace("value", begin->value);
         map.emplace("value1", begin->value);
-        result.push_back(FormatDescription(affix, html, map));
+        result.push_back(FormatDescription(affix, flags, map));
       }
     }
   }
   for (auto& am : aggregate) {
     if (!attributes.has(am.first)) continue;
-    result.push_back(FormatDescription(attributes[am.first], html, am.second));
+    result.push_back(FormatDescription(attributes[am.first], flags, am.second));
   }
   return result;
 }
 
-std::vector<std::string> GameAffixes::format(std::vector<AttributeSpecifier> const& attrs, bool html) {
-  return format(attrs.data(), attrs.data() + attrs.size(), html);
+std::vector<std::string> GameAffixes::format(std::vector<AttributeSpecifier> const& attrs, FormatFlags flags) {
+  return format(attrs.data(), attrs.data() + attrs.size(), flags);
 }

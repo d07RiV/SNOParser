@@ -642,6 +642,10 @@ public:
     viewer->setPoint(PT_BOTTOMRIGHT, 0, 0);
 
     listActors();
+    for (auto& ani : SnoManager::get<Anim>().get()) {
+      anims->insertEx(ani.first, ani.second);
+    }
+    anims->sortEx();
   }
 
   void listActors() {
@@ -656,8 +660,8 @@ public:
         if (!name.empty()) actors->insert(id, name);
       }
     } else {
-      for (auto& acr : SnoLoader::All<Actor>()) {
-        actors->insert(acr->x000_Header.id, acr.name());
+      for (auto& acr : SnoManager::get<Actor>().get()) {
+        actors->insert(acr.first, acr.second);
       }
     }
     actors->sort();

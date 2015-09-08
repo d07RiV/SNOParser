@@ -21,6 +21,8 @@
 #include "miner.h"
 #include "powertag.h"
 #include "itemlib.h"
+#include "affixes.h"
+
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -157,15 +159,15 @@ SnoSysLoader& cnLoader() {
 
 #include "types/gamebalance.h"
 void fixItems(json::Value& items) {
-  Dictionary itemNames = readStrings("Items");
-  Dictionary powerDesc = readStrings("ItemPassivePowerDescriptions");
-  Dictionary powerDescEu = readStrings("ItemPassivePowerDescriptions", &euLoader());
+  auto itemNames = Strings::list("Items", &cnLoader());
+  auto powerDesc = Strings::list("ItemPassivePowerDescriptions", &cnLoader());
+  auto powerDescEu = Strings::list("ItemPassivePowerDescriptions");
   Dictionary itemPowers;
   Dictionary itemPowersEu;
   for (auto& value : SnoLoader::All<GameBalance>()) {
     for (auto& item : value->x028_Items) {
       for (auto& attr : item.x1F8_AttributeSpecifiers) {
-        if (attr.x00_Type == 1265) {
+        if (attr.x00_Type == fixAttrId(1270, true)) {
           char const* power = Power::name(attr.x04_Param);
           if (power) {
             itemPowers[item.x000_Text] = powerDesc[power];
@@ -177,7 +179,7 @@ void fixItems(json::Value& items) {
   }
 
   for (auto& it = items.begin(); it != items.end(); ++it) {
-    if (itemNames.count(it.key())) {
+    if (itemNames.has(it.key())) {
       it->insert("name", itemNames[it.key()]);
     }
     if (it->has("required") && itemPowers.count(it.key())) {
@@ -199,8 +201,8 @@ void fixSets(json::Value& sets) {
     std::vector<uint32> bonuses[8];
   };
   Map<SetDesc> setBonuses;
-  Dictionary setNames = readStrings("ItemSets");
-  Dictionary set2id = reverse(readStrings("ItemSets", &euLoader()));
+  auto setNames = Strings::list("ItemSets", &cnLoader());
+  Dictionary set2id = reverse(readStrings("ItemSets", &cnLoader()));
   SnoFile<GameBalance> gmb("SetItemBonuses");
   for (auto& bonus : gmb->x168_SetItemBonusTable) {
     std::vector<std::string> sub;
@@ -213,14 +215,14 @@ void fixSets(json::Value& sets) {
       }
     }
   }
-  Dictionary powerDesc = readStrings("ItemPassivePowerDescriptions");
-  Dictionary powerDescEu = readStrings("ItemPassivePowerDescriptions", &euLoader());
+  auto powerDesc = Strings::list("ItemPassivePowerDescriptions", &cnLoader());
+  auto powerDescEu = Strings::list("ItemPassivePowerDescriptions");
 
   for (auto& set : sets) {
     std::string name = set["name"].getString();
     if (set2id.count(name)) {
       std::string id = set2id[name];
-      if (setNames.count(id)) {
+      if (setNames.has(id)) {
         set["name"] = setNames[id];
       }
       if (setBonuses.count(id)) {
@@ -232,7 +234,7 @@ void fixSets(json::Value& sets) {
             if (pow.has("format") && index < bonus.bonuses[pcs].size()) {
               uint32 power = bonus.bonuses[pcs][index++];
               char const* pow_name = Power::name(power);
-              if (pow_name && powerDesc.count(pow_name)) {
+              if (pow_name && powerDesc.has(pow_name)) {
                 pow["format"] = translate(pow["format"].getString(), powerDescEu[pow_name], powerDesc[pow_name]);
               }
             }
@@ -820,9 +822,9 @@ void dumpTags() {
 }
 
 void make_diffs() {
-  make_diff("items", { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
-  make_diff("itemsets", { "name", "2", "3", "4", "5", "6", "powers" });
-  make_diff("powers", { "name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e" }, true);
+  //make_diff("items", { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
+  //make_diff("itemsets", { "name", "2", "3", "4", "5", "6", "powers" });
+  //make_diff("powers", { "name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e" }, true);
   make_html("items", { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
   make_html("itemsets", { "name", "2", "3", "4", "5", "6", "powers" });
   //  make_html("powers", {"name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e"}, true);
@@ -1427,4 +1429,68 @@ void write_item_icons() {
   write_item_icon(dst, dsticons, "Unique_Offhand_001_x1", false);
   json::write(File("item_icons.js", "w"), dst, json::mJS);
   dsticons.write(File("item_icons.wgz", "wb"), false);
+}
+
+void itemPowerFilter() {
+  std::string classes[] = {"wizard", "demonhunter", "witchdoctor", "monk", "barbarian", "crusader"};
+  std::map<uint32, std::string> classMap;
+  for (auto& str : classes) {
+    classMap[HashNameLower(str)] = str;
+  }
+  json::Value items, out;
+  json::parse(File("itempowers.js"), items, json::mJS);
+  uint32 powerAttr = fixAttrId(1270, true);
+  for (auto& it : items["itemById"].getMap()) {
+    auto* item = ItemLibrary::get(it.first);
+    if (!item) {
+      Logger::log("Item not found: %s", it.first.c_str());
+      continue;
+    }
+    std::string restriction;
+    for (auto& attr : item->x1F8_AttributeSpecifiers) {
+      if (attr.x00_Type == powerAttr) {
+        auto* tag = PowerTags::getraw(attr.x04_Param);
+        if (!tag) {
+          Logger::log("Power not found: %u (%s)", attr.x04_Param, it.first.c_str());
+          continue;
+        }
+        uint32 cls = tag->getint("Class Restriction");
+        if (!classMap.count(cls)) continue;
+        restriction = classMap[cls];
+      }
+    }
+    if (!restriction.empty()) {
+      out[it.second["required"]["custom"]["id"].getString()] = restriction;
+    }
+  }
+  json::write(File("itemclasses.js", "wt"), out, json::mJS);
+}
+
+void fixSets2() {
+  json::Value sets, good;
+  std::string func;
+  json::parse(File("locale/itemsets.js"), sets, json::mJSCall, &func);
+  json::parse(File("locale/cn_itemsets.js"), good, json::mJS);
+  for (auto it = sets["itemSets"].begin(); it != sets["itemSets"].end(); ++it) {
+    if (!good.has(it.key())) continue;
+    auto& src = good[it.key()];
+    (*it)["name"] = src["name"];
+    if (it->has("bonuses")) {
+      for (auto bit = (*it)["bonuses"].begin(); bit != (*it)["bonuses"].end(); ++bit) {
+        if (!src.has(bit.key())) continue;
+        auto& bsrc = src[bit.key()];
+        for (size_t i = 0; i < bsrc.length(); ++i) {
+          std::string key = fmtstring("%d", i);
+          if (!bit->has(key)) continue;
+          std::string fmt;
+          for (char c : bsrc[i].getString()) {
+            if (c == '%') fmt.push_back(c);
+            fmt.push_back(c);
+          }
+          (*bit)[key]["format"] = fmt;
+        }
+      }
+    }
+  }
+  json::write(File("locale/itemsets.js", "w"), sets, json::mJSCall, func.c_str());
 }

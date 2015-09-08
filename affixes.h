@@ -48,8 +48,8 @@ public:
     return instance().defaultMap_;
   }
 
-  static std::vector<std::string> format(AttributeSpecifier const* begin, AttributeSpecifier const* end, bool html = false);
-  static std::vector<std::string> format(std::vector<AttributeSpecifier> const& attrs, bool html = false);
+  static std::vector<std::string> format(AttributeSpecifier const* begin, AttributeSpecifier const* end, FormatFlags flags = FormatNone);
+  static std::vector<std::string> format(std::vector<AttributeSpecifier> const& attrs, FormatFlags flags = FormatNone);
   static uint32 itemTypeParent(uint32 id) {
     return instance().itemTypeParent_[id];
   }
@@ -96,8 +96,8 @@ struct AffixValue {
   static const int MaxAttributes = 4;
   AttributeSpecifier attributes[MaxAttributes];
 
-  std::vector<std::string> format(bool html = false) const {
-    return GameAffixes::format(attributes, attributes + MaxAttributes, html);
+  std::vector<std::string> format(FormatFlags flags = FormatNone) const {
+    return GameAffixes::format(attributes, attributes + MaxAttributes, flags);
   }
 
   static int compare(AffixValue const& lhs, AffixValue const& rhs) {

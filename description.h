@@ -19,6 +19,12 @@
 #include <vector>
 #include "common.h"
 
+enum FormatFlags {
+  FormatNone = 0,
+  FormatHTML = 1,
+  FormatTags = 2,
+};
+
 struct AttributeValue {
   double min, max;
   double const* table;
@@ -98,7 +104,7 @@ inline AttributeValue ExecFormula(std::vector<uint32> const& formula, AttributeM
 struct FormulaParser {
   enum { tEnd, tChar, tTag, tNum, tName };
   std::string descr;
-  bool html;
+  FormatFlags flags;
   size_t pos;
   AttributeMap values;
   PowerTag* context;
@@ -113,7 +119,7 @@ struct FormulaParser {
   int fnext();
   void endeval();
 public:
-  FormulaParser(std::string const& descr, bool html, AttributeMap const& values = {}, PowerTag* context = nullptr);
+  FormulaParser(std::string const& descr, FormatFlags flags = FormatNone, AttributeMap const& values = {}, PowerTag* context = nullptr);
 
   struct Value : public AttributeValue {
     int digits = 0;
@@ -132,4 +138,4 @@ public:
   std::string parse();
 };
 
-std::string FormatDescription(std::string const& descr, bool html, AttributeMap const& values = {}, PowerTag* context = nullptr);
+std::string FormatDescription(std::string const& descr, FormatFlags flags = FormatNone, AttributeMap const& values = {}, PowerTag* context = nullptr);

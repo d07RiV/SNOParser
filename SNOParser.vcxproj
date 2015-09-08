@@ -171,6 +171,7 @@
     <ClCompile Include="imagepng.cpp" />
     <ClCompile Include="itemlib.cpp" />
     <ClCompile Include="json.cpp" />
+    <ClCompile Include="locale.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math3d.cpp" />
     <ClCompile Include="miner.cpp" />

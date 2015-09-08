@@ -32,7 +32,7 @@
 #include <stdarg.h>
 using namespace std;
 
-#define MODELVIEWER
+//#define MODELVIEWER
 
 namespace path {
 #ifndef MODELVIEWER
@@ -42,13 +42,8 @@ namespace path {
     "C:\\tmp",
   };
   std::vector<std::string> cascs {
-#ifdef PTR
-    "E:\\D3Ptr\\Data",
-    "G:\\D3Ptr\\Data",
-#else
     "E:\\D3Live\\Data",
     "G:\\D3Live\\Data",
-#endif
   };
 #else
   std::vector<std::string> roots;
@@ -347,15 +342,33 @@ void str_comp() {
   }
 }
 
+void itemPowerFilter();
+void fixItems();
+void fixSets2();
+void FormatLocale();
+void CompareLocale();
+#include "affixes.h"
 int do_main() {
   SnoCascLoader casc(path::casc(), "enUS");
+  //SnoSysLoader cnLoader(path::root());
+  //SnoSysLoader cnLoader("C:\\tmp\\plPL");
   SnoLoader::default = &casc;
+  //Strings::setLoader(&cnLoader);
   //SnoCascLoader casc("G:\\D3Live\\Data", "enUS");
 #ifdef MODELVIEWER
   ViewModels();
   return 0;
 #endif
-  simBase("crusader");
+  path::work();
+
+  dump_data("_live.js");
+  make_diffs();
+  //void make_menu();
+  //void make_diffs();
+
+  //FormatLocale();
+  //CompareLocale();
+
   return 0;
 }
 

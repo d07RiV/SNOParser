@@ -27,7 +27,10 @@ public:
   void search(std::string const& query);
   void update();
 
+  void insertEx(uint32 id, std::string const& text);
+
   void sort();
+  void sortEx();
 
   int selected() const {
     return cursel;
@@ -47,6 +50,7 @@ private:
     return lhs.text < rhs.text;
   }
   std::vector<Item> items;
+  std::vector<Item> itemsEx;
   std::vector<Item*> display;
   std::string query;
 

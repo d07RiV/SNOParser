@@ -150,6 +150,9 @@
     <ClCompile Include="frameui\searchlist.cpp">
       <Filter>Source Files\frameui</Filter>
     </ClCompile>
+    <ClCompile Include="locale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="path.h">

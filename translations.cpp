@@ -11,6 +11,7 @@
 #include "powertag.h"
 #include "strings.h"
 #include "affixes.h"
+#include "utf8.h"
 
 std::string canonize(std::string const& str) {
   std::string dst;
@@ -18,6 +19,30 @@ std::string canonize(std::string const& str) {
     if (std::isalpha(chr)) {
       dst.push_back(std::tolower(chr));
     }
+  }
+  return dst;
+}
+std::string untag(std::string const& str, bool capital) {
+  if (str.empty()) return str;
+  std::string dst;
+  if (str[0] == '[') {
+    size_t index = str.find(']');
+    if (index != std::string::npos) dst = str.substr(index + 1);
+    else dst = str;
+  } else {
+    dst = str;
+  }
+  if (capital && !dst.empty()) {
+    uint8_const_ptr first = (uint8_const_ptr) &dst[0];
+    uint8_const_ptr last = first;
+    uint32 cp = utf8::transform(&last, utf8::tf_upper);
+    std::string tmp;
+    while (cp & 0xFF) {
+      tmp.push_back((char) cp);
+      cp >>= 8;
+    }
+    tmp.append(dst.substr(last - first));
+    return tmp;
   }
   return dst;
 }
@@ -66,7 +91,7 @@ std::string SkillTips::format(std::string const& power) {
   auto dictPowers = Strings::list("Powers");
   AttributeMap attr = GameAffixes::defaultMap();
   std::string stats = dictPowers[power + "_desc"];
-  tip.append(FormatDescription(stats, true, attr, tag));
+  tip.append(FormatDescription(stats, FormatHTML, attr, tag));
 
   //Image icon = GameTextures::get(tag->getint("Icon Normal"));
   //if (icon) {
@@ -76,16 +101,25 @@ std::string SkillTips::format(std::string const& power) {
   uint32 required = tag->getint("Item Type Requirement");
   char const* reqType = SnoManager::gameBalance()[required];
   if (reqType) {
-    tip.append(fmtstring("</p> <p>Requires <span class=\"value\">%s</span>", reqType));
+    std::string fmt = Strings::get("UIToolTips", "RequiresItemType");
+    std::string type = untag(Strings::get("ItemTypeNames", reqType), true);
+    attr["s1"] = AttributeValue(fmtstring("<span class=\"value\">%s</span>", type.c_str()));
+    tip.append("</p> <p>");
+    tip.append(FormatDescription(fmt, FormatHTML, attr, tag));
   }
   tip.append("</p> </div> </div>");
   return tip;
 }
-void SkillTips::generate(std::string const& cls, uint32 kitId) {
+static std::string UnlockedAtLevel(int lvl) {
+  AttributeMap attr = GameAffixes::defaultMap();
+  std::string fmt = Strings::get("UIToolTips", "ActiveSkillMasteryRequirementNotMet");
+  attr["s1"] = AttributeValue(fmtstring("<em>%d</em>", lvl));
+  return FormatDescription(fmt, FormatNone, attr);
+}
+void SkillTips::generate(std::string const& cls, uint32 kitId, json::Value* fix) {
   charClass = cls;
 
   std::map<uint32, std::string> catIds;
-
   SnoFile<SkillKit> kit(SkillKit::name(kitId));
   for (auto& skill : kit->x20_ActiveSkillEntries) {
     catIds[skill.x08];
@@ -107,8 +141,11 @@ void SkillTips::generate(std::string const& cls, uint32 kitId) {
   }
   int index = 0;
   auto dictSkillsUI = Strings::list("SkillsUI");
+  auto dictSkillsUIEn = Strings::list("SkillsUI", SnoLoader::default);
   for (auto& kv : catIds) {
-    kv.second = dictSkillsUI.getfmt("Cat_%s%d", catId, ++index);
+    std::string tag = fmtstring("Cat_%s%d", catId, ++index);
+    kv.second = dictSkillsUI[tag];
+    categoryMap[canonize(dictSkillsUIEn[tag])] = kv.second;
   }
 
   static char const* elements[] = {
@@ -116,6 +153,7 @@ void SkillTips::generate(std::string const& cls, uint32 kitId) {
   };
 
   auto dictPowers = Strings::list("Powers");
+  auto dictPowersEn = Strings::list("Powers", SnoLoader::default);
   auto dictAttributes = Strings::list("AttributeDescriptions");
 
   AttributeMap attr = GameAffixes::defaultMap();
@@ -126,41 +164,40 @@ void SkillTips::generate(std::string const& cls, uint32 kitId) {
       " style=\"background-image: url('http://media.blizzard.com/d3/icons/skills/64/%s.png'); width: 64px; height: "
       "64px;\"> <span class=\"frame\"></span> </span> <div class=\"description\"> <p>", strlower(power).c_str());
 
-    std::string name = dictPowers[power + "_name"];
-    auto& val = skills[canonize(name)];
-    auto& elems = val["elements"];
+    std::string name = dictPowersEn[power + "_name"];
+    std::string cname = canonize(name);
+    if (fix && fix->has(cname)) cname = (*fix)[cname].getString();
+    auto& val = skills[cname];
+    skillMap[cname] = power;
+    //auto& elems = val["elements"];
     std::string stats = dictPowers[power + "_desc"];
-    tip.append(FormatDescription(stats, true, attr, tag));
-
-    if (name == "Blessed Shield") {
-      int asdf = 0;
-    }
-
-    Image icon = GameTextures::get(tag->getint("Icon Normal"));
-    if (icon) {
-      icon.write("skilltip/images/" + power + ".png");
-    }
+    tip.append(FormatDescription(stats, FormatHTML, attr, tag));
 
     uint32 required = tag->getint("Item Type Requirement");
     char const* reqType = SnoManager::gameBalance()[required];
     if (reqType) {
-      tip.append(fmtstring("</p> <p>Requires <span class=\"value\">%s</span>", reqType));
+      std::string fmt = Strings::get("UIToolTips", "RequiresItemType");
+      std::string type = untag(Strings::get("ItemTypeNames", reqType), true);
+      attr["s1"] = AttributeValue(fmtstring("<span class=\"value\">%s</span>", type.c_str()));
+      tip.append("</p> <p>");
+      tip.append(FormatDescription(fmt, FormatNone, attr, tag));
     }
-    tip.append(fmtstring("</p> <p class=\"special\">%s</p> <p class=\"subtle\">Unlocked at level <em>%d</em></p> </div> </div>",
-      catIds[skill.x08].c_str(), skill.x0C));
+    tip.append(fmtstring("</p> <p class=\"special\">%s</p> <p class=\"subtle\">", catIds[skill.x08].c_str()));
+    tip.append(UnlockedAtLevel(skill.x0C));
+    tip.append("</p> </div> </div>");
 
     val["x"] = tip;
-    elems["x"] = elements[tag->getint("NoRune Damage Type")];
+    //elems["x"] = elements[tag->getint("NoRune Damage Type")];
     for (char rune = 'a'; rune <= 'e'; ++rune) {
       AttributeMap rattr = attr;
       rattr.emplace(fmtstring("Rune_%c", rune - 'a' + 'A'), 1.0);
 
       std::string desc = dictAttributes.getfmt("Rune_%c#%s", rune - 'a' + 'A', power.c_str());
       std::string subtip = "<p>";
-      subtip.append(FormatDescription(desc, true, rattr, tag));
-      subtip.append(fmtstring("</p> <p class=\"subtle\">Unlocked at level <em>%d</em></p>", (&skill.x14)[rune - 'a']));
+      subtip.append(FormatDescription(desc, FormatHTML, rattr, tag));
+      subtip.append(fmtstring("</p> <p class=\"subtle\">%s</p>", UnlockedAtLevel((&skill.x14)[rune - 'a']).c_str()));
       val[std::string{ rune }] = subtip;
-      elems[std::string{ rune }] = elements[static_cast<int>(tag->get(fmtstring("Rune%c Damage Type", rune - 'a' + 'A'), rattr).max)];
+      //elems[std::string{ rune }] = elements[static_cast<int>(tag->get(fmtstring("Rune%c Damage Type", rune - 'a' + 'A'), rattr).max)];
     }
   }
   attr.emplace("sLevel", 1);
@@ -172,35 +209,33 @@ void SkillTips::generate(std::string const& cls, uint32 kitId) {
       " style=\"background-image: url('http://media.blizzard.com/d3/icons/skills/64/%s.png'); width: 64px; height: "
       "64px;\"> <span class=\"frame\"></span> </span> <div class=\"description\"> <p>", strlower(power).c_str());
 
-    Image icon = GameTextures::get(tag->getint("Icon Normal"));
-    Image icondis = GameTextures::get(tag->getint("Icon Inactive"));
-    if (icon) {
-      icon.write("skilltip/images/" + power + ".png");
-    }
-    if (icondis) {
-      icondis.write("skilltip/inactive/" + power + ".png");
-    }
-
-    std::string name = dictPowers[power + "_name"];
+    std::string name = dictPowersEn[power + "_name"];
     std::string stats = dictPowers[power + "_var_stats"];
-    tip.append(FormatDescription(stats, true, attr, tag));
+    tip.append(FormatDescription(stats, FormatHTML, attr, tag));
 
-    tip.append(fmtstring("</p> <p class=\"subtle\">Unlocked at level <em>%d</em></p> </div> </div> "
-      "<div class=\"tooltip-extension \"> <div class=\"flavor\">", trait.x08));
+    tip.append(fmtstring("</p> <p class=\"subtle\">%s</p> </div> </div> "
+      "<div class=\"tooltip-extension \"> <div class=\"flavor\">", UnlockedAtLevel(trait.x08).c_str()));
     tip.append(dictPowers[power + "_desc"]);
     tip.append("</div> </div>");
-    passives[canonize(name)] = tip;
+    std::string cname = canonize(name);
+    if (fix && fix->has(cname)) cname = (*fix)[cname].getString();
+    passives[cname] = tip;
+    passiveMap[cname] = power;
   }
 }
 void SkillTips::dump() {
   SnoFile<GameBalance> gmb("Characters");
   void* task = Logger::begin(gmb->x088_Heros.size(), "Parsing skills");
+  json::Value dst;
   for (auto& chr : gmb->x088_Heros) {
     SkillTips data;
     Logger::item(chr.x000_Text, task);
     data.generate(canonize(chr.x000_Text), chr.x120_SkillKitSno);
+    dst["passivetips"][data.charClass] = data.passives;
+    dst["skilltips"][data.charClass] = data.skills;
     data.write();
   }
+  json::write(File("skilltip/skilltips.js", "wt"), dst, json::mJSCall, "_L.patch.add");
   Logger::end(false, task);
 }
 

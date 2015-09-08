@@ -150,7 +150,7 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
     dst["flavor"] = stl.itemFlavor[id];
   }
   for (int type = 0; type < 2; ++type) {
-    auto bonuses = GameAffixes::format(attrs[type], html);
+    auto bonuses = GameAffixes::format(attrs[type], html ? FormatHTML : FormatNone);
     if (bonuses.empty()) continue;
     auto& attrDst = dst[type ? "secondary" : "primary"];
     for (auto& str : bonuses) {
@@ -165,7 +165,7 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
     bool secondary = GameAffixes::isSecondary(values[0].attributes[0].type);
     auto& attrDst = dst[secondary ? "secondary" : "primary"];
     if (values.size() == 1) {
-      auto effects = values[0].format(html);
+      auto effects = values[0].format(html ? FormatHTML : FormatNone);
       for (auto& str : effects) {
         attrDst.append(str);
       }
@@ -173,7 +173,7 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
     }
     json::Value groupVal;
     for (auto& value : values) {
-      auto effects = value.format(html);
+      auto effects = value.format(html ? FormatHTML : FormatNone);
       if (!effects.empty()) {
         groupVal.append(join(effects, " and "));
       }
@@ -205,7 +205,7 @@ void parseSetBonus(GameBalance::Type::SetItemBonusTableEntry const& bonus, json:
       }
     }
   }
-  auto bonuses = GameAffixes::format(attrs, html);
+  auto bonuses = GameAffixes::format(attrs, html ? FormatHTML : FormatNone);
   for (auto& str : bonuses) {
     to[id][key].append(str);
   }
@@ -230,7 +230,7 @@ void parsePower(Power::Type const& power, json::Value& to, bool html) {
   } else {
     stats = stl.powers[id + "_desc"];
   }
-  dst["desc"] = FormatDescription(stats, html, attr, tag);
+  dst["desc"] = FormatDescription(stats, html ? FormatHTML : FormatNone, attr, tag);
   if (stl.charSkills.count(power.x000_Header.id)) {
     for (char rune = 'a'; rune <= 'e'; ++rune) {
       std::string nameid = fmtstring("NameRune_%c#%s", rune - 'a' + 'A', id.c_str());
@@ -243,7 +243,7 @@ void parsePower(Power::Type const& power, json::Value& to, bool html) {
         if (stl.attributes.has(descid)) {
           AttributeMap rattr = attr;
           rattr.emplace(fmtstring("Rune_%c", rune - 'a' + 'A'), 1.0);
-          rval.append(FormatDescription(stl.attributes[descid], html, rattr, tag));
+          rval.append(FormatDescription(stl.attributes[descid], html ? FormatHTML : FormatNone, rattr, tag));
         }
       }
     }

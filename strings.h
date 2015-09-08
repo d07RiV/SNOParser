@@ -49,7 +49,8 @@ public:
   static std::string const& get(istring const& dict, istring const& name);
   static bool has(istring const& dict, istring const& name);
 private:
-  Map<Dictionary> strings_;
+  typedef std::pair<istring, SnoLoader*> Key;
+  std::map<Key, Dictionary> strings_;
   SnoLoader* loader = nullptr;
   Dictionary* get(istring const& dict, SnoLoader* loader);
   static Strings& instance();

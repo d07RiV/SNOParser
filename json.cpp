@@ -427,7 +427,7 @@ Tokenizer::State Tokenizer::next() {
     char init = chr;
     state = tString;
     move();
-    while (chr != init) {
+    while (chr != init && chr != EOF) {
       if (chr == '\\') {
         move();
         switch (chr) {
@@ -533,10 +533,12 @@ Tokenizer::State Tokenizer::next() {
         value.push_back(move());
       }
     }
+    valNumber = atof(value.c_str());
     if (state == tInteger) {
-      valInteger = atoi(value.c_str());
-    } else {
-      valNumber = atof(value.c_str());
+      valInteger = int(valNumber);
+      if (double(valInteger) != valNumber) {
+        state = tNumber;
+      }
     }
   } else if (chr == '{' || chr == '}' || chr == '[' || chr == ']' || chr == ':' || chr == ',' || chr == '(' || chr == ')') {
     state = tSymbol;
@@ -545,6 +547,30 @@ Tokenizer::State Tokenizer::next() {
     state = tIdentifier;
     while ((chr >= 'a' && chr <= 'z') || (chr >= 'A' && chr <= 'Z') || (chr >= '0' && chr <= '9') || chr == '_') {
       value.push_back(move());
+    }
+  } else if (chr == '/') {
+    move();
+    if (chr == '/') {
+      while (chr != '\n' && chr != EOF) {
+        move();
+      }
+      return next();
+    } else if (chr == '*') {
+      move();
+      bool star = false;
+      while (chr != EOF && (!star || chr != '/')) {
+        star = (chr == '*');
+        move();
+      }
+      if (chr == EOF) {
+        value = "unterminated comment";
+        return state = tError;
+      }
+      move();
+      return next();
+    } else {
+      value = "unexpected symbol '/'";
+      return state = tError;
     }
   } else {
     value = "unexpected symbol '";

@@ -81,9 +81,9 @@ void FormulaParser::addcolor(char const* color, char const* val) {
   pretags.emplace(fmtstring("c_%s", color), fmtstring("<span class=\"d3-color-%s\">", val));
   pretags.emplace(fmtstring("/c_%s", color), "</span>");
 }
-FormulaParser::FormulaParser(std::string const& descr, bool html, AttributeMap const& values, PowerTag* context)
+FormulaParser::FormulaParser(std::string const& descr, FormatFlags flags, AttributeMap const& values, PowerTag* context)
   : descr(descr)
-  , html(html)
+  , flags(flags)
   , values(values)
   , pos(0)
   , context(context)
@@ -107,6 +107,11 @@ FormulaParser::FormulaParser(std::string const& descr, bool html, AttributeMap c
 
 std::string FormulaParser::Value::format() {
   if (!text.empty()) {
+    if (text == "%") {
+      std::string res = (digits ? fmtstring("%%.%df", digits) : "%d");
+      if (plus) res.insert(res.begin(), '+');
+      return res;
+    }
     return text;
   } else if (min == max) {
     return fmtstring(plus ? "%+.*lf" : "%.*lf", digits, max);
@@ -159,6 +164,8 @@ struct EvalStack {
 };
 
 static inline AttributeValue binop(AttributeValue const& lhs, AttributeValue const& rhs, char op) {
+  if (!lhs.text.empty()) return lhs;
+  if (!rhs.text.empty()) return rhs;
   switch (op) {
   case '+': return lhs + rhs;
   case '-': return lhs - rhs;
@@ -201,8 +208,10 @@ void EvalStack::exec(char chr) {
     break;
   case '~':
     if (vals.size() < 1) return;
-    a = vals.top(); vals.pop();
-    vals.emplace(-a.max, -a.min);
+    if (vals.top().text.empty()) {
+      a = vals.top(); vals.pop();
+      vals.emplace(-a.max, -a.min);
+    }
     break;
   case ':':
     if (vals.size() < 3) return;
@@ -331,7 +340,7 @@ std::string FormulaParser::parse() {
   std::string result;
   int newlines = 0;
   while (int type = next()) {
-    if (html && newlines && (type != tChar || chr != '\n')) {
+    if ((flags & FormatHTML) && newlines && (type != tChar || chr != '\n')) {
       if (newlines == 1) {
         result.append("<br/>");
       } else {
@@ -357,15 +366,23 @@ std::string FormulaParser::parse() {
         } else {
           result.append(lhs);
         }
-      } else if (chr == '\n' && html) {
+      } else if (chr == '\n' && (flags & FormatHTML)) {
         ++newlines;
       } else {
+        if (flags & FormatTags) {
+          if (chr == ' ' && (result.empty() || result.back() == '\n')) {
+            break;
+          }
+          if (chr == '%') {
+            result.push_back('%');
+          }
+        }
         result.push_back(chr);
       }
       break;
     case tTag:
       if (tag.substr(0, 2) == "/c" || tag.substr(0, 2) == "c:" || pretags.find(tag) != pretags.end()) {
-        if (html) {
+        if (flags & FormatHTML) {
           if (tag.substr(0, 2) == "/c") {
             result.append("</span>");
           } else if (tag.substr(0, 2) == "c:") {
@@ -373,6 +390,8 @@ std::string FormulaParser::parse() {
           } else {
             result.append(pretags[tag]);
           }
+        } else if ((flags & FormatTags) && tag == "icon:bullet") {
+          result.push_back('*');
         }
       } else {
         auto it = values.find(tag);
@@ -388,16 +407,21 @@ std::string FormulaParser::parse() {
       break;
     }
   }
+  if (flags & FormatTags) {
+    while (!result.empty() && result.back() == '\n') {
+      result.pop_back();
+    }
+  }
   return result;
 }
 
-std::string FormatDescription(std::string const& descr, bool html, AttributeMap const& values, PowerTag* context) {
+std::string FormatDescription(std::string const& descr, FormatFlags flags, AttributeMap const& values, PowerTag* context) {
   static re::Prog bracketer(R"(([0-9]+{\.[0-9]+}?)-([0-9]+{\.[0-9]+}?)-([0-9]+{\.[0-9]+}?)-([0-9]+{\.[0-9]+}?))");
   static re::Prog dasher("([0-9)])-([0-9(])");
-  FormulaParser parser(descr, html, values, context);
+  FormulaParser parser(descr, flags, values, context);
   std::string result = parser.parse();
   result = bracketer.replace(result, "(\\1-\\2)-(\\3-\\4)");
-  if (html) {
+  if (flags & FormatHTML) {
     result = dasher.replace(result, "\\1&#x2013;\\2");
   }
   return result;
@@ -416,34 +440,34 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
   AttributeValue a, b, c;
   while (begin < end) {
     switch (*begin++) {
-    case 0:
+    case 0: // return
       return (stack.empty() ? 0 : stack.top());
-    case 1:
+    case 1: // function
       switch (*begin++) {
-      case 0:
+      case 0: // min
         b = stack.top(); stack.pop();
         a = stack.top(); stack.pop();
         stack.emplace(std::min(a.min, b.min), std::min(a.max, b.max));
         break;
-      case 1:
+      case 1: // max
         b = stack.top(); stack.pop();
         a = stack.top(); stack.pop();
         stack.emplace(std::max(a.min, b.min), std::max(a.max, b.max));
         break;
-      case 2:
+      case 2: // clamp
         c = stack.top(); stack.pop();
         b = stack.top(); stack.pop();
         a = stack.top(); stack.pop();
         stack.emplace(std::min(std::max(a.min, b.min), b.min), std::min(std::max(a.max, b.max), c.max));
         break;
-      case 3:
+      case 3: // random (int/float/range, can't remember which is which)
       case 4:
       case 10:
         b = stack.top(); stack.pop();
         a = stack.top(); stack.pop();
         stack.emplace(std::min(a.min, b.min), std::max(a.max, b.max));
         break;
-      case 11:
+      case 11: // table lookup
         b = stack.top(); stack.pop();
         a = stack.top(); stack.pop();
         stack.push(binop(a, b, funcTable));
@@ -452,13 +476,13 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
         return 0;
       }
       break;
-    case 5: {
+    case 5: { // push value
       uint32 x = *begin++;
       uint32 y = *begin++;
       uint32 z = *begin++;
       uint32 w = *begin++;
       switch (x) {
-      case 0:
+      case 0: // character stats
         switch (fixAttrId(y)) {
         case 0: stack.push(getval(values, "Defense")); break;
         case 10: stack.push(getval(values, "Strength")); break;
@@ -539,44 +563,44 @@ AttributeValue ExecFormula(uint32 const* begin, uint32 const* end, AttributeMap 
       }
       break;
     }
-    case 6:
+    case 6: // float constant
       stack.push(*(float*)begin++);
       break;
-    case 7:
+    case 7: // <
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();
       stack.push(a.max < b.max ? 1 : 0);
       break;
-    case 8:
+    case 8: // >
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();
       stack.push(a.max > b.max ? 1 : 0);
       break;
-    case 11:
+    case 11: // +
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();
       stack.push(a + b);
       break;
-    case 12:
+    case 12: // -
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();
       stack.push(a - b);
       break;
-    case 13:
+    case 13: // *
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();
       stack.push(a * b);
       break;
-    case 14:
+    case 14: // /
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();
       stack.push(a / b);
       break;
-    case 16:
+    case 16: // unary -
       a = stack.top(); stack.pop();
       stack.emplace(-a.max, -a.min);
       break;
-    case 17:
+    case 17: // ternary
       c = stack.top(); stack.pop();
       b = stack.top(); stack.pop();
       a = stack.top(); stack.pop();

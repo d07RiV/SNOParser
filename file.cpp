@@ -38,7 +38,7 @@ File::File(char const* name, char const* mode)
   : file_(nullptr)
 {
   FILE* file = fopen(name, mode);
-  if (!file && mode[0] == 'w') {
+  if (!file && (mode[0] == 'w' || mode[0] == 'a')) {
     std::string buf;
     for (int i = 0; name[i]; ++i) {
       char chr = (name[i] == '/' ? '\\' : name[i]);
@@ -328,6 +328,10 @@ uint8* MemoryFile::reserve(uint32 size) {
 void MemoryFile::resize(uint32 size) {
   MemoryBuffer* buffer = dynamic_cast<MemoryBuffer*>(file_);
   if (buffer) buffer->resize(size);
+}
+size_t MemoryFile::csize() const {
+  MemoryBuffer* buffer = dynamic_cast<MemoryBuffer*>(file_);
+  return (buffer ? buffer->size() : 0);
 }
 
 #include "zlib/zlib.h"

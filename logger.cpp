@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <list>
 
+Logger Logger::instance;
+
 struct Logger::Task {
   HANDLE handle;
   Task* parent;
@@ -225,6 +227,12 @@ void Logger::end(bool pop, void* task_) {
 void Logger::log(char const* fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  root->insert(-1, varfmtstring(fmt, ap));
+  std::string text = varfmtstring(fmt, ap);
+  root->insert(-1, text);
   va_end(ap);
+  if (!instance.logfile) {
+    instance.logfile = new File("log.txt", "at");
+    instance.logfile->printf("============\n");
+  }
+  instance.logfile->printf("%s\n", text.c_str());
 }

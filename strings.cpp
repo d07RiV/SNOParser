@@ -11,13 +11,14 @@ std::string const& DictionaryRef::getfmt(char const* fmt, ...) const {
 }
 
 Dictionary* Strings::get(istring const& dict, SnoLoader* theloader) {
-  auto it = strings_.find(dict);
+  Key key(dict, theloader);
+  auto it = strings_.find(key);
   if (it != strings_.end()) return &it->second;
   if (!theloader) theloader = loader;
   if (!theloader) theloader = SnoLoader::default;
   SnoFile<StringList> list(dict, theloader);
   if (!list) return nullptr;
-  Dictionary& res = strings_[dict];
+  Dictionary& res = strings_[key];
   for (auto& item : list->x10_StringTableEntries) {
     res.emplace(item.x00_Text.text(), item.x10_Text.text());
   }
@@ -27,7 +28,7 @@ DictionaryRef Strings::list(istring const& name, SnoLoader* loader) {
   return instance().get(name, loader);
 }
 std::string const& Strings::get(istring const& dict, istring const& name) {
-  Dictionary* res = instance().get(dict, SnoLoader::default);
+  Dictionary* res = instance().get(dict, nullptr);
   if (res == nullptr) return DictionaryRef::nil_;
   auto it = res->find(name);
   return (it == res->end() ? DictionaryRef::nil_ : it->second);
