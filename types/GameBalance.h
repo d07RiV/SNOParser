@@ -155,10 +155,8 @@ declstruct(GameBalance::Type) {
     int x480;
     RecipeIngredient x484_RecipeIngredients[6];
     int x4B4;
-#ifdef PTR
     int x4B8_;
     int x4BC_;
-#endif
     AttributeSpecifier x4B8_AttributeSpecifier;
     AttributeSpecifier x4D0_AttributeSpecifier;
     int x4E8;
@@ -167,12 +165,10 @@ declstruct(GameBalance::Type) {
     int x4F4;
     int x4F8;
     int x4FC;
-#ifdef PTR
     int x508_;
     int x50C_;
     int x510_;
     int x514_;
-#endif
     void dumpfunc() {
       dumpval(x000_Text, x100, x104, x108_ActorSno, x10C_ItemTypesGameBalanceId, x110_Bit0);
       dumpval(x110_Bit1, x110_Bit2, x110_Bit3, x110_Bit4, x110_Bit5, x110_Bit6);
@@ -1538,10 +1534,8 @@ declstruct(GameBalance::Type) {
     int x108_Enum; // - None - = -1, [EXTRACT LEGENDARY POWER] = 0, [REFORGE LEGENDARY] = 1, [UPGRADE RARE ITEM] = 2
     TransmuteRecipeIngredient x10C_TransmuteRecipeIngredients[8];
     int x16C;
-#ifdef PTR
     int x170_;
     int x174_;
-#endif
     void dumpfunc() {
       dumpval(x000_Text, x100, x104, x108_Enum, x10C_TransmuteRecipeIngredients, x16C);
     }

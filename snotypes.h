@@ -5,8 +5,6 @@
 #include "snomap.h"
 #include <vector>
 
-#define PTR
-
 #define DECLARE_SNO(_name, _ext)                              \
   struct _name {                                              \
     static char const* type() { return #_name; }              \

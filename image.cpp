@@ -19,6 +19,7 @@ decltype(ImageFilter::Lanczos8) ImageFilter::Lanczos8;
 namespace ImagePrivate {
 
   bool imReadPNG(Image& image, File& file);
+  bool imReadBLP2(Image& image, File& file);
   bool imWritePNG(Image const& image, File& file, bool gray);
   bool _imWritePNG(Image const& image, File& file) {
     return imWritePNG(image, file, false);
@@ -34,11 +35,13 @@ namespace ImagePrivate {
     nullptr,
     imReadPNG,
     imReadPNG,
+    imReadBLP2,
   };
   imWriter writers[ImageFormat::NumFormats] = {
     _imWritePNG,
     _imWritePNG,
     _imWritePNGGray,
+    nullptr,
   };
   struct { char const* ext; ImageFormat::Type format; } extensions[] = {
     { ".png", ImageFormat::PNG },

@@ -13,6 +13,7 @@ PowerTags::PowerTags(SnoLoader* loader) {
     std::string name = kv.second["name"].getString();
     tags_[name] = id;
     reverse_[id] = name;
+    rawnames_[id] = kv.second["tag"].getString();
   }
   for (auto& gmb : loader->all<GameBalance>()) {
     for (auto& pow : gmb->x198_PowerFormulaTable) {
@@ -114,4 +115,38 @@ std::string PowerTag::comment(istring const& formula) {
   if (it == tags.end()) return 0;
   auto it2 = formulas_.find(it->second);
   return (it2 == formulas_.end() ? "" : it2->second.comment);
+}
+
+json::Value PowerTag::dump() const {
+  auto& rawnames = PowerTags::instance().rawnames_;
+  json::Value dst;
+  for (auto& kv : formulas_) {
+    auto& cur = dst[rawnames[kv.first]];
+    if (kv.second.state == sDone) {
+      cur = (uint32) kv.second.value;
+    } else {
+      cur.append(kv.second.text);
+      std::string fmt;
+      for (uint32 val : kv.second.formula) {
+        if (!fmt.empty()) fmt.push_back(',');
+        fmt.append(fmtstring("%08x", val));
+      }
+      cur.append(fmt);
+      if (!kv.second.comment.empty()) {
+        cur.append(kv.second.comment);
+      }
+    }
+  }
+  return dst;
+}
+
+json::Value PowerTags::dump() {
+  auto& tags = instance().raw_;
+  json::Value dst;
+  for (auto& kv : tags) {
+    auto& cur = dst[kv.second->name()];
+    cur["id"] = kv.first;
+    cur["tags"] = kv.second->dump();
+  }
+  return dst;
 }

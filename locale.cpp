@@ -1,6 +1,6 @@
 #include "common.h"
 #include "description.h"
-#include "miner.h"
+//#include "miner.h"
 #include "strings.h"
 #include "powertag.h"
 #include "affixes.h"
@@ -171,6 +171,15 @@ void GenerateGems(json::Value& value, json::Value& data) {
   TranslateJson(value, data);
   auto names = Strings::list("Items");
   auto powers = Strings::list("ItemPassivePowerDescriptions");
+  for (auto& kv : value["gemColors"].getMap()) {
+    std::string id = kv.first;
+    id[0] = toupper(id[0]);
+    size_t levels = value["gemQualities"].length();
+    auto& dst = value["gemColors"][kv.first]["names"];
+    for (size_t level = 1; level <= levels; ++level) {
+      dst.append(names.getfmt("x1_%s_%02d", id.c_str(), level));
+    }
+  }
   for (auto& gem : data["legendaryGems"].getMap()) {
     std::string id = gem.second["id"].getString();
     auto* item = ItemLibrary::get(id);
@@ -265,16 +274,21 @@ void GenerateItems(json::Value& value, json::Value& data) {
   }
 
   for (auto& kv : data["itemById"].getMap()) {
-    auto* item = ItemLibrary::get(kv.first);
-    if (!names.has(kv.first) || !item) {
-      Logger::log("Item not found: %s", kv.first.c_str());
-      continue;
-    }
-    auto& dst = value["itemById"][kv.first];
-    dst["name"] = names[kv.first];
     if (kv.second.has("required")) {
       std::string key = kv.second["required"]["custom"]["id"].getString();
       data["legendaryMap"][key] = kv.first;
+    }
+    auto* item = ItemLibrary::get(kv.first);
+    if (!names.has(kv.first) || !item) {
+      if (kv.first != "Unique_Ring_017_p4") {
+        Logger::log("Item not found: %s", kv.first.c_str());
+        continue;
+      }
+    }
+    auto& dst = value["itemById"][kv.first];
+    dst["name"] = names[kv.first == "Unique_Ring_017_p4" ? "Unique_Ring_017_p2" : kv.first];
+    if (kv.second.has("required")) {
+      std::string key = kv.second["required"]["custom"]["id"].getString();
       data["stringlist"]["Items"][key]["text"] = kv.second["required"]["custom"]["name"];
       data["stringlist"]["Items"][key]["tip"] = names[kv.first] + " (short effect name)";
       dst["required"]["custom"]["name"] = fmtstring("$Items/%s$", key.c_str());
@@ -310,7 +324,7 @@ void GenerateItems(json::Value& value, json::Value& data) {
         } else if (kv.first == "x1_Amulet_norm_unique_25") {
           // hellfire
           std::string x = powers["ItemPassive_Unique_Ring_770_x1"];
-          std::string y = Strings::get("Powers", "Barbarian_Scavenge_name");
+          std::string y = Strings::get("Powers", "Trait_PoundOfFlesh");
           size_t pos = x.find(y);
           if (pos != std::string::npos) {
             x.replace(pos, y.length(), "%p");
@@ -319,6 +333,9 @@ void GenerateItems(json::Value& value, json::Value& data) {
         } else {
           Logger::log("Power not found for %s", kv.first.c_str());
         }
+      }
+      if (dst["required"]["custom"].has("format")) {
+        data["locale_tips"]["Items"][key] = dst["required"]["custom"]["format"];
       }
     }
   }
@@ -392,7 +409,7 @@ void GenerateSkills(json::Value& value, json::Value& data) {
   auto attrs = Strings::list("AttributeDescriptions");
   for (auto& chr : gmb->x088_Heros) {
     SkillTips tips;
-    tips.generate(canonize(chr.x000_Text), chr.x120_SkillKitSno, &data["skillFix"]);
+    tips.generate(canonize(chr.x000_Text), chr.x120_SkillKitSno, false, &data["skillFix"]);
     data["passivetips"][tips.charClass] = tips.passives;
     data["skilltips"][tips.charClass] = tips.skills;
     for (auto& kv : tips.skillMap.getMap()) {
@@ -446,6 +463,16 @@ void ListUiStats(json::Value& value, json::Value& data) {
         alt.append(" - Tip");
         data["stringlist"]["StatsPane"][alt]["text"] = tip.substr(pane.length(), tip.length() - pane.length() - 1);
         stat["tooltip"] = fmtstring("$StatsPane/%s$", alt.c_str());
+      }
+      std::string suffix = stat["suffix"].getString();
+      if (suffix.find(pane) == 0) {
+        std::string alt = stat["name"].getString();
+        if (alt.find(pane) == 0) {
+          alt = alt.substr(pane.length(), alt.length() - pane.length() - 1);
+        }
+        alt.append(" - Extra tip");
+        data["stringlist"]["StatsPane"][alt]["text"] = tip.substr(pane.length(), tip.length() - pane.length() - 1);
+        stat["suffix"] = fmtstring("$StatsPane/%s$", alt.c_str());
       }
     }
   }
@@ -527,6 +554,15 @@ void GenerateSimBuffs(json::Value& value, json::Value& data) {
         } else {
           id = data["legendaryMap"][id].getString();
           name = itemsEn[id];
+          repl = (items.has(id) ? items[id] : name);
+        }
+      } else if (kv.second.has("gem")) {
+        std::string id = kv.second["gem"][0].getString();
+        if (!data["legendaryGems"].has(id)) {
+          Logger::log("Unknown gem: %s", id.c_str());
+        } else {
+          id = data["legendaryGems"][id]["id"].getString();
+          name = itemsEn[id];
           repl = items[id];
         }
       }
@@ -562,6 +598,7 @@ static struct {
 } fileList[] = {
     {"account.js", StoreJson},
     {"buffs.js", TranslateJson},
+    {"basestrings.js", TranslateJson},
     {"classes.js", TranslateJson},
     {"extraitems.js", GenerateExtraItems},
     {"gems.js", GenerateGems},
@@ -574,16 +611,16 @@ static struct {
     {"stats.js", TranslateJson},
     {"uistats.js", ListUiStats},
     {"simbuffs.js", GenerateSimBuffs},
-    {"strings.js", ListStrings},
-    {"skilldata.js", ListStrings},
+//    {"strings.js", ListStrings},
+//    {"skilldata.js", ListStrings},
 };
 
-void FormatLocale() {
+void FormatLocale(std::string const& dest, int flags) {
   json::Value data;
   json::parse(File("locale_base/d3data.js"), data, json::mJS);
 
-  data["skillFix"]["wallofdeath"] = "wallofzombies";
-  data["skillFix"]["swamplandattunement"] = "physicalattunement";
+  //data["skillFix"]["wallofdeath"] = "wallofzombies";
+  //data["skillFix"]["swamplandattunement"] = "physicalattunement";
 
   for (auto& pair : fileList) {
     json::Value value;
@@ -591,12 +628,36 @@ void FormatLocale() {
     json::parse(File("locale_base" / pair.name), value, json::mJSCall, &cbf);
     pair.func(value, data);
     if (value.type() != json::Value::tUndefined) {
-      json::write(File("locale" / pair.name, "w"), value, json::mJSCall, cbf.c_str());
+      json::write(File(dest / pair.name, "w"), value, json::mJSCall, cbf.c_str());
     }
   }
 
-  if (data.has("stringlist")) {
-    json::write(File("locale/stringlist.js", "w"), data["stringlist"], json::mJSON);
+  json::Value src;
+  json::parse(File("locale_base/datasource.js"), src, json::mJS);
+  auto powersEn = Strings::list("Powers", SnoLoader::default);
+  for (auto& kv1 : src.getMap()) {
+    for (auto& kv2 : kv1.second.getMap()) {
+      for (auto& kv3 : kv2.second.getMap()) {
+        if (!data["skillMap"].has(kv3.first)) continue;
+        std::string power = data["skillMap"][kv3.first].getString();
+        std::string name = powersEn[power + "_name"] + " (" + kv2.first + ")";
+        for (auto& str : kv3.second) {
+          if (!data["stringlist"]["skilldata"].has(str.getString())) continue;
+          auto& dst = data["stringlist"]["skilldata"][str.getString()]["tip"];
+          std::string was = dst.getString();
+          if (was.length()) was.append(", ");
+          was.append(name);
+          dst = was;
+        }
+      }
+    }
+  }
+
+  if ((flags & 1) && data.has("stringlist")) {
+    json::write(File(dest / "stringlist.js", "w"), data["stringlist"], json::mJSON);
+  }
+  if ((flags & 2) && data.has("locale_tips")) {
+    json::write(File(dest / "tips.js", "w"), data["locale_tips"], json::mJSON);
   }
 }
 

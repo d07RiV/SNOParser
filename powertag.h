@@ -76,6 +76,8 @@ public:
     return name_;
   }
 
+  json::Value dump() const;
+
   Dictionary formulas();
 };
 
@@ -115,12 +117,16 @@ public:
     auto it = powers_.find(name);
     return (it == powers_.end() ? nil_ : it->second);
   }
+
+  static json::Value dump();
+
 private:
   friend class PowerTag;
   Map<PowerTag> powers_;
   std::map<uint32, PowerTag*> raw_;
   Map<uint32> tags_;
   std::map<uint32, std::string> reverse_;
+  std::map<uint32, std::string> rawnames_;
   PowerTag nil_;
   struct PowerTable {
     double entries[76];

@@ -116,7 +116,7 @@ static std::string UnlockedAtLevel(int lvl) {
   attr["s1"] = AttributeValue(fmtstring("<em>%d</em>", lvl));
   return FormatDescription(fmt, FormatNone, attr);
 }
-void SkillTips::generate(std::string const& cls, uint32 kitId, json::Value* fix) {
+void SkillTips::generate(std::string const& cls, uint32 kitId, bool elems, json::Value* fix) {
   charClass = cls;
 
   std::map<uint32, std::string> catIds;
@@ -169,7 +169,7 @@ void SkillTips::generate(std::string const& cls, uint32 kitId, json::Value* fix)
     if (fix && fix->has(cname)) cname = (*fix)[cname].getString();
     auto& val = skills[cname];
     skillMap[cname] = power;
-    //auto& elems = val["elements"];
+    json::Value elems_dst;
     std::string stats = dictPowers[power + "_desc"];
     tip.append(FormatDescription(stats, FormatHTML, attr, tag));
 
@@ -187,7 +187,7 @@ void SkillTips::generate(std::string const& cls, uint32 kitId, json::Value* fix)
     tip.append("</p> </div> </div>");
 
     val["x"] = tip;
-    //elems["x"] = elements[tag->getint("NoRune Damage Type")];
+    elems_dst["x"] = elements[tag->getint("NoRune Damage Type")];
     for (char rune = 'a'; rune <= 'e'; ++rune) {
       AttributeMap rattr = attr;
       rattr.emplace(fmtstring("Rune_%c", rune - 'a' + 'A'), 1.0);
@@ -197,7 +197,10 @@ void SkillTips::generate(std::string const& cls, uint32 kitId, json::Value* fix)
       subtip.append(FormatDescription(desc, FormatHTML, rattr, tag));
       subtip.append(fmtstring("</p> <p class=\"subtle\">%s</p>", UnlockedAtLevel((&skill.x14)[rune - 'a']).c_str()));
       val[std::string{ rune }] = subtip;
-      //elems[std::string{ rune }] = elements[static_cast<int>(tag->get(fmtstring("Rune%c Damage Type", rune - 'a' + 'A'), rattr).max)];
+      elems_dst[std::string{ rune }] = elements[static_cast<int>(tag->get(fmtstring("Rune%c Damage Type", rune - 'a' + 'A'), rattr).max)];
+    }
+    if (elems) {
+      val["elements"] = elems_dst;
     }
   }
   attr.emplace("sLevel", 1);
@@ -223,14 +226,14 @@ void SkillTips::generate(std::string const& cls, uint32 kitId, json::Value* fix)
     passiveMap[cname] = power;
   }
 }
-void SkillTips::dump() {
+void SkillTips::dump(bool elems) {
   SnoFile<GameBalance> gmb("Characters");
   void* task = Logger::begin(gmb->x088_Heros.size(), "Parsing skills");
   json::Value dst;
   for (auto& chr : gmb->x088_Heros) {
     SkillTips data;
     Logger::item(chr.x000_Text, task);
-    data.generate(canonize(chr.x000_Text), chr.x120_SkillKitSno);
+    data.generate(canonize(chr.x000_Text), chr.x120_SkillKitSno, elems);
     dst["passivetips"][data.charClass] = data.passives;
     dst["skilltips"][data.charClass] = data.skills;
     data.write();

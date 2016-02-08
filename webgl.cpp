@@ -681,6 +681,14 @@ namespace WebGL {
     texArchive = nullptr;
   }
 
+  static std::string trim_number(std::string const& src) {
+    std::string dst(src);
+    while (dst.length() && isdigit((unsigned char)dst.back())) {
+      dst.pop_back();
+    }
+    return dst;
+  }
+
   void AllItems(bool models, bool info, bool load) {
     Archive tex, mdl, ani;
     if (models && load) {
@@ -692,63 +700,111 @@ namespace WebGL {
     }
     texArchive = &tex;
     
-    //SnoFile<GameBalance> gmb("Characters");
-    //Logger::begin(gmb->x088_Heros.size(), "Dumping characters");
-    //for (auto& hero : gmb->x088_Heros) {
-    //  Logger::item(hero.x000_Text);
-    //  DumpActorData(mdl, ani, hero.x108_ActorSno);
-    //  DumpActorData(mdl, ani, hero.x10C_ActorSno);
-    //}
-    //Logger::end();
+    SnoFile<GameBalance> gmb("Characters");
+    Logger::begin(gmb->x088_Heros.size(), "Dumping characters");
+    for (auto& hero : gmb->x088_Heros) {
+      Logger::item(hero.x000_Text);
+      DumpActorData(mdl, ani, hero.x108_ActorSno);
+      DumpActorData(mdl, ani, hero.x10C_ActorSno);
+    }
+    Logger::end();
 
     json::Value items, itemsout, actors;
-    //if (info) json::parse(File("d3gl_actors.js"), actors, json::mJS);
-    //json::parse(File("itemtypes.js"), items, json::mJS);
-    //Logger::begin(items["itemById"].getMap().size(), "Dumping items");
+    if (info && load) json::parse(File("d3gl_actors.js"), actors, json::mJS);
+    json::parse(File("itemtypes.js"), items, json::mJS);
+
+    // regular items
+    Logger::begin(items["itemById"].getMap().size(), "Unique items");
     std::set<uint32> done;
-    //for (auto& kv : items["itemById"].getMap()) {
-    //  Logger::item(kv.first.c_str());
-    //  auto* item = ItemLibrary::get(kv.first);
-    //  if (!item) continue;
-    //  std::string type = kv.second["type"].getString();
-    //  std::string slot = items["itemTypes"][type]["slot"].getString();
-    //  if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
-    //  if (info) FillItemInfo(itemsout[item->x000_Text], actors, *item, type, slot);
-    //}
-    {
-      auto* item = ItemLibrary::get("Unique_Offhand_001_x1");
-      std::string type = "dagger";
-      std::string slot = "onehand";
-      if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
-      if (info) FillItemInfo(itemsout[item->x000_Text], actors, *item, type, slot);
-    }
-    //Logger::end();
-    /*
-    json::Value genitems;
-    json::Value generic;
-    json::parse(File("d3gl_items.js"), generic, json::mJS);
-    for (auto& kv : generic.getMap()) {
-      std::string id = kv.first;
-      if (!kv.second.has("type")) continue;
-      std::string type = kv.second["type"].getString();
-      if (!items["itemTypes"].has(type)) {
-        Logger::log("unknown type: %s", type.c_str());
+    for (auto& kv : items["itemById"].getMap()) {
+      Logger::item(kv.first.c_str());
+      auto* item = ItemLibrary::get(kv.first);
+      if (!item) {
+        Logger::log("unknown item: %s", kv.first.c_str());
         continue;
       }
+      std::string type = kv.second["type"].getString();
       std::string slot = items["itemTypes"][type]["slot"].getString();
-      auto* item = ItemLibrary::get(id);
-      if (!item || !Actor::name(item->x108_ActorSno)) continue;
       if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
-      auto& dst = genitems[id];
-      dst["name"] = Strings::get("Items", id);
-      dst["type"] = type;
-      dst["promo"] = true;
-      FillItemInfo(dst, actors, *item, type, slot);
-    }*/
+      if (info) {
+        json::Value out;
+        FillItemInfo(out, actors, *item, type, slot);
+        if (out.has("actor") || out.has("armortype")) {
+          itemsout[kv.first] = out;
+        }
+      }
+    }
+    Logger::end();
+
+    // white items
+    Dictionary generics;
+    for (auto& kv : items["itemTypes"].getMap()) {
+      std::string mask = trim_number(kv.second["generic"].getString());
+      generics[mask] = kv.first;
+    }
+    std::set<uint32> actorsUsed;
+    Logger::begin(ItemLibrary::all().size(), "Generic items");
+    auto stlItems = Strings::list("Items");
+    for (auto& kv : ItemLibrary::all()) {
+      Logger::item(kv.first.c_str());
+      std::string mask = trim_number(kv.first);
+      if (!generics.count(mask)) continue;
+      std::string type = generics[mask];
+      auto* item = kv.second;
+      if (actorsUsed.count(item->x108_ActorSno)) continue;
+      actorsUsed.insert(item->x108_ActorSno);
+
+      std::string slot = items["itemTypes"][type]["slot"].getString();
+      if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
+      if (info) {
+        json::Value out;
+        FillItemInfo(out, actors, *item, type, slot);
+        if (out.has("actor") || out.has("armortype")) {
+          out["type"] = type;
+          out["name"] = stlItems[kv.first];
+          itemsout[kv.first] = out;
+        }
+      }
+    }
+    Logger::end();
+
+    // promo items
+    json::Value promo;
+    json::parse(File("extraitems.js"), promo, json::mJS);
+    Logger::begin(promo.getMap().size());
+    for (auto& kv : promo.getMap()) {
+      Logger::item(kv.first.c_str());
+      auto* item = ItemLibrary::get(kv.first);
+      if (!item) {
+        Logger::log("unknown item: %s", kv.first.c_str());
+        continue;
+      }
+      std::string type = kv.second["type"].getString();
+      std::string slot = items["itemTypes"][type]["slot"].getString();
+      if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
+      if (info) {
+        auto& out = itemsout[kv.first];
+        FillItemInfo(out, actors, *item, type, slot);
+        out["type"] = type;
+        out["name"] = stlItems[kv.first];
+        out["promo"] = true;
+      }
+    }
+    Logger::end();
+
+    for (auto it = actors.begin(); it != actors.end(); ++it) {
+      uint32 id = atoi(it.key().c_str());
+      SnoFile<Actor> actor(Actor::name(id));
+      if (!actor) continue;
+      uint32 physics = actor->x2B4_PhysicsSno;
+      if (Physics::name(physics)) {
+        (*it)["physics"] = physics;
+      }
+    }
+
     if (info) {
-      json::write(File("extra_actors.js", "w"), actors, json::mJS);
-      //json::write(File("extra_items.js", "w"), genitems, json::mJS);
-      json::write(File("extra_items_orig.js", "w"), itemsout, json::mJS);
+      json::write(File("webgl_actors.js", "w"), actors, json::mJS);
+      json::write(File("webgl_items.js", "w"), itemsout, json::mJS);
     }
 
     if (models) {

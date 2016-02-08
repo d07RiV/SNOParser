@@ -16,6 +16,9 @@ public:
     auto it = dir.find(id);
     return (it == dir.end() ? nullptr : it->second);
   }
+  static Map<GameBalance::Type::Item*> const& all() {
+    return instance().items_;
+  }
 private:
   static ItemLibrary& instance();
   ItemLibrary();

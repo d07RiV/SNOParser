@@ -6,7 +6,7 @@
 #include <algorithm>
 
 int fixAttrId(int id, bool reverse) {
-  static enum { Unknown, Live, Ptr, Ptr2 } version = Unknown;
+  static enum { Unknown, Live, Ptr, Ptr2, Ptr24_1 } version = Unknown;
   if (version == Unknown) {
     SnoFile<GameBalance> gmb("1xx_AffixList");
     for (auto& affix : gmb->x078_AffixTable) {
@@ -15,6 +15,7 @@ int fixAttrId(int id, bool reverse) {
         case 683: version = Live; break;
         case 689: version = Ptr; break;
         case 690: version = Ptr2; break;
+        case 699: version = Ptr24_1; break;
         default: throw Exception("unknown build version");
         }
         break;
@@ -39,6 +40,18 @@ int fixAttrId(int id, bool reverse) {
       } else {
         return id;
       }
+    case Ptr24_1:
+      if (id >= 1053) {
+        return id + 11;
+      } else if (id >= 677) {
+        return id + 10;
+      } else if (id >= 335) {
+        return id + 3;
+      } else if (id >= 134) {
+        return id + 1;
+      } else {
+        return id;
+      }
     default:
       return id;
     }
@@ -56,6 +69,18 @@ int fixAttrId(int id, bool reverse) {
       return id;
     case Ptr2:
       if (id >= 678) {
+        return id - 1;
+      } else {
+        return id;
+      }
+    case Ptr24_1:
+      if (id >= 1064) {
+        return id - 11;
+      } else if (id >= 687) {
+        return id - 10;
+      } else if (id >= 338) {
+        return id - 3;
+      } else if (id >= 135) {
         return id - 1;
       } else {
         return id;
@@ -119,6 +144,16 @@ GameAffixes::GameAffixes() {
     }
   }
 
+  SnoFile<GameBalance> affixListRecipes("AffixList");
+  for (auto& fx : affixListRecipes->x078_AffixTable) {
+    uint32 id = HashNameLower(fx.x000_Text);
+    GameAffix& affix = affixes_[id];
+    for (size_t i = 0; i < AffixValue::MaxAttributes; ++i) {
+      affix.value.attributes[i] = AttributeSpecifier(fx.x260_AttributeSpecifiers[i], defaultMap_);
+    }
+    std::sort(affix.value.attributes, affix.value.attributes + AffixValue::MaxAttributes, AttributeSpecifier::less);
+  }
+
   SnoFile<GameBalance> itemTypes("ItemTypes");
   for (auto& type : itemTypes->x018_ItemTypes) {
     if (type.x108_ItemTypesGameBalanceId != -1) {
@@ -135,7 +170,13 @@ GameAffixes::GameAffixes() {
   }
 }
 
-AffixValue const& GameAffixes::getAffix(uint32 id) {
+AffixValue const& GameAffixes::getAffix(uint32 id, bool recipe) {
+  if (recipe) {
+    auto it = instance().affixesRecipe_.find(id);
+    if (it != instance().affixesRecipe_.end()) {
+      return it->second.value;
+    }
+  }
   return instance().affixes_[id].value;
 }
 std::vector<AffixValue> GameAffixes::getGroup(uint32 id, uint32 itemType) {

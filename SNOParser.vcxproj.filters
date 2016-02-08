@@ -153,6 +153,9 @@
     <ClCompile Include="locale.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imageblp2.cpp">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="path.h">

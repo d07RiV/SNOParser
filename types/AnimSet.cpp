@@ -41,7 +41,7 @@ static const char* AnimClasses[] = {
 map<uint32, vector<float>> const& BaseFPA();
 
 void AnimSet::parse(File& in, json::Visitor* out) {
-  //auto _fpa = BaseFPA();
+  auto _fpa = BaseFPA();
   const SnoMap& animMap = SnoManager::get<Anim>();
   in.seek(0);
   if (in.read32() != 0xDEADBEEF || in.read32() != 24) {
@@ -73,11 +73,11 @@ void AnimSet::parse(File& in, json::Visitor* out) {
     out->onOpenMap();
     for (auto& y : x.second) {
       //fprintf(*out, "  %s: %s\n", AnimClasses[y.first], y.second.c_str());
-      //char const* name = animMap[y.second];
-      //if (!name) continue;
+      char const* name = animMap[y.second];
+      if (!name) continue;
       out->onMapKey(AnimClasses[y.first]);
-      y.second.serialize(out);
-/*      out->onOpenMap();
+      //y.second.serialize(out);
+      out->onOpenMap();
       out->onMapKey("name");
       out->onString(name);
       out->onMapKey("fpa");
@@ -91,7 +91,7 @@ void AnimSet::parse(File& in, json::Visitor* out) {
         }
         out->onCloseArray();
       }
-      out->onCloseMap();*/
+      out->onCloseMap();
     }
     out->onCloseMap();
   }

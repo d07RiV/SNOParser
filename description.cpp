@@ -100,6 +100,7 @@ FormulaParser::FormulaParser(std::string const& descr, FormatFlags flags, Attrib
     addcolor("red");
     addcolor("white");
     addcolor("yellow");
+    addcolor("bonus", "green");
     pretags.emplace("/c", "</span>");
     pretags.emplace("icon:bullet", "<span class=\"tooltip-icon-bullet\"></span>");
   }
@@ -246,12 +247,15 @@ FormulaParser::Value FormulaParser::eval() {
     if (type == tChar && chr == ']') break;
     if (type == tChar && chr == '|') {
       type = fnext();
-      if (type == tNum) {
-        digits = static_cast<int>(val);
-      } else if (type == tChar && chr == '+') {
-        plus = true;
+      while (type == tNum || (type == tChar && chr == '+')) {
+        if (type == tNum) {
+          digits = static_cast<int>(val);
+        } else if (type == tChar && chr == '+') {
+          plus = true;
+        }
+        type = fnext();
       }
-      fnext();
+      //fnext();
     } else if (type == tName) {
       std::vector<std::string> parts;
       bool isfunc = false;
@@ -354,17 +358,63 @@ std::string FormulaParser::parse() {
         result.append(eval().format());
       } else if (chr == '|') {
         next(); // 4
-        std::string lhs, rhs;
-        while (next() == tChar && chr != ':') {
-          lhs.push_back(chr);
-        }
-        while (next() == tChar && chr != ';') {
-          rhs.push_back(chr);
-        }
-        if (prevtag.min != 1 || prevtag.max != 1) {
-          result.append(rhs);
-        } else {
-          result.append(lhs);
+        if (chr == '4') {
+          std::vector<std::string> opts;
+          std::string cur;
+          while (next() == tChar && chr != ';') {
+            if (chr == ':') {
+              opts.push_back(cur);
+              cur.clear();
+            } else {
+              cur.push_back(chr);
+            }
+          }
+          opts.push_back(cur);
+          if (opts.size() == 2) {
+            if (prevtag.min != 1 || prevtag.max != 1) {
+              result.append(opts[1]);
+            } else {
+              result.append(opts[0]);
+            }
+          } else if (opts.size() == 3) {
+            if (prevtag.min != prevtag.max || int(prevtag.max) != prevtag.max ||
+                prevtag.max < 0 || (prevtag.max >= 10 && prevtag.max <= 20)) {
+              result.append(opts[2]);
+            } else {
+              int digit = int(prevtag.max) % 10;
+              if (digit == 1) result.append(opts[0]);
+              else if (digit >= 2 && digit <= 4) result.append(opts[1]);
+              else result.append(opts[2]);
+            }
+          } else {
+            result.append(opts[0]);
+          }
+        } else if (chr == '3') {
+          next(); // -
+          next(); // digit
+          size_t prev = pos;
+          next(); // bracket
+          if (chr == '(') {
+            size_t next = descr.find(')', pos);
+            if (next != std::string::npos) {
+              descr.erase(next, 1);
+            }
+          } else {
+            pos = prev;
+          }
+        } else if (chr == '5') {
+          std::vector<std::string> opts;
+          std::string cur;
+          while (next() == tChar && chr != ';') {
+            if (chr == ':') {
+              opts.push_back(cur);
+              cur.clear();
+            } else {
+              cur.push_back(chr);
+            }
+          }
+          opts.push_back(cur);
+          result.append(opts[0]);
         }
       } else if (chr == '\n' && (flags & FormatHTML)) {
         ++newlines;

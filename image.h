@@ -109,6 +109,7 @@ namespace ImageFormat {
     Unknown       = 0,
     PNG           = 1,
     PNGGrayscale  = 2,
+    BLP           = 3,
 
     NumFormats
   };

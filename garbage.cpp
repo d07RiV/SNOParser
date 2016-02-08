@@ -803,28 +803,36 @@ void make_html(std::string const& name, std::vector<std::string> const& fields, 
 }
 
 void dumpTags() {
-  ExeFile exe("G:\\D3Ptr\\Diablo III.exe");
+  ExeFile exe(R"(C:\Work\junk\Diablo III Public Test\Diablo III.exe)");
   json::Value tags;
-  for (uint32 offs = 0x01128E10; offs < 0x011353BC; offs += 44) {
-    if (offs == 0x011305DC) {
-      offs += 4;
-    }
-    exe.seek(offs);
+  uint32 mid = 0x011C55A0;
+  exe.seek(mid);
+  uint32 lhs = exe.read32();
+  uint32 rhs = exe.read32();
+  uint32 offset = mid - 44 * lhs;
+  for (uint32 i = 0; i < lhs + rhs; ++i, offset += 44) {
+    if (i == lhs) offset += 8;
+    exe.seek(offset);
     uint32 id = exe.read32();
     exe.seek(12, SEEK_CUR);
     uint32 a = exe.read32();
     uint32 b = exe.read32();
-    auto& tag = tags[fmtstring("%d", id)];
-    tag["name"] = exe.readString(a);
-    tag["tag"] = exe.readString(b);
+    //auto& tag = tags[fmtstring("%d", id)];
+    //tag["name"] = exe.readString(a);
+    //tag["tag"] = exe.readString(b);
+    tags[exe.readString(b)] = exe.readString(a);
   }
-  json::write(File("tags.txt", "w"), tags);
+  //json::write(File("tags.txt", "w"), tags);
+  File out("tagnames.js", "w");
+  out.printf("var TagNames = ");
+  json::write(out, tags, json::mJS);
+  out.printf(";");
 }
 
 void make_diffs() {
-  //make_diff("items", { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
-  //make_diff("itemsets", { "name", "2", "3", "4", "5", "6", "powers" });
-  //make_diff("powers", { "name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e" }, true);
+  make_diff("items", { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
+  make_diff("itemsets", { "name", "2", "3", "4", "5", "6", "powers" });
+  make_diff("powers", { "name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e" }, true);
   make_html("items", { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
   make_html("itemsets", { "name", "2", "3", "4", "5", "6", "powers" });
   //  make_html("powers", {"name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e"}, true);
@@ -1075,6 +1083,9 @@ void item_flavor(SnoLoader* loader = SnoLoader::default) {
   //}
   for (auto& kv : src["legendaryGems"].getMap()) {
     std::string id = kv.second["id"].getString();
+    if (flavor.has(id)) {
+      dst["legendaryGems"][kv.first]["flavor"] = flavor[id];
+    }
     if (icons.count(id)) {
       auto& type = types["gemleg"];
       if (type.left == -1) {
@@ -1092,9 +1103,15 @@ void item_flavor(SnoLoader* loader = SnoLoader::default) {
     }
   }
   json::write(File("itemflavor.js", "w"), dst, json::mJSCall, "_L.patch.add");
+
+  json::Value iconfin;
+  json::parse(File("item_icons_src.js"), iconfin, json::mJS);
+  for (auto& kv : icondst.getMap()) {
+    iconfin[kv.first][0] = kv.second;
+  }
   File df("item_icons.js", "w");
   df.printf("DiabloCalc.itemIcons = ");
-  json::write(df, icondst, json::mJS);
+  json::write(df, iconfin, json::mJS);
 }
 void translate_extra() {
   json::Value dst, extra, dyesrc, dyedst;
@@ -1373,6 +1390,9 @@ void write_item_icon(json::Value& dst, Archive& dsticons, std::string const& id,
   if (data.type() != json::Value::tArray) {
     data.append(0);
   }
+  while (data.length() > 1) {
+    data.remove(1);
+  }
   if (icons.size() == 1) {
     data.append(*icons.begin());
   } else if (!icons.empty()) {
@@ -1383,6 +1403,45 @@ void write_item_icon(json::Value& dst, Archive& dsticons, std::string const& id,
       if (inv.x04 != 0 && inv.x04 != -1) value[fmtstring("%d", i * 2 + 1)] = (uint32)inv.x04;
     }
   }
+}
+
+bool isChestArmor(uint32 type) {
+  static uint32 chestType = HashNameLower("ChestArmor");
+  while (type && type != -1 && type != chestType) {
+    type = GameAffixes::itemTypeParent(type);
+  }
+  return type == chestType;
+}
+
+bool isEquippable(uint32 type) {
+  while (true) {
+    uint32 parent = GameAffixes::itemTypeParent(type);
+    if (!parent || parent == -1) break;
+    type = parent;
+  }
+  static uint32 armorIds[] = {
+    HashNameLower("Armor"),
+    HashNameLower("Jewelry"),
+    HashNameLower("Offhand"),
+    HashNameLower("Socketable"),
+    HashNameLower("Weapon"),
+  };
+  return (type == armorIds[0] || type == armorIds[1] || type == armorIds[2] || type == armorIds[3] || type == armorIds[4]);
+}
+
+void write_all_item_icons() {
+  json::Value items;
+  json::parse(File("item_icons.js"), items, json::mJS);
+  json::Value garbage;
+  Archive item_icons;
+  for (auto& gmb : SnoLoader::All<GameBalance>()) {
+    for (auto& item : gmb->x028_Items) {
+      uint32 type = item.x10C_ItemTypesGameBalanceId;
+      write_item_icon(isEquippable(type) ? items : garbage, item_icons, item.x000_Text, isChestArmor(type));
+    }
+  }
+  json::write(File("item_icons.js", "w"), items, json::mJS);
+  item_icons.write(File("item_icons.wgz", "wb"), false);
 }
 
 void write_item_icons() {
@@ -1493,4 +1552,14 @@ void fixSets2() {
     }
   }
   json::write(File("locale/itemsets.js", "w"), sets, json::mJSCall, func.c_str());
+}
+
+void powertags() {
+  json::Value value = PowerTags::dump();
+  File out("powers.js", "w");
+  out.printf("var Powers=");
+  json::WriterVisitor visitor(out, json::mJS);
+  value.walk(&visitor);
+  visitor.onEnd();
+  out.printf(";");
 }

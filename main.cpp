@@ -17,6 +17,7 @@
 #include "types/Monster.h"
 #include "types/AnimSet.h"
 #include "types/StringList.h"
+#include "types/SkillKit.h"
 #include "regexp.h"
 #include "translations.h"
 #include "description.h"
@@ -33,6 +34,7 @@
 using namespace std;
 
 //#define MODELVIEWER
+#define PTR
 
 namespace path {
 #ifndef MODELVIEWER
@@ -42,8 +44,13 @@ namespace path {
     "C:\\tmp",
   };
   std::vector<std::string> cascs {
+#ifdef PTR
+    "E:\\Games\\Diablo III\\Data",
+//    "G:\\D3Ptr\\Data",
+#else
     "E:\\D3Live\\Data",
     "G:\\D3Live\\Data",
+#endif
   };
 #else
   std::vector<std::string> roots;
@@ -179,6 +186,7 @@ void progress(std::string const& suffix);
 void progress_comp(bool trans);
 void write_skill_anim();
 void write_item_icons();
+void write_all_item_icons();
 
 uint8 zeroes[65536];
 
@@ -342,32 +350,189 @@ void str_comp() {
   }
 }
 
+void copyFile(File& dst, File& src) {
+  static uint8 buf[65536];
+  while (uint32 count = src.read(buf, sizeof buf)) {
+    dst.write(buf, count);
+  }
+}
+void powertags();
+
 void itemPowerFilter();
 void fixItems();
 void fixSets2();
-void FormatLocale();
+void FormatLocale(std::string const& dest, int flags = 0);
 void CompareLocale();
+
+void checkPower(uint32 id, json::Value& dst, uint32 dexp) {
+  auto* tag = PowerTags::getraw(id);
+  uint32 dual = tag->getint("AffectedByDualWield");
+  uint32 mhonly = tag->getint("Uses Mainhand Only");
+  if (mhonly || dual != dexp) {
+    auto list = Strings::list("Powers");
+    auto& cur = dst[list.getfmt("%s_name", Power::name(id))];
+    if (mhonly) cur["Uses Mainhand Only"] = mhonly;
+    if (dual != dexp) cur["AffectedByDualWield"] = dual;
+  }
+}
+
+std::string strdiffns(std::string const& lhs, std::string const& rhs) {
+  size_t n = lhs.size();
+  size_t m = rhs.size();
+  std::vector<std::vector<int>> dp(n + 1, std::vector<int>(m + 1, 0));
+  for (int i = n - 1; i >= 0; --i) {
+    for (int j = m - 1; j >= 0; --j) {
+      if (lhs[i] == rhs[j]) {
+        dp[i][j] = dp[i + 1][j + 1] + 1;
+      } else {
+        dp[i][j] = std::max(dp[i + 1][j], dp[i][j + 1]);
+      }
+    }
+  }
+  size_t ci = 0, cj = 0;
+  size_t pi = 0, pj = 0;
+  std::string result;
+  while (ci < n && cj < m) {
+    if (lhs[ci] == rhs[cj]) {
+      if (pi < ci) {
+        result.append("<span class=\"bg-red\">");
+        result.append(lhs.substr(pi, ci - pi));
+        result.append("</span>");
+      }
+      if (pj < cj) {
+        result.append("<span class=\"bg-green\">");
+        result.append(rhs.substr(pj, cj - pj));
+        result.append("</span>");
+      }
+      result.push_back(lhs[ci]);
+      pi = ++ci;
+      pj = ++cj;
+    } else if (dp[ci][cj] == dp[ci + 1][cj]) {
+      ++ci;
+    } else {
+      ++cj;
+    }
+  }
+  if (pi < n) {
+    result.append("<span class=\"bg-red\">");
+    result.append(lhs.substr(pi));
+    result.append("</span>");
+  }
+  if (pj < m) {
+    result.append("<span class=\"bg-green\">");
+    result.append(rhs.substr(pj));
+    result.append("</span>");
+  }
+  return result;
+}
+
+typedef std::map<std::string, std::string> StrMap;
+StrMap parse(std::string const& str) {
+  size_t left = str.find('[') + 1;
+  size_t right = str.find(']');
+  auto parts = split(str.substr(left, right - left), ';');
+  StrMap res;
+  for (auto& sub : parts) {
+    size_t eq = sub.find('=');
+    if (eq == std::string::npos) continue;
+    res[sub.substr(0, eq)] = sub.substr(eq + 1);
+  }
+  return res;
+}
+
+std::string mapdiff(StrMap const& lhs, StrMap const& rhs) {
+  std::string result;
+  std::set<std::string> keys;
+  for (auto& kv : lhs) keys.insert(kv.first);
+  for (auto& kv : rhs) keys.insert(kv.first);
+  for (auto& key : keys) {
+    auto lit = lhs.find(key), rit = rhs.find(key);
+    std::string lstr = (lit == lhs.end() ? "" : lit->second);
+    std::string rstr = (rit == rhs.end() ? "" : rit->second);
+    if (lstr != rstr) {
+      if (!result.empty()) result.push_back(';');
+      result.append(key);
+      result.push_back('=');
+      if (!lstr.empty()) {
+        result.append("<span class=\"bg-red\">");
+        result.append(lstr);
+        result.append("</span>");
+      }
+      if (!rstr.empty()) {
+        result.append("<span class=\"bg-green\">");
+        result.append(rstr);
+        result.append("</span>");
+      }
+    }
+  }
+  return result;
+}
+
+void dumpTags();
+
 #include "affixes.h"
 int do_main() {
   SnoCascLoader casc(path::casc(), "enUS");
-  //SnoSysLoader cnLoader(path::root());
-  //SnoSysLoader cnLoader("C:\\tmp\\plPL");
   SnoLoader::default = &casc;
-  //Strings::setLoader(&cnLoader);
-  //SnoCascLoader casc("G:\\D3Live\\Data", "enUS");
 #ifdef MODELVIEWER
   ViewModels();
   return 0;
 #endif
-  path::work();
+  //FormatLocale("locale/en", 1);
 
-  dump_data("_live.js");
-  make_diffs();
-  //void make_menu();
-  //void make_diffs();
+  FormatLocale("locale/en", 3);
 
-  //FormatLocale();
-  //CompareLocale();
+  std::vector<SnoLoader*> loaders;
+
+  json::Value langNames;
+
+  for (auto& locale : std::vector<std::string>{
+    "ruRU", "zhCN", "zhTW", "plPL", "deDE", "frFR", "esES", "koKR", "ptBR", "itIT"
+  }) {
+    Logger::log(locale.c_str());
+    if (locale == "zhCN" || locale == "ptBR" || locale == "itIT") {
+      loaders.push_back(new SnoSysLoader(path::root() / locale));
+    } else {
+      loaders.push_back(new SnoCascLoader(path::casc(), locale));
+    }
+    Strings::setLoader(loaders.back());
+    langNames[locale] = Strings::get("GameOptions", "Label_" + locale);
+    FormatLocale("locale" / locale, 2);
+  }
+  for (auto* loader : loaders) {
+    delete loader;
+  }
+
+  json::write(File("langnames.js", "w"), langNames);
+
+  return 0;
+
+  SnoCascLoader ruLoader(path::casc(), "ruRU");
+  SnoSysLoader cnLoader(path::root() / "zhCN");
+  SnoSysLoader twLoader(path::root() / "zhTW");
+  SnoSysLoader plLoader(path::root() / "plPL");
+  SnoSysLoader deLoader(path::root() / "deDE");
+  SnoSysLoader frLoader(path::root() / "frFR");
+  SnoSysLoader esLoader(path::root() / "esES");
+  SnoSysLoader krLoader(path::root() / "koKR");
+
+  int mode = 2;
+  Strings::setLoader(&ruLoader);
+  FormatLocale("locale/ruRU", mode);
+  //Strings::setLoader(&cnLoader);
+  //FormatLocale("locale/zhCN", mode);
+  Strings::setLoader(&twLoader);
+  FormatLocale("locale/zhTW", mode);
+  //Strings::setLoader(&deLoader);
+  //FormatLocale("locale/deDE", mode);
+  //Strings::setLoader(&plLoader);
+  //FormatLocale("locale/plPL", mode);
+  //Strings::setLoader(&frLoader);
+  //FormatLocale("locale/frFR", mode);
+  //Strings::setLoader(&esLoader);
+  //FormatLocale("locale/esES", mode);
+  //Strings::setLoader(&krLoader);
+  //FormatLocale("locale/koKR", 2);
 
   return 0;
 }

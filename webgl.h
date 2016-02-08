@@ -113,6 +113,34 @@ namespace WebGL {
   void WriteModel(std::string const& name);
   void WriteAnimation(std::string const& name);
 
+  /*******************************
+
+    to generate models/item data:
+    build in 64 bit!!!
+    AllItems(true, true, false)
+
+    required files:
+
+    itemtypes.js:
+    "itemById.*.type",
+    "itemTypes.*.slot",
+    "itemTypes.*.generic",
+    "legendaryGems.*.id",
+    "gemQualities",
+    "gemColors.*.id",
+
+    extraitems.js:
+    id: {type: "type"} for promo items
+
+    output:
+    textures.wgz
+    models.wgz
+    animations.wgz
+    webgl_actors.js
+    webgl_items.js
+
+   *******************************/
+
   void AllItems(bool models, bool info, bool load);
   void AnimSets();
   void ItemInfo();

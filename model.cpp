@@ -601,6 +601,7 @@ public:
     mode->setWidth(300);
     mode->addString("All actors", 0);
     mode->addString("Monster names", 1);
+    mode->addString("All appearances", 2);
     mode->setCurSel(0);
 
     actorName = new EditFrame(this, 100);
@@ -651,7 +652,11 @@ public:
   void listActors() {
     int m = mode->getCurSel();
     actors->clear();
-    if (m == 1) {
+    if (m == 2) {
+      for (auto& acr : SnoManager::get<Appearance>().get()) {
+        actors->insert(acr.first, acr.second);
+      }
+    } else if (m == 1) {
       auto stl = Strings::list("Monsters");
       for (auto& mon : SnoLoader::All<Monster>()) {
         uint32 id = mon->x010_ActorSno;
@@ -669,36 +674,42 @@ public:
   }
 
   void setActor(uint32 id) {
-    SnoFile<Actor> actor(Actor::name(id));
+    uint32 appId = 0;
     anims->clear();
     objects->clear();
     viewer->setModel(nullptr);
-    if (actor) {
-      SnoFile<AnimSet> animSet(AnimSet::name(actor->x068_AnimSetSno));
-      if (animSet) {
-        std::set<uint32> ids;
-        for (auto& tm : animSet->x010_AnimSetTagMaps) {
-          for (uint32 i = 0; i < tm.x08_TagMap[0]; ++i) {
-            ids.insert(tm.x08_TagMap[i * 3 + 3]);
+    if (mode->getCurSel() != 2) {
+      SnoFile<Actor> actor(Actor::name(id));
+      if (actor) {
+        SnoFile<AnimSet> animSet(AnimSet::name(actor->x068_AnimSetSno));
+        if (animSet) {
+          std::set<uint32> ids;
+          for (auto& tm : animSet->x010_AnimSetTagMaps) {
+            for (uint32 i = 0; i < tm.x08_TagMap[0]; ++i) {
+              ids.insert(tm.x08_TagMap[i * 3 + 3]);
+            }
           }
-        }
-        for (uint32 id : ids) {
-          char const* name = Anim::name(id);
-          if (name) {
-            anims->insert(id, name);
+          for (uint32 id : ids) {
+            char const* name = Anim::name(id);
+            if (name) {
+              anims->insert(id, name);
+            }
           }
+          anims->sort();
         }
-        anims->sort();
+        appId = actor->x014_AppearanceSno;
       }
-      viewer->setModel(Appearance::name(actor->x014_AppearanceSno));
-      Model* model = viewer->model();
-      if (model) {
-        for (uint32 i = 0; i < model->numSubObjects(); ++i) {
-          objects->addItem(model->subObjectName(i));
-        }
-        for (uint32 i = 0; i < model->numAppearances(); ++i) {
-          objects->addOption(model->appearanceName(i));
-        }
+    } else {
+      appId = id;
+    }
+    viewer->setModel(Appearance::name(appId));
+    Model* model = viewer->model();
+    if (model) {
+      for (uint32 i = 0; i < model->numSubObjects(); ++i) {
+        objects->addItem(model->subObjectName(i));
+      }
+      for (uint32 i = 0; i < model->numAppearances(); ++i) {
+        objects->addOption(model->appearanceName(i));
       }
     }
     anims->update();

@@ -18,11 +18,11 @@ struct SkillTips {
   json::Value passiveMap;
   json::Value categoryMap;
 
-  void generate(std::string const& cls, uint32 kitId, json::Value* fix = nullptr);
+  void generate(std::string const& cls, uint32 kitId, bool elems, json::Value* fix = nullptr);
   void read(std::string const& cls);
   void write();
   static std::string format(std::string const& power);
-  static void dump();
+  static void dump(bool elems);
 };
 
 void simBase(std::string const& name);

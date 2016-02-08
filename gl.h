@@ -21,6 +21,7 @@ class GL : public WindowFrame {
   float dist;
   bool active;
   int northo;
+  bool perspective;
   uint32 color;
   struct Trackable {
     Vector pos;

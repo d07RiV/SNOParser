@@ -6,6 +6,7 @@
 #include "types/StringList.h"
 #include "types/SkillKit.h"
 #include "types/Actor.h"
+#include "types/Recipe.h"
 #include "powertag.h"
 #include <algorithm>
 #include <locale>
@@ -28,6 +29,7 @@ struct FormatData {
   std::map<uint32, std::string> actorImages;
   std::set<uint32> charSkills;
   std::set<uint32> charTraits;
+  std::map<uint32, std::vector<uint32>> recipes;
 
   void load(DictionaryRef& dict, char const* path) {
     Logger::item(path);
@@ -51,6 +53,13 @@ struct FormatData {
       }
       for (auto& trait : kit->x10_TraitEntries) {
         charTraits.insert(trait.x00_PowerSno);
+      }
+    }
+
+    for (auto& rcp : SnoLoader::All<Recipe>()) {
+      auto& dst = recipes[rcp->x0C_ItemSpecifierData.x00_ItemsGameBalanceId];
+      for (int i = 0; i < rcp->x0C_ItemSpecifierData.x04 && i < 6; ++i) {
+        dst.push_back(rcp->x0C_ItemSpecifierData.x08_GameBalanceIds[i]);
       }
     }
 
@@ -98,6 +107,20 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
       attrs[GameAffixes::isSecondary(attr.x00_Type)].emplace_back(attr);
       if (attr.x00_Type == PowerAttribute()) {
         powers.insert(attr.x04_Param);
+      }
+    }
+  }
+  auto recipe = stl.recipes.find(HashNameLower(id));
+  if (recipe != stl.recipes.end()) {
+    for (uint32 affixId : recipe->second) {
+      AffixValue const& affix = GameAffixes::getAffix(affixId, true);
+      for (auto& attr : affix.attributes) {
+        if (attr.type != -1) {
+          attrs[GameAffixes::isSecondary(attr.type)].push_back(attr);
+          if (attr.type == PowerAttribute()) {
+            powers.insert(attr.param);
+          }
+        }
       }
     }
   }

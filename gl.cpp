@@ -18,6 +18,7 @@ GL::GL(Frame* parent)
   , drag(false)
   , northo(0)
   , color(0)
+  , perspective(true)
 {
   static std::string regClass;
   if (WNDCLASSEX* wcx = createclass("GlViewClass")) {
@@ -102,14 +103,26 @@ void GL::render() {
   glViewport(0, 0, rc.right, rc.bottom);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(90, 1.0 * rc.right / rc.bottom, 1.0f, 50.0f);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  static Matrix mfix(0, 1, 0, 0,
-                      0, 0, 1, 0,
-                      1, 0, 0, 0,
-                      0, 0, 0, 1);
-  glMultMatrixf((Matrix::translate(0, 0, -dist) * quat.matrix() * mfix).transposed());
+  if (perspective) {
+    gluPerspective(90, 1.0 * rc.right / rc.bottom, 1.0f, 150.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    static Matrix mfix(0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        1, 0, 0, 0,
+                        0, 0, 0, 1);
+    glMultMatrixf((Matrix::translate(0, 0, -dist) * quat.matrix() * mfix).transposed());
+  } else {
+    double hdist = dist * rc.right / rc.bottom;
+    glOrtho(-hdist, hdist, -dist, dist, -10 * dist, 10 * dist);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    static Matrix mfix(0, 1, 0, 0,
+                       0, 0, 1, 0,
+                       1, 0, 0, 0,
+                       0, 0, 0, 1);
+    glMultMatrixf((quat.matrix() * mfix).transposed());
+  }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glColor3d(1, 1, 1);
   active = true;

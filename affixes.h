@@ -42,7 +42,7 @@ int fixAttrId(int id, bool reverse = false);
 
 class GameAffixes {
 public:
-  static AffixValue const& getAffix(uint32 id);
+  static AffixValue const& getAffix(uint32 id, bool recipe = false);
   static std::vector<AffixValue> getGroup(uint32 id, uint32 itemType);
   static AttributeMap const& defaultMap() {
     return instance().defaultMap_;
@@ -59,6 +59,7 @@ private:
   struct GameAffix;
   AttributeMap defaultMap_;
   std::map<uint32, GameAffix> affixes_;
+  std::map<uint32, GameAffix> affixesRecipe_;
   std::map<uint32, std::vector<GameAffix*>> groups_;
   std::map<uint32, uint32> itemTypeParent_;
   struct AffixData {

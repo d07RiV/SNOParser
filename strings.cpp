@@ -11,11 +11,11 @@ std::string const& DictionaryRef::getfmt(char const* fmt, ...) const {
 }
 
 Dictionary* Strings::get(istring const& dict, SnoLoader* theloader) {
+  if (!theloader) theloader = loader;
+  if (!theloader) theloader = SnoLoader::default;
   Key key(dict, theloader);
   auto it = strings_.find(key);
   if (it != strings_.end()) return &it->second;
-  if (!theloader) theloader = loader;
-  if (!theloader) theloader = SnoLoader::default;
   SnoFile<StringList> list(dict, theloader);
   if (!list) return nullptr;
   Dictionary& res = strings_[key];
