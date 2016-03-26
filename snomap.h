@@ -46,6 +46,7 @@ public:
     }
   }
   static const SnoMap& gameBalance();
+  static void clear();
 private:
   static SnoManager instance_;
   std::map<std::string, SnoMap> map_;

@@ -48,13 +48,21 @@ public:
     return dataPos_;
   }
 
-  char const* readString(uint32 offset) {
+  uint32 fromData(uint32 offset) const {
+    return offset - dataBase_ + dataPos_;
+  }
+  uint32 toData(uint32 offset) const {
+    return offset - dataPos_ + dataBase_;
+  }
+
+  char const* readString(uint32 offset) const {
     if (offset >= dataBase_ && offset < stringEnd_) {
-      return (char*)(ptr_ + offset - dataBase_ + dataPos_);
+      return (char*)(ptr_ + fromData(offset));
     } else {
       return nullptr;
     }
   }
+
 private:
   uint8* ptr_;
   uint32 dataBase_;

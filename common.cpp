@@ -54,13 +54,17 @@ void _qmemset(uint32* mem, uint32 fill, uint32 count) {
 
 #include "zlib/zlib.h"
 #ifdef _WIN64
-#pragma comment(lib, "zlib/zlib64.lib")
+  #ifdef _DEBUG
+    #pragma comment(lib, "zlib/zlib64d.lib")
+  #else
+    #pragma comment(lib, "zlib/zlib64r.lib")
+  #endif
 #else
-#ifdef _DEBUG
-#pragma comment(lib, "zlib/zlib.lib")
-#else
-#pragma comment(lib, "zlib/zlib_r.lib")
-#endif
+  #ifdef _DEBUG
+    #pragma comment(lib, "zlib/zlib32d.lib")
+  #else
+    #pragma comment(lib, "zlib/zlib32r.lib")
+  #endif
 #endif
 
 uint32 gzdeflate(uint8 const* in, uint32 in_size, uint8* out, uint32* out_size) {
@@ -175,4 +179,82 @@ std::string join(std::vector<std::string> const& list, std::string const& sep) {
     res.append(str);
   }
   return res;
+}
+
+std::wstring utf8_to_utf16(std::string const& str) {
+  std::wstring dst;
+  for (size_t i = 0; i < str.size();) {
+    uint32 cp = (unsigned char)str[i++];
+    size_t next = 0;
+    if (cp <= 0x7F) {
+      // do nothing
+    } else if (cp <= 0xBF) {
+      throw Exception("not a valid utf-8 string");
+    } else if (cp <= 0xDF) {
+      cp &= 0x1F;
+      next = 1;
+    } else if (cp <= 0xEF) {
+      cp &= 0x0F;
+      next = 2;
+    } else if (cp <= 0xF7) {
+      cp &= 0x07;
+      next = 3;
+    } else {
+      throw Exception("not a valid utf-8 string");
+    }
+    while (next--) {
+      if (i >= str.size() || str[i] < 0x80 || str[i] > 0xBF) {
+        throw Exception("not a valid utf-8 string");
+      }
+      cp = (cp << 6) | (str[i++] & 0x3F);
+    }
+    if ((cp >= 0xD800 && cp <= 0xDFFF) || cp > 0x10FFFF) {
+      throw Exception("not a valid utf-8 string");
+    }
+
+    if (cp <= 0xFFFF) {
+      dst.push_back(cp);
+    } else {
+      cp -= 0x10000;
+      dst.push_back((cp >> 10) + 0xD800);
+      dst.push_back((cp & 0x3FF) + 0xDC00);
+    }
+  }
+  return dst;
+}
+
+std::string utf16_to_utf8(std::wstring const& str) {
+  std::string dst;
+  for (size_t i = 0; i < str.size();) {
+    uint32 cp = str[i++];
+    if (cp >= 0xD800 && cp <= 0xDFFF) {
+      if (cp >= 0xDC00) throw Exception("not a valid utf-16 string");
+      if (i >= str.size() || str[i] < 0xDC00 || str[i] > 0xDFFF) throw Exception("not a valid utf-16 string");
+      cp = 0x10000 + ((cp - 0xD800) << 10) + (str[i++] - 0xDC00);
+    }
+    if (cp >= 0x10FFFF) throw Exception("not a valid utf-16 string");
+    if (cp <= 0x7F) {
+      dst.push_back(cp);
+    } else if (cp <= 0x7FF) {
+      dst.push_back((cp >> 6) | 0xC0);
+      dst.push_back((cp & 0x3F) | 0x80);
+    } else if (cp <= 0xFFFF) {
+      dst.push_back((cp >> 12) | 0xE0);
+      dst.push_back(((cp >> 6) & 0x3F) | 0x80);
+      dst.push_back((cp & 0x3F) | 0x80);
+    } else {
+      dst.push_back((cp >> 18) | 0xF0);
+      dst.push_back(((cp >> 12) & 0x3F) | 0x80);
+      dst.push_back(((cp >> 6) & 0x3F) | 0x80);
+      dst.push_back((cp & 0x3F) | 0x80);
+    }
+  }
+  return dst;
+}
+
+std::string trim(std::string const& str) {
+  size_t left = 0, right = str.size();
+  while (left < str.length() && isspace((unsigned char)str[left])) ++left;
+  while (right > left && isspace((unsigned char)str[right - 1])) --right;
+  return str.substr(left, right - left);
 }

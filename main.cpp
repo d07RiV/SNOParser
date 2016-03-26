@@ -45,8 +45,9 @@ namespace path {
   };
   std::vector<std::string> cascs {
 #ifdef PTR
-    "E:\\Games\\Diablo III\\Data",
-//    "G:\\D3Ptr\\Data",
+    //"E:\\Games\\D3Test\\Data",
+    "E:\\Games\\D3Test.36239\\Data",
+    //"E:\\Games\\Diablo III\\Data",
 #else
     "E:\\D3Live\\Data",
     "G:\\D3Live\\Data",
@@ -470,7 +471,17 @@ std::string mapdiff(StrMap const& lhs, StrMap const& rhs) {
 
 void dumpTags();
 
+#pragma warning(disable: 4005)
+#ifdef _WIN64
+#include "CascLib64/CascLib.h"
+#else
+#include "CascLib/CascLib.h"
+#endif
+
 #include "affixes.h"
+#include "ngdp.h"
+#include "checksum.h"
+#include <unordered_set>
 int do_main() {
   SnoCascLoader casc(path::casc(), "enUS");
   SnoLoader::default = &casc;
@@ -478,8 +489,13 @@ int do_main() {
   ViewModels();
   return 0;
 #endif
-  //FormatLocale("locale/en", 1);
-
+  //SkillTips::dump(true);
+  dump_data("_ptr.js");
+  make_menu();
+  make_diffs();
+  powertags();
+  //item_flavor();
+  return 0;
   FormatLocale("locale/en", 3);
 
   std::vector<SnoLoader*> loaders;
@@ -487,10 +503,10 @@ int do_main() {
   json::Value langNames;
 
   for (auto& locale : std::vector<std::string>{
-    "ruRU", "zhCN", "zhTW", "plPL", "deDE", "frFR", "esES", "koKR", "ptBR", "itIT"
+    /*"ruRU", */"zhCN", /*"zhTW", "plPL", "deDE", "frFR", "esES", "koKR", "ptBR", "itIT"*/
   }) {
     Logger::log(locale.c_str());
-    if (locale == "zhCN" || locale == "ptBR" || locale == "itIT") {
+    if (locale == "zhCN"/* || locale == "ptBR" || locale == "itIT"*/) {
       loaders.push_back(new SnoSysLoader(path::root() / locale));
     } else {
       loaders.push_back(new SnoCascLoader(path::casc(), locale));
@@ -605,7 +621,7 @@ int main() {
     return do_main();
   } catch (Exception& ex) {
     fprintf(stderr, "Exception: %s\n", ex.what());
-    fprintf(stderr, "Press any key to continue...\n");
+    fprintf(stderr, "Press any key to continue . . .\n");
     getch();
     return 1;
   }

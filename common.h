@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.h"
+#include <intrin.h>
 #include <string>
 #include <sstream>
 #include <cctype>
@@ -166,6 +167,10 @@ public:
   template<class Iter>
   istring(Iter begin, Iter end) : _Base(begin, end) {}
 
+  istring& operator=(std::istring const& str) {
+    assign(str.c_str());
+    return *this;
+  }
   istring& operator=(std::string const& str) {
     assign(str.c_str());
     return *this;
@@ -198,4 +203,37 @@ inline std::string join(Iter left, Iter right) {
     res.append(*left++);
   }
   return res;
+}
+
+std::wstring utf8_to_utf16(std::string const& str);
+std::string utf16_to_utf8(std::wstring const& str);
+std::string trim(std::string const& str);
+
+template<int TS>
+struct FlipTraits {};
+
+template<> struct FlipTraits<1> {
+  typedef unsigned char T;
+  static T flip(T x) { return x; }
+};
+
+template<> struct FlipTraits<2> {
+  typedef unsigned short T;
+  static T flip(T x) { return _byteswap_ushort(x); }
+};
+
+template<> struct FlipTraits<4> {
+  typedef unsigned long T;
+  static T flip(T x) { return _byteswap_ulong(x); }
+};
+
+template<> struct FlipTraits<8> {
+  typedef unsigned long long T;
+  static T flip(T x) { return _byteswap_uint64(x); }
+};
+
+template<typename T>
+void flip(T& x) {
+  typedef FlipTraits<sizeof(T)> Flip;
+  x = static_cast<T>(Flip::flip(static_cast<Flip::T>(x)));
 }

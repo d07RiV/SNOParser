@@ -71,7 +71,7 @@ struct FormatData {
           actor->x310_InventoryImages[i].x00,
           actor->x310_InventoryImages[i].x04));
       }
-      if (icons != "0,0,0,0,0,0,0,0") {
+      if (icons != "0,0,0,0,0,0,0,0,0,0,0,0") {
         actorImages[actor->x000_Header.id] = icons;
       }
     }

@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="affixes.cpp" />
+    <ClCompile Include="checksum.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="description.cpp" />
     <ClCompile Include="file.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="frameui\window.cpp" />
     <ClCompile Include="garbage.cpp" />
     <ClCompile Include="gl.cpp" />
+    <ClCompile Include="http.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageblp2.cpp" />
     <ClCompile Include="imagepng.cpp" />
@@ -178,6 +180,7 @@
     <ClCompile Include="math3d.cpp" />
     <ClCompile Include="miner.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="ngdp.cpp" />
     <ClCompile Include="path.cpp" />
     <ClCompile Include="powertag.cpp" />
     <ClCompile Include="regexp.cpp" />
@@ -201,6 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affixes.h" />
+    <ClInclude Include="checksum.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="description.h" />
     <ClInclude Include="frameui\controlframes.h" />
@@ -210,12 +214,14 @@
     <ClInclude Include="frameui\searchlist.h" />
     <ClInclude Include="frameui\window.h" />
     <ClInclude Include="gl.h" />
+    <ClInclude Include="http.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="itemlib.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="math3d.h" />
     <ClInclude Include="miner.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="ngdp.h" />
     <ClInclude Include="powertag.h" />
     <ClInclude Include="regexp.h" />
     <ClInclude Include="serialize.h" />
@@ -285,6 +291,9 @@
     <ClInclude Include="types\Worlds.h" />
     <ClInclude Include="utf8.h" />
     <ClInclude Include="webgl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="json.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

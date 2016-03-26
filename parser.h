@@ -342,4 +342,6 @@ public:
   }
   SnoCascLoader(std::string dir, std::string lang = "");
   ~SnoCascLoader();
+
+  static File cascFile(HANDLE hFile);
 };

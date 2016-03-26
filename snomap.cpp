@@ -74,4 +74,21 @@ const SnoMap& SnoManager::gameBalance() {
   }
 }
 
+void SnoManager::clear() {
+  std::string root = path::work() / fmtstring("sno_%08x", SnoLoader::default->hash());
+  WIN32_FIND_DATA fdata;
+  HANDLE hFind = FindFirstFile((root / "*").c_str(), &fdata);
+  if (hFind == INVALID_HANDLE_VALUE) return;
+  std::vector<std::string> list;
+  do {
+    if (!(fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+      list.push_back(fdata.cFileName);
+    }
+  } while (FindNextFile(hFind, &fdata));
+  FindClose(hFind);
+  for (std::string const& name : list) {
+    DeleteFile((root / name).c_str());
+  }
+}
+
 SnoManager SnoManager::instance_;

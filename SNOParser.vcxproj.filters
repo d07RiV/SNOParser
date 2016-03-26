@@ -156,6 +156,15 @@
     <ClCompile Include="imageblp2.cpp">
       <Filter>Source Files\image</Filter>
     </ClCompile>
+    <ClCompile Include="http.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ngdp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="checksum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="path.h">
@@ -413,5 +422,17 @@
     <ClInclude Include="frameui\searchlist.h">
       <Filter>Header Files\frameui</Filter>
     </ClInclude>
+    <ClInclude Include="http.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ngdp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="checksum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="json.natvis" />
   </ItemGroup>
 </Project>

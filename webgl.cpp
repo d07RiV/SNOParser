@@ -1,4 +1,5 @@
 #include "webgl.h"
+#include "affixes.h"
 #include "textures.h"
 #include "types/GameBalance.h"
 #include "types/Actor.h"
@@ -708,14 +709,14 @@ namespace WebGL {
       DumpActorData(mdl, ani, hero.x10C_ActorSno);
     }
     Logger::end();
-
     json::Value items, itemsout, actors;
     if (info && load) json::parse(File("d3gl_actors.js"), actors, json::mJS);
     json::parse(File("itemtypes.js"), items, json::mJS);
-
+    std::set<uint32> done;
+    auto stlItems = Strings::list("Items");
+    
     // regular items
     Logger::begin(items["itemById"].getMap().size(), "Unique items");
-    std::set<uint32> done;
     for (auto& kv : items["itemById"].getMap()) {
       Logger::item(kv.first.c_str());
       auto* item = ItemLibrary::get(kv.first);
@@ -744,7 +745,6 @@ namespace WebGL {
     }
     std::set<uint32> actorsUsed;
     Logger::begin(ItemLibrary::all().size(), "Generic items");
-    auto stlItems = Strings::list("Items");
     for (auto& kv : ItemLibrary::all()) {
       Logger::item(kv.first.c_str());
       std::string mask = trim_number(kv.first);
@@ -779,7 +779,8 @@ namespace WebGL {
         Logger::log("unknown item: %s", kv.first.c_str());
         continue;
       }
-      std::string type = kv.second["type"].getString();
+      std::string type = GameAffixes::getItemType(item->x10C_ItemTypesGameBalanceId);
+      //std::string type = kv.second["type"].getString();
       std::string slot = items["itemTypes"][type]["slot"].getString();
       if (models) DumpItemActor(mdl, ani, done, item->x108_ActorSno, type == "source" || type == "mojo");
       if (info) {

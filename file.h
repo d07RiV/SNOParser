@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "common.h"
 #include <string>
+#include <intrin.h>
 
 class FileBuffer : public RefCounted {
 public:
@@ -119,19 +120,22 @@ public:
     file_->read(&x, 1);
     return x;
   }
-  uint16 read16() {
+  uint16 read16(bool big = false) {
     uint16 x;
     file_->read(&x, 2);
+    if (big) x = _byteswap_ushort(x);
     return x;
   }
-  uint32 read32() {
+  uint32 read32(bool big = false) {
     uint32 x;
     file_->read(&x, 4);
+    if (big) x = _byteswap_ulong(x);
     return x;
   }
-  uint64 read64() {
+  uint64 read64(bool big = false) {
     uint64 x;
     file_->read(&x, 8);
+    if (big) x = _byteswap_uint64(x);
     return x;
   }
 
@@ -145,13 +149,16 @@ public:
   bool write8(uint8 x) {
     return file_->write(&x, 1) == 1;
   }
-  bool write16(uint16 x) {
+  bool write16(uint16 x, bool big = false) {
+    if (big) x = _byteswap_ushort(x);
     return file_->write(&x, 2) == 2;
   }
-  bool write32(uint32 x) {
+  bool write32(uint32 x, bool big = false) {
+    if (big) x = _byteswap_ulong(x);
     return file_->write(&x, 4) == 4;
   }
-  bool write64(uint64 x) {
+  bool write64(uint64 x, bool big = false) {
+    if (big) x = _byteswap_uint64(x);
     return file_->write(&x, 8) == 8;
   }
 
@@ -165,6 +172,14 @@ public:
 
   static File memfile(void const* ptr, size_t size, bool clone = false);
   File subfile(uint64 offset, uint64 size);
+
+  void copy(File& src, uint64 size = max_uint64);
+  void md5(void* digest);
+
+  static bool exists(char const* path);
+  static bool exists(std::string const& path) {
+    return exists(path.c_str());
+  }
 };
 
 class MemoryFile : public File {

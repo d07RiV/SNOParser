@@ -129,6 +129,10 @@ public:
   }
 };
 
+File SnoCascLoader::cascFile(HANDLE hFile) {
+  return File(new CascFileBuffer(hFile));
+}
+
 File SnoCascLoader::loadfile(char const* type, char const* name, char const* ext) {
   HANDLE pFile;
   if (!lang_.empty() && CascOpenFile(handle_, fmtstring("%s\\%s\\%s%s", lang_.c_str(), type, name, ext).c_str(), 0, 0, &pFile)) {

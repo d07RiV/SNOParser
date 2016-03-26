@@ -168,6 +168,51 @@ GameAffixes::GameAffixes() {
   for (auto& kv : affixData_.raw["Secondary"].getMap()) {
     affixData_.secondary.insert(atoi(kv.first.c_str()));
   }
+
+  itemTypes_[HashNameLower("TemplarSpecial")] = "templarrelic";
+  itemTypes_[HashNameLower("ScoundrelSpecial")] = "scoundreltoken";
+  itemTypes_[HashNameLower("EnchantressSpecial")] = "enchantressfocus";
+  itemTypes_[HashNameLower("Helm")] = "helm";
+  itemTypes_[HashNameLower("WizardHat")] = "wizardhat";
+  itemTypes_[HashNameLower("VoodooMask")] = "voodoomask";
+  itemTypes_[HashNameLower("SpiritStone_Monk")] = "spiritstone";
+  itemTypes_[HashNameLower("Shoulders")] = "shoulders";
+  itemTypes_[HashNameLower("Amulet")] = "amulet";
+  itemTypes_[HashNameLower("ChestArmor")] = "chestarmor";
+  itemTypes_[HashNameLower("Cloak")] = "cloak";
+  itemTypes_[HashNameLower("Belt")] = "belt";
+  itemTypes_[HashNameLower("Belt_Barbarian")] = "mightybelt";
+  itemTypes_[HashNameLower("Gloves")] = "gloves";
+  itemTypes_[HashNameLower("Bracers")] = "bracers";
+  itemTypes_[HashNameLower("Legs")] = "pants";
+  itemTypes_[HashNameLower("Boots")] = "boots";
+  itemTypes_[HashNameLower("Ring")] = "ring";
+  itemTypes_[HashNameLower("Axe")] = "axe";
+  itemTypes_[HashNameLower("Dagger")] = "dagger";
+  itemTypes_[HashNameLower("Mace")] = "mace";
+  itemTypes_[HashNameLower("Spear")] = "spear";
+  itemTypes_[HashNameLower("Sword")] = "sword";
+  itemTypes_[HashNameLower("CeremonialDagger")] = "ceremonialknife";
+  itemTypes_[HashNameLower("FistWeapon")] = "fistweapon";
+  itemTypes_[HashNameLower("Flail1H")] = "flail";
+  itemTypes_[HashNameLower("MightyWeapon1H")] = "mightyweapon";
+  itemTypes_[HashNameLower("Wand")] = "wand";
+  itemTypes_[HashNameLower("HandXbow")] = "handcrossbow";
+  itemTypes_[HashNameLower("Axe2H")] = "axe2h";
+  itemTypes_[HashNameLower("Mace2H")] = "mace2h";
+  itemTypes_[HashNameLower("Polearm")] = "polearm";
+  itemTypes_[HashNameLower("Staff")] = "staff";
+  itemTypes_[HashNameLower("Sword2H")] = "sword2h";
+  itemTypes_[HashNameLower("CombatStaff")] = "daibo";
+  itemTypes_[HashNameLower("Flail2H")] = "flail2h";
+  itemTypes_[HashNameLower("MightyWeapon2H")] = "mightyweapon2h";
+  itemTypes_[HashNameLower("Bow")] = "bow";
+  itemTypes_[HashNameLower("Crossbow")] = "crossbow";
+  itemTypes_[HashNameLower("Shield")] = "shield";
+  itemTypes_[HashNameLower("CrusaderShield")] = "crusadershield";
+  itemTypes_[HashNameLower("Orb")] = "source";
+  itemTypes_[HashNameLower("Mojo")] = "mojo";
+  itemTypes_[HashNameLower("Quiver")] = "quiver";
 }
 
 AffixValue const& GameAffixes::getAffix(uint32 id, bool recipe) {
@@ -298,4 +343,14 @@ std::vector<std::string> GameAffixes::format(AttributeSpecifier const* begin, At
 
 std::vector<std::string> GameAffixes::format(std::vector<AttributeSpecifier> const& attrs, FormatFlags flags) {
   return format(attrs.data(), attrs.data() + attrs.size(), flags);
+}
+
+std::string GameAffixes::getItemType(uint32 id) {
+  auto& types = instance().itemTypes_;
+  auto& parent = instance().itemTypeParent_;
+  while (!types.count(id) && parent.count(id)) {
+    id = parent[id];
+  }
+  auto it = types.find(id);
+  return (it == types.end() ? "" : it->second);
 }

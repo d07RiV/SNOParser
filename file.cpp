@@ -1,6 +1,7 @@
 #include "file.h"
 #include <windows.h>
 #include <set>
+#include <algorithm>
 
 class StdFileBuffer : public FileBuffer {
   FILE* file_;
@@ -420,4 +421,41 @@ void Archive::compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)
     char const* name = (Func ? Func(id) : nullptr);
     if (lsize != rsize) diff.printf("%-8u %-8u %-8u%s\n", id, lsize, rsize, name ? name : "");
   }
+}
+
+void File::copy(File& src, uint64 size) {
+  auto mem = dynamic_cast<MemoryBuffer*>(src.file_);
+  if (mem) {
+    uint64 pos = mem->tell();
+    size = std::min(size, mem->size() - pos);
+    write(mem->data() + pos, size);
+    mem->seek(size, SEEK_CUR);
+  } else {
+    uint8 buf[65536];
+    while (size_t count = src.read(buf, std::min<size_t>(sizeof buf, size))) {
+      write(buf, count);
+      size -= count;
+    }
+  }
+}
+#include "checksum.h"
+void File::md5(void* digest) {
+  auto mem = dynamic_cast<MemoryBuffer*>(file_);
+  if (mem) {
+    MD5::checksum(mem->data(), mem->size(), digest);
+  } else {
+    uint64 pos = tell();
+    seek(0, SEEK_SET);
+    uint8 buf[65536];
+    MD5 checksum;
+    while (size_t count = read(buf, sizeof buf)) {
+      checksum.process(buf, count);
+    }
+    checksum.finish(digest);
+    seek(pos, SEEK_SET);
+  }
+}
+
+bool File::exists(char const* path) {
+  return GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 }

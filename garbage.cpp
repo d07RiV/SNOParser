@@ -773,21 +773,51 @@ void file_copy(File& file, std::string const& from) {
   }
 }
 
+std::string file_contents(File& src) {
+  std::string tmp;
+  if (!src) return tmp;
+  tmp.resize(src.size());
+  src.read(&tmp[0], tmp.size());
+  return tmp;
+}
+
+void write_template(File& out, File& src, Dictionary const* tr = nullptr) {
+  std::string tmp = file_contents(src);
+  if (tr) {
+    for (auto const& kv : *tr) {
+      size_t offs = 0;
+      while (true) {
+        offs = tmp.find(kv.first, offs);
+        if (offs == std::string::npos) break;
+        tmp.replace(offs, kv.first.size(), kv.second);
+        offs += kv.second.size();
+      }
+    }
+  }
+  out.write(&tmp[0], tmp.size());
+}
+
 void make_diff(std::string const& name, std::vector<std::string> const& fields, bool links = false) {
   json::Value live, ptr;
   json::parse(File(name + "_live.js"), live);
   json::parse(File(name + "_ptr.js"), ptr);
   File out("diff/" + name + ".html", "w");
-  file_copy(out, "diff/templates/" + name + ".html");
+  Dictionary tr;
+  tr.emplace("%LHS%", file_contents(File("version_live.js")));
+  tr.emplace("%RHS%", file_contents(File("version_ptr.js")));
+  write_template(out, File("diff/templates/" + name + ".html"), &tr);
   if (links) file_copy(out, "menu.html");
   diff(out, live, ptr, fields, links);
   file_copy(out, "diff/templates/tail.html");
 }
 void make_html(std::string const& name, bool ptr, std::vector<std::string> const& fields, bool links = false) {
   json::Value value;
-  json::parse(File(name + (ptr ? "_ptr.js" : "_live.js")), value);
+  std::string suffix(ptr ? "_ptr.js" : "_live.js");
+  json::parse(File(name + suffix), value);
   File out("game/" + name + (ptr ? "_ptr.html" : "_live.html"), "w");
-  file_copy(out, "game/templates/" + name + ".html");
+  Dictionary tr;
+  tr.emplace("%VER%", file_contents(File("version" + suffix)));
+  write_template(out, File("game/templates/" + name + ".html"), &tr);
   if (ptr) {
     out.printf(" | <a class=\"live_link\" href=\"/game/%s\">Live</a>", name.c_str());
   } else {
@@ -802,10 +832,70 @@ void make_html(std::string const& name, std::vector<std::string> const& fields, 
   make_html(name, true, fields, links);
 }
 
+class KMP {
+public:
+  KMP(std::string const& str)
+    : str_(str)
+    , kmp_(str.size())
+    , cur_(0)
+  {
+    for (size_t i = 1; i < str.size(); ++i) {
+      kmp_[i] = kmp_[i - 1];
+      while (kmp_[i] && str[kmp_[i]] != str_[i]) {
+        kmp_[i] = kmp_[kmp_[i] - 1];
+      }
+      if (str[kmp_[i]] == str[i]) {
+        ++kmp_[i];
+      }
+    }
+  }
+  void reset() {
+    cur_ = 0;
+  }
+
+  size_t size() const {
+    return str_.size();
+  }
+
+  bool next(char chr) {
+    while (cur_ && str_[cur_] != chr) {
+      cur_ = kmp_[cur_ - 1];
+    }
+    if (str_[cur_] == chr) {
+      ++cur_;
+    }
+    return cur_ == str_.size();
+  }
+
+private:
+  std::string str_;
+  std::vector<size_t> kmp_;
+  size_t cur_;
+};
+
 void dumpTags() {
-  ExeFile exe(R"(C:\Work\junk\Diablo III Public Test\Diablo III.exe)");
+  ExeFile exe(R"(C:\Webroot\game\D3Test\Diablo III.exe)");
+
+  KMP search("TAG_POWER_SCRIPT_FORMULA_0");
+  exe.seek(0);
+  while (!search.next(exe.getc())); // intentional
+
+  uint32 spos = exe.toData(exe.tell() - search.size());
+  exe.seek(0);
+  while (exe.read32() != spos); // intentional
+  uint32 mid = exe.tell() - 24;
+  while (true) {
+    exe.seek(mid + 32, SEEK_SET);
+    uint32 x = exe.read32();
+    uint32 y = exe.read32();
+    uint32 z = exe.read32();
+    if (x != -1 || y != -1 || z != -1) break;
+    mid -= 44;
+  }
+  mid += 36;
+
   json::Value tags;
-  uint32 mid = 0x011C55A0;
+  json::Value tagtxt;
   exe.seek(mid);
   uint32 lhs = exe.read32();
   uint32 rhs = exe.read32();
@@ -817,12 +907,12 @@ void dumpTags() {
     exe.seek(12, SEEK_CUR);
     uint32 a = exe.read32();
     uint32 b = exe.read32();
-    //auto& tag = tags[fmtstring("%d", id)];
-    //tag["name"] = exe.readString(a);
-    //tag["tag"] = exe.readString(b);
+    auto& tag2 = tagtxt[fmtstring("%d", id)];
+    tag2["name"] = exe.readString(a);
+    tag2["tag"] = exe.readString(b);
     tags[exe.readString(b)] = exe.readString(a);
   }
-  //json::write(File("tags.txt", "w"), tags);
+  json::write(File("tags.txt", "w"), tagtxt);
   File out("tagnames.js", "w");
   out.printf("var TagNames = ");
   json::write(out, tags, json::mJS);
@@ -894,6 +984,32 @@ void make_menu() {
   //return 0;
 }
 
+std::string get_version() {
+  std::string dir = path::casc();
+  while (dir.size() && GetFileAttributes((dir / ".build.info").c_str()) == INVALID_FILE_ATTRIBUTES) {
+    dir = path::path(dir);
+  }
+  File info(dir / ".build.info");
+  if (!info) return "unknown";
+  std::string line;
+  if (!info.getline(line)) return "unknown";
+  size_t pos = line.find("Version!");
+  if (pos == std::string::npos) return "unknown";
+  size_t count = 0;
+  while (pos) {
+    count += (line[--pos] == '|');
+  }
+  if (!info.getline(line)) return "unknown";
+  size_t left = 0;
+  while (count--) {
+    left = line.find('|', left);
+    if (left == std::string::npos) return "unknown";
+    ++left;
+  }
+  size_t right = line.find('|', left);
+  return line.substr(left, right == std::string::npos ? right : right - left);
+}
+
 void dump_data(std::string const& suffix) {
   json::Value js_sets;
   json::Value js_items;
@@ -913,6 +1029,8 @@ void dump_data(std::string const& suffix) {
   json::write(File("itemsets" + suffix, "w"), js_sets);
   json::write(File("items" + suffix, "w"), js_items);
   json::write(File("powers" + suffix, "w"), js_powers);
+
+  File("version" + suffix, "w").printf("%s", get_version().c_str());
 }
 
 void copy(File& src, File& dst) {
@@ -1048,6 +1166,9 @@ void item_flavor(SnoLoader* loader = SnoLoader::default) {
   }
   for (auto& kv : extra.getMap()) {
     if (!kv.second.has("type")) continue;
+    if (flavor.has(kv.first)) {
+      dst["webglItems"][kv.first]["flavor"] = flavor[kv.first];
+    }
     if (icons.count(kv.first)) {
       auto& type = types[kv.second["type"].getString()];
       if (type.left == -1) {
@@ -1059,6 +1180,9 @@ void item_flavor(SnoLoader* loader = SnoLoader::default) {
     }
   }
   for (auto& kv : dyes.getMap()) {
+    if (flavor.has(kv.first)) {
+      dst["webglDyes"][kv.first]["flavor"] = flavor[kv.first];
+    }
     if (icons.count(kv.first)) {
       auto& type = types["dyes"];
       if (type.left == -1) {
@@ -1232,7 +1356,7 @@ void progress(std::string const& suffix) {
   auto names = Strings::list("Monsters");
   for (auto& mon : SnoLoader::All<Monster>()) {
     if (names.has(mon.name()) && mon->x044_float[58]) {
-      out[names[mon.name()]] = mon->x044_float[58] * 0.25f;
+      out[names[mon.name()]] = mon->x044_float[58];// *0.25f;
     }
   }
   json::write(File("monsters" + suffix, "w"), out);
@@ -1437,7 +1561,7 @@ void write_all_item_icons() {
   for (auto& gmb : SnoLoader::All<GameBalance>()) {
     for (auto& item : gmb->x028_Items) {
       uint32 type = item.x10C_ItemTypesGameBalanceId;
-      write_item_icon(isEquippable(type) ? items : garbage, item_icons, item.x000_Text, isChestArmor(type));
+      write_item_icon(items.has(item.x000_Text)/*isEquippable(type)*/ ? items : garbage, item_icons, item.x000_Text, isChestArmor(type));
     }
   }
   json::write(File("item_icons.js", "w"), items, json::mJS);

@@ -55,6 +55,8 @@ public:
   }
   static bool isSecondary(uint32 attr);
 
+  static std::string getItemType(uint32 id);
+
 private:
   struct GameAffix;
   AttributeMap defaultMap_;
@@ -62,6 +64,7 @@ private:
   std::map<uint32, GameAffix> affixesRecipe_;
   std::map<uint32, std::vector<GameAffix*>> groups_;
   std::map<uint32, uint32> itemTypeParent_;
+  std::map<uint32, std::string> itemTypes_;
   struct AffixData {
     std::map<uint32, std::string> types;
     std::set<uint32> secondary;
