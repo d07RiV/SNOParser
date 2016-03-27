@@ -82,7 +82,10 @@ void Logger::Task::write(std::string const& text) {
   if (line.length() > text.length()) {
     buf.assign(line.length() - text.length(), ' ');
     WriteConsole(handle, buf.c_str(), buf.length(), nullptr, nullptr);
-    SetConsoleCursorPosition(handle, { pos.X + 8 + text.length(), pos.Y });
+    SetConsoleCursorPosition(handle, {
+      static_cast<SHORT>(pos.X + 8 + text.length()),
+      static_cast<SHORT>(pos.Y)
+    });
   }
   line = text;
   time = GetTickCount();
