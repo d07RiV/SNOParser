@@ -167,7 +167,7 @@ public:
   template<class Iter>
   istring(Iter begin, Iter end) : _Base(begin, end) {}
 
-  istring& operator=(std::istring const& str) {
+  istring& operator=(istring const& str) {
     assign(str.c_str());
     return *this;
   }
