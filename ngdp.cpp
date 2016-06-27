@@ -2,12 +2,26 @@
 #include "http.h"
 #include "path.h"
 #include "checksum.h"
+#include "logger.h"
 #include <algorithm>
 
 namespace NGDP {
 
   const std::string HOST = "http://cn.patch.battle.net:1119";
   const std::string PROGRAM = "d3t";
+  const std::string CACHE = "cdncache";
+
+  void preload(char const* task, File& file) {
+    static uint8 buffer[1 << 18];
+    size_t size = file.size();
+    Logger::begin(size, task);
+    while (file.tell() < size) {
+      file.read(buffer, sizeof buffer);
+      Logger::progress(file.tell(), false);
+    }
+    Logger::end();
+    file.seek(0);
+  }
 
   std::map<std::string, CdnData> GetCdns(std::string const& app) {
     std::map<std::string, CdnData> result;
@@ -55,8 +69,19 @@ namespace NGDP {
     if (index) url += ".index";
     return url;
   }
-  File NGDP::load(std::string const& hash, std::string const& type, bool index) const {
-    return HttpRequest::get(geturl(hash, type, index));
+  File NGDP::load(std::string const& hash, std::string const& type, bool index, char const* preload) const {
+    std::string path = path::work() / CACHE / type / hash;
+    if (index) path += ".index";
+    File file(path);
+    if (file) return file;
+    file = HttpRequest::get(geturl(hash, type, index));
+    if (!file) return file;
+    if (preload) {
+      ::NGDP::preload(preload, file);
+    }
+    File(path, "wb").copy(file);
+    file.seek(0);
+    return file;
   }
 
   File DecodeBLTE(File& blte, uint32 eusize) {
@@ -91,12 +116,12 @@ namespace NGDP {
       dst.seek(0);
       return dst;
     } else {
+      uint8 type = blte.read8();
       uint64 offset = blte.tell();
       uint64 size = blte.size() - offset;
-      if (blte.read8() == 'N') {
+      if (type == 'N') {
         return blte.subfile(offset, size);
-      } else if (eusize) {
-        blte.seek(offset, SEEK_SET);
+      } else if (type == 'Z' && eusize) {
         std::vector<uint8> tmp(size);
         blte.read(&tmp[0], size);
         MemoryFile dst;
@@ -186,7 +211,6 @@ namespace NGDP {
 
     file.seek(posHeaderA, SEEK_SET);
     encodingTable_.resize(header.entriesA);
-    File out("base/list", "wt");
     for (uint32 i = 0; i < header.entriesA; ++i) {
       file.read(encodingTable_[i].hash, sizeof(Hash));
       Hash blockHash, realHash;
@@ -199,11 +223,6 @@ namespace NGDP {
         EncodingEntry* entry = reinterpret_cast<EncodingEntry*>(ptr);
         if (!entry->keyCount) break;
         encodingTable_[i].entries.push_back(entry);
-        out.printf("%s", to_string(entry->hash).c_str());
-        for (uint32 j = 0; j < entry->keyCount; ++j) {
-          out.printf(" %s", to_string(entry->keys[j]).c_str());
-        }
-        out.printf("\n");
         flip(entry->usize);
         ptr += sizeof(EncodingEntry) + (entry->keyCount - 1) * sizeof(Hash);
       }
@@ -277,24 +296,25 @@ namespace NGDP {
     return *sub;
   }
 
-  ArchiveIndex::ArchiveIndex(NGDP const& ngdp, CascStorage& storage, std::vector<std::string> const& archives, uint32 blockSize)
+  ArchiveIndex::ArchiveIndex(NGDP const& ngdp, uint32 blockSize)
     : ngdp_(ngdp)
-    , storage_(storage)
     , blockSize_(blockSize)
-    , archives_(archives.size())
   {
     Hash nilHash;
     memset(nilHash, 0, sizeof(Hash));
 
+    File cdnFile = ngdp.load(ngdp.version().cdn);
+    if (!cdnFile) return;
+    std::vector<std::string> archives = split(ParseConfig(cdnFile)["archives"]);
+
+    archives_.resize(archives.size());
+    Logger::begin(archives.size(), "Loading indices");
     for (size_t i = 0; i < archives.size(); ++i) {
       archives_[i].name = archives[i];
 
-      File index = storage_.getIndex(archives[i]);
-      if (!index) {
-        File src = ngdp_.load(archives[i], "data", true);
-        if (!src) continue;
-        index = storage_.addIndex(archives[i], src);
-      }
+      Logger::item(nullptr);
+      File index = ngdp.load(archives[i], "data", true);
+      if (!index) continue;
       size_t size = index.size();
       for (size_t block = 0; block + 4096 <= size; block += 4096) {
         Hash hash;
@@ -312,37 +332,19 @@ namespace NGDP {
         }
       }
 
-      File mask = storage_.getArchive(archives[i] + ".mask");
-      if (!mask) {
-        File raw = storage_.getArchive(archives[i]);
-        if (raw) {
-          uint32 chunks = (raw.size() + blockSize_ - 1) / blockSize_;
-          archives_[i].mask.assign((chunks + 7) / 8, 0xFF);
-          continue;
-        }
-      } else {
+      File mask(path::work() / CACHE / "data" / archives[i] + ".mask");
+      if (mask) {
         archives_[i].mask.resize(mask.size());
         mask.read(&archives_[i].mask[0], archives_[i].mask.size());
       }
     }
-  }
-
-  static inline bool getbit(std::vector<uint8> const& mask, uint32 pos) {
-    if (pos / 8 >= mask.size()) return false;
-    return mask[pos / 8] & (1 << (pos & 7));
-  }
-
-  File ArchiveIndex::load_raw(Hash const& hash) {
-    File file = storage_.getArchive(to_string(hash));
-    if (file) return file;
-    file = ngdp_.load(hash, "data");
-    if (!file) return File();
-    return storage_.addArchive(to_string(hash), file);
+    Logger::end();
   }
 
   File ArchiveIndex::load(Hash const& hash) {
     auto it = index_.find(Hash_container::from(hash));
-    if (it == index_.end()) return load_raw(hash);
+    if (it == index_.end()) return ngdp_.load(hash, "data");
+    std::string archivePath = path::work() / CACHE / "data" / archives_[it->second.index].name;
 
     uint32 offset = it->second.offset;
     uint32 size = it->second.size;
@@ -352,7 +354,7 @@ namespace NGDP {
     uint32 getStart = blockEnd;
     uint32 getEnd = blockStart;
     for (uint32 i = blockStart; i < blockEnd; ++i) {
-      if (!getbit(mask, i)) {
+      if (i / 8 >= mask.size() || !(mask[i / 8] & (1 << (i & 7)))) {
         getStart = std::min(getStart, i);
         getEnd = std::max(getEnd, i + 1);
       }
@@ -366,7 +368,8 @@ namespace NGDP {
       if (status != 200 && status != 206) return File();
       auto headers = request.headers();
       File result = request.response();
-      File archive = storage_.addArchive(archives_[it->second.index].name);
+      File archive = File(archivePath, "rb+");
+      if (!archive) archive = File(archivePath, "wb+");
       if (headers.count("Content-Range")) {
         uint32 start, end, total;
         if (sscanf(headers["Content-Range"].c_str(), "bytes %u-%u/%u", &start, &end, &total) != 3) {
@@ -389,18 +392,14 @@ namespace NGDP {
         for (uint32 i = start; i < end; ++i) {
           mask[i / 8] |= (1 << (i & 7));
         }
-        File file = storage_.addArchive(archives_[it->second.index].name + ".mask");
-        file.write(&mask[0], mask.size());
+        File(path::work() / CACHE / "data" / archives_[it->second.index].name + ".mask", "wb").write(&mask[0], mask.size());
       } else {
         archive.copy(result);
       }
     }
 
-    File data = storage_.getArchive(archives_[it->second.index].name);
+    File data(archivePath);
     if (!data) return File();
-      //File src = ngdp_.load(archives_[it->second.index], "data");
-      //if (!src) return File();
-      //data = storage_.addArchive(archives_[it->second.index], src);
     MemoryFile result;
     data.seek(offset, SEEK_SET);
     data.read(result.reserve(size), size);
@@ -571,7 +570,7 @@ namespace NGDP {
 
     index_.clear();
   }
-
+  /*
   void DownloadGame(NGDP const& ngdp, std::string const& build, std::string const& path, std::vector<std::string> const& tags) {
     CascStorage storage(path / "Data");
 
@@ -735,6 +734,6 @@ namespace NGDP {
     }
     install.release();
     printf("done.\n");
-  }
+  }*/
 
 }

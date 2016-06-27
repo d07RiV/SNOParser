@@ -51,7 +51,25 @@ protected:
   }
 };
 
-#define declstruct(name) struct name : public Serializable<name>
+template<class T>
+struct sno_size_helper {
+  typedef char yes[1];
+  typedef yes no[2];
+  template<size_t(*F)(uint32)> struct helper;
+  template<typename C> static yes& test(helper<C::snosize>*) {}
+  template<typename> static no& test(...) {}
+  template<bool B> static size_t getter() { return sizeof(T); }
+  template<> static size_t getter<true>() { return T::snosize(SnoLoader::default->build()); }
+};
+
+template<class T>
+size_t SnoSize() {
+  typedef sno_size_helper<T> helper;
+  static size_t value = helper::getter<sizeof(helper::test<T>(0)) == sizeof(helper::yes)>();
+  return value;
+};
+
+#define declstruct(sname) struct sname : public Serializable<sname>
 #define dumpfunc() dump(json::Visitor* visitor)
 #define expand(x) x
 #define do_write(x) _write(#x, x, visitor)
@@ -83,7 +101,7 @@ protected:
     uint32 size = sd.size;
     if (SnoParser::context->contains(offset, size)) {
       data_ = reinterpret_cast<T*>(SnoParser::context->data(offset));
-      size_ = size / sizeof(T);
+      size_ = size / SnoSize<T>();
     } else {
       data_ = nullptr;
       size_ = 0;
@@ -112,7 +130,7 @@ protected:
     if (SnoParser::context->contains(offset, size)) {
       impl_ = new Impl;
       impl_->data = reinterpret_cast<T*>(SnoParser::context->data(offset));
-      impl_->size = size / sizeof(T);
+      impl_->size = size / SnoSize<T>();
     } else {
       impl_ = nullptr;
     }

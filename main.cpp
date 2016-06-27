@@ -31,7 +31,6 @@
 #include <vector>
 #include <algorithm>
 #include <stdarg.h>
-using namespace std;
 
 //#define MODELVIEWER
 #define PTR
@@ -45,8 +44,11 @@ namespace path {
   };
   std::vector<std::string> cascs {
 #ifdef PTR
+    //"F:\\Games\\D3Test\\Data",
     //"E:\\Games\\D3Test\\Data",
-    "E:\\Games\\D3Test.36239\\Data",
+    "F:\\Games\\Diablo III\\Data",
+    //"E:\\Games\\Diablo III Public Test\\Data",
+    //"C:\\Webroot\\game\\D3T2\\Data",
     //"E:\\Games\\Diablo III\\Data",
 #else
     "E:\\D3Live\\Data",
@@ -481,21 +483,185 @@ void dumpTags();
 #include "affixes.h"
 #include "ngdp.h"
 #include "checksum.h"
+#include "poe.h"
+#include "textures.h"
 #include <unordered_set>
+File http_get(std::string const& url);
+
+std::string get_version();
+
 int do_main() {
-  SnoCascLoader casc(path::casc(), "enUS");
-  SnoLoader::default = &casc;
+  auto builds = SnoCdnLoader::builds();
+  std::map<istring, std::map<std::string, int>> sizes;
+  for (auto const& build : builds) {
+    std::string name = SnoCdnLoader::buildinfo(build)["build-name"];
+    json::Value val;
+    json::parse(File("cdt" / name + ".js"), val);
+    for (auto const& kv : val.getMap()) {
+      sizes[kv.first][name] = kv.second.getInteger();
+    }
+  }
+  json::Value out;
+  for (auto const& kv : sizes) {
+    int prev = 0;
+    json::Value& dst = out[kv.first];
+    for (auto const& kvi : kv.second) {
+      if (kvi.second != prev) {
+        prev = kvi.second;
+        dst[kvi.first] = kvi.second;
+      }
+    }
+  }
+  json::write(File("cdt.js", "wb"), out);
+  //  if (SnoCdnLoader::buildinfo(build)["build-name"] > "30687") continue;
+  //  SnoCdnLoader casc(build, "enUS");
+  //  File cdt = casc.load("ComplexTypeDescriptorSizes.dat");
+  //  if (!cdt || cdt.read32() != 0xAABBCCDD) continue;
+  //  size_t count = cdt.size() / (1024 + 4 + 64);
+  //  json::Value vers;
+  //  for (size_t i = 0; i < count; ++i) {
+  //    char name[64];
+  //    cdt.read(name, sizeof name);
+  //    vers[name] = cdt.read32();
+  //    cdt.seek(1024, SEEK_CUR);
+  //  }
+  //  json::write(File(fmtstring("cdt/%s.js", casc.buildinfo().at("build-name").c_str()), "wb"), vers);
+  //  //auto install = casc.install();
+  //  //File(fmtstring("exe/%s.exe", casc.buildinfo().at("build-name")), "wb").copy(casc.load(install["Diablo III.exe"]));
+  //}
+  //return 0;
+  return 0;
+
 #ifdef MODELVIEWER
   ViewModels();
   return 0;
 #endif
+  auto ver = get_version();
+  Logger::log(ver.c_str());
+  return 0;
+  SnoManager::clear();
+  //powertags();
+  //progress("_ptr.js");
   //SkillTips::dump(true);
-  dump_data("_ptr.js");
+  //SnoManager::clear();
+  //dump_data("_ptr.js");
+  //return 0;
+  dump_data("_live.js");
+  //casc.dump<GameBalance>();
+  //SkillTips::dump(true);
   make_menu();
   make_diffs();
-  powertags();
-  //item_flavor();
   return 0;
+  json::Value sin;
+  json::parse(File("kadala3.js"), sin, json::mJS);
+  for (auto& kv : sin.getMap()) {
+    sin[kv.first]["name"] = Strings::get("Items", kv.first);
+  }
+  json::write(File("kadala2.js", "w"), sin, json::mJS);
+  return 0;
+  json::Value sn, sp, sr, isrc, iic, ilvl;
+  json::parse(File("skill_names.js"), sn, json::mJS);
+  json::parse(File("skill_powers.js"), sp, json::mJS);
+  for (auto& kv : sn["skills"].getMap()) {
+    auto& dc = sr[kv.first];
+    for (auto& ki : kv.second.getMap()) {
+      std::string pow = sp["skills"][kv.first][ki.second["name"].getString()].getString();
+      PowerTag* tag = PowerTags::get(pow);
+      if (!tag) {
+        Logger::log("power not found for %s", ki.first.c_str());
+        continue;
+      }
+      AttributeValue vals[6];
+      AttributeMap attr = GameAffixes::defaultMap();
+      vals[0] = tag->get("Attack Radius", attr);
+      bool varies = false;
+      for (int i = 1; i < 6; ++i) {
+        AttributeMap rattr = attr;
+        rattr[fmtstring("Rune_%c", 'A' + (i - 1))] = 1;
+        vals[i] = tag->get("Attack Radius", rattr);
+        if (vals[i].max != vals[0].max) varies = true;
+      }
+      if (varies) {
+        auto& dst = dc[ki.first];
+        dst["x"] = vals[0].max;
+        for (int i = 1; i < 6; ++i) {
+          dst[fmtstring("%c", 'a' + (i - 1))] = vals[i].max;
+        }
+      } else {
+        dc[ki.first] = vals[0].max;
+      }
+    }
+  }
+  json::write(File("ranges.js", "w"), sr, json::mJS);
+  return 0;
+  json::parse(File("items.js"), isrc, json::mJS);
+  json::parse(File("item_icons.js"), iic, json::mJS);
+  for (auto& iid : isrc["itemById"].getMap()) {
+    auto* it = ItemLibrary::get(iid.first);
+    if (!it || !it->x3C4) continue;
+    auto& dst = ilvl[it->x000_Text];
+    dst["name"] = iid.second["name"];
+    dst["type"] = iid.second["type"];
+    if (iic.has(iid.first)) {
+      dst["icon"] = iic[iid.first][0];
+    }
+    dst["level"] = it->x14C;
+    dst["weight"] = it->x3C4;
+    if (it->x3C8) dst["demonhunter"] = true;
+    if (it->x3CC) dst["barbarian"] = true;
+    if (it->x3D0) dst["wizard"] = true;
+    if (it->x3D4) dst["witchdoctor"] = true;
+    if (it->x3D8) dst["monk"] = true;
+    if (it->x3DC) dst["crusader"] = true;
+    if (it->x110_Bit18) dst["hardcore"] = true;
+
+    File data = http_get(
+      fmtstring("https://us.api.battle.net/d3/data/item/%s?apikey=nzshbg67hcyh4epzjdyc4wrkxx4xcpsp", it->x000_Text));
+    if (data) {
+      try {
+        json::Value val;
+        json::parse(data, val);
+        dst["tooltip"] = val["tooltipParams"];
+      } catch (...) {
+      }
+      Sleep(500);
+    }
+    if (!dst.has("tooltip")) {
+      Logger::log("no tooltip for %s", iid.second["name"].getString().c_str());
+    }
+  }
+  json::write(File("kadala.js", "w"), ilvl, json::mJS);
+  return 0;
+  ////itemPowerFilter();
+  //SkillTips::dump(true);
+  //progress("_live.js");
+  //progress_comp(false);
+  //casc.dump<GameBalance>();
+  //Archive dsticons;
+  //dsticons.load(File("item_icons.wgz"), false);
+  //Image runes(64, 64 * 33);
+  //for (int i = 1; i <= 33; ++i) {
+  //  std::string name = fmtstring("Rune%02dIcon", i);
+  //  uint32 id = HashName(name);
+  //  Image image = GameTextures::get(id);
+  //  runes.blt(0, 64 * (i - 1), image);
+  //}
+  //runes.resize(24, 24 * 33).write("runes.png");
+  //json::write(File("runes.js", "w"), rlist, json::mJS);
+  //return 0;
+  //File dst("HandicapLevels.csv", "w");
+  //for (auto& gmb : casc.all<GameBalance>()) {
+  //  for (auto& tl : gmb->x138_HandicapLevelTable) {
+  //    //dst.printf("%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%lld,%f,%f\n",
+  //    //  tl.x00, tl.x04, tl.x08, tl.x0C,
+  //    //  tl.x10, tl.x14, tl.x18, tl.x1C,
+  //    //  tl.x20, tl.x24, tl.x28, tl.x30, tl.x34);
+  //    dst.printf("%f,%f,%f,%f,%f,%f,%d,%d\n",
+  //      tl.x00, tl.x04, tl.x08, tl.x0C,
+  //      tl.x10, tl.x14, tl.x18, tl.x1C);
+  //  }
+  //}
+  //return 0;
   FormatLocale("locale/en", 3);
 
   std::vector<SnoLoader*> loaders;
@@ -503,11 +669,11 @@ int do_main() {
   json::Value langNames;
 
   for (auto& locale : std::vector<std::string>{
-    /*"ruRU", */"zhCN", /*"zhTW", "plPL", "deDE", "frFR", "esES", "koKR", "ptBR", "itIT"*/
+    "ruRU", "zhCN", "zhTW", "plPL", "deDE", "frFR", "esES", "koKR", "ptBR", "itIT"
   }) {
     Logger::log(locale.c_str());
     if (locale == "zhCN"/* || locale == "ptBR" || locale == "itIT"*/) {
-      loaders.push_back(new SnoSysLoader(path::root() / locale));
+      loaders.push_back(new SnoCascLoader(R"(E:\Games\D3Cn)", locale));
     } else {
       loaders.push_back(new SnoCascLoader(path::casc(), locale));
     }

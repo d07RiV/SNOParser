@@ -193,13 +193,24 @@ inline int basic_compare(T const& lhs, T const& rhs) {
 }
 
 std::vector<std::string> split(std::string const& str, char sep = ' ');
+std::vector<std::wstring> split(std::wstring const& str, wchar_t sep = ' ');
+std::vector<std::string> split_multiple(std::string const& str, char const* sep);
 std::string join(std::vector<std::string> const& list, char sep = ' ');
 std::string join(std::vector<std::string> const& list, std::string const& sep);
 template<class Iter>
-inline std::string join(Iter left, Iter right) {
+inline std::string join(Iter left, Iter right, char const* sep = " ") {
   std::string res;
   while (left != right) {
-    if (!res.empty()) res.push_back(' ');
+    if (!res.empty()) res.append(sep);
+    res.append(*left++);
+  }
+  return res;
+}
+template<class Iter>
+inline std::wstring wjoin(Iter left, Iter right, wchar_t const* sep = L" ") {
+  std::wstring res;
+  while (left != right) {
+    if (!res.empty()) res.append(sep);
     res.append(*left++);
   }
   return res;

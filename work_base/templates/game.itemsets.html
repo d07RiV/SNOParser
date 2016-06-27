@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>D3 Diff</title>
+  <style type="text/css">
+   .bg-red { background-color: #f88; }
+   .bg-green { background-color: #8f8; }
+   .indent { padding-left: 48px; margin: 0; display: block; }
+   .label { display: inline-block; width: 80px; text-align: right; }
+   a { color: #00f; text-decoration: none; }
+   a:hover { text-decoration: underline; }
+   i { font-size: 16px; display: block; background-color: #ccc; padding: 2px; margin-bottom: 3px; }
+   div { border: 1px solid black; margin-top: 6px; padding-bottom: 3px; }
+  </style>
+  <script src="/external/jquery.min.js"></script>
+  <script type="text/javascript">
+   $(document).on("change", ".version", function() {
+     window.location.href = "/game/itemsets/" + $(this).val();
+   });
+  </script>
+ </head>
+ <body>
+  {NAVBAR}

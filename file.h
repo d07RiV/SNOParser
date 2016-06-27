@@ -165,10 +165,17 @@ public:
   void printf(char const* fmt, ...);
 
   bool getline(std::string& line);
+  bool getwline(std::wstring& line);
+  bool getwline_flip(std::wstring& line);
 
+  template<class string_t>
   class LineIterator;
-  LineIterator begin();
-  LineIterator end();
+
+  LineIterator<std::string> begin();
+  LineIterator<std::string> end();
+
+  LineIterator<std::wstring> wbegin();
+  LineIterator<std::wstring> wend();
 
   static File memfile(void const* ptr, size_t size, bool clone = false);
   File subfile(uint64 offset, uint64 size);
@@ -191,22 +198,27 @@ public:
   void resize(uint32 size);
 };
 
+template<class string_t>
 class File::LineIterator {
   friend class File;
+  typedef bool(File::*getter_t)(string_t& line);
   File file_;
-  std::string line_;
-  LineIterator(File& file) {
-    if (file.getline(line_)) {
+  string_t line_;
+  getter_t getter_ = nullptr;
+  LineIterator(File& file, getter_t getter)
+    : getter_(getter)
+  {
+    if ((file.*getter_)(line_)) {
       file_ = file;
     }
   }
 public:
   LineIterator() {}
 
-  std::string const& operator*() {
+  string_t const& operator*() {
     return line_;
   }
-  std::string const* operator->() {
+  string_t const* operator->() {
     return &line_;
   }
 
@@ -215,11 +227,27 @@ public:
   }
 
   LineIterator& operator++() {
-    if (!file_.getline(line_)) {
+    if (!(file_.*getter_)(line_)) {
       file_.release();
     }
     return *this;
   }
+};
+
+class WideFile {
+public:
+  WideFile(File const& file)
+    : file_(file)
+  {}
+
+  File::LineIterator<std::wstring> begin() {
+    return file_.wbegin();
+  }
+  File::LineIterator<std::wstring> end() {
+    return file_.wend();
+  }
+private:
+  File file_;
 };
 
 class Archive {
@@ -232,6 +260,7 @@ public:
   void load(File& file, bool compression = true);
   bool has(uint32 id);
   File& create(uint32 id);
+  File open(uint32 id);
 
   static void compare(File& diff, Archive& lhs, Archive& rhs, char const*(*Func)(uint32) = nullptr);
 

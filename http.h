@@ -11,7 +11,6 @@ public:
   enum RequestType {GET, POST};
 
   HttpRequest(std::string const& url, RequestType type = GET);
-  ~HttpRequest();
 
   void addHeader(std::string const& name, std::string const& value);
   void addHeader(std::string const& header);
@@ -25,10 +24,15 @@ public:
   static File get(std::string const& url);
 
 private:
+  struct SessionHolder {
+    HINTERNET session = nullptr;
+    HINTERNET connect = nullptr;
+    HINTERNET request = nullptr;
+    ~SessionHolder();
+  };
+  friend class HttpBuffer;
+  std::shared_ptr<SessionHolder> handles_;
   RequestType type_;
-  HINTERNET session_;
-  HINTERNET connect_;
-  HINTERNET request_;
   std::wstring headers_;
   std::string post_;
 };

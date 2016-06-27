@@ -92,11 +92,65 @@ bool File::getline(std::string& out) {
   }
   return !out.empty();
 }
-File::LineIterator File::begin() {
-  return LineIterator(*this);
+bool File::getwline(std::wstring& out) {
+  out.clear();
+  wchar_t chr;
+  while (read(&chr, sizeof chr) == 2) {
+    if (chr == L'\r') {
+      wchar_t next;
+      uint64 pos = file_->tell();
+      if (read(&next, sizeof next) != 2 || next != L'\n') {
+        file_->seek(pos, SEEK_SET);
+      }
+      return true;
+    }
+    if (chr == L'\n') {
+      return true;
+    }
+    out.push_back(chr);
+  }
+  return !out.empty();
 }
-File::LineIterator File::end() {
-  return LineIterator();
+bool File::getwline_flip(std::wstring& out) {
+  out.clear();
+  wchar_t chr;
+  while (read(&chr, sizeof chr) == 2) {
+    chr = _byteswap_ushort(chr);
+    if (chr == L'\r') {
+      wchar_t next;
+      uint64 pos = file_->tell();
+      if (read(&next, sizeof next) != 2 || _byteswap_ushort(next) != L'\n') {
+        file_->seek(pos, SEEK_SET);
+      }
+      return true;
+    }
+    if (chr == L'\n') {
+      return true;
+    }
+    out.push_back(chr);
+  }
+  return !out.empty();
+}
+
+File::LineIterator<std::string> File::begin() {
+  return LineIterator<std::string>(*this, &File::getline);
+}
+File::LineIterator<std::string> File::end() {
+  return LineIterator<std::string>();
+}
+File::LineIterator<std::wstring> File::wbegin() {
+  int bom = read16();
+  if (bom == 0xFEFF) {
+    return LineIterator<std::wstring>(*this, &File::getwline);
+  } else if (bom == 0xFFFE) {
+    return LineIterator<std::wstring>(*this, &File::getwline_flip);
+  } else {
+    seek(-2, SEEK_CUR);
+    return LineIterator<std::wstring>(*this, &File::getwline);
+  }
+}
+File::LineIterator<std::wstring> File::wend() {
+  return LineIterator<std::wstring>();
 }
 
 class MemFileBuffer : public FileBuffer {
@@ -341,6 +395,14 @@ File& Archive::create(uint32 id) {
   auto& file = files_[id];
   file.resize(0);
   return file;
+}
+File Archive::open(uint32 id) {
+  auto it = files_.find(id);
+  if (it == files_.end()) {
+    return File();
+  } else {
+    return it->second;
+  }
 }
 void Archive::write(File& file, bool compression) {
   std::map<uint32, std::vector<uint8>> data;

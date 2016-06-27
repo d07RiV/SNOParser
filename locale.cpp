@@ -566,6 +566,9 @@ void GenerateSimBuffs(json::Value& value, json::Value& data) {
           repl = items[id];
         }
       }
+      if (realname == "Boots of Disregard") {
+        int adsf = 0;
+      }
       if (realname == name) {
         dst["name"] = repl;
       } else {

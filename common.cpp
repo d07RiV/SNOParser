@@ -164,6 +164,35 @@ std::vector<std::string> split(std::string const& str, char sep) {
   res.push_back(cur);
   return res;
 }
+std::vector<std::wstring> split(std::wstring const& str, wchar_t sep) {
+  std::vector<std::wstring> res;
+  std::wstring cur;
+  for (wchar_t c : str) {
+    if (c == sep) {
+      res.push_back(cur);
+      cur.clear();
+    } else {
+      cur.push_back(c);
+    }
+  }
+  res.push_back(cur);
+  return res;
+}
+std::vector<std::string> split_multiple(std::string const& str, char const* sep) {
+  std::vector<std::string> res;
+  std::string cur;
+  for (char c : str) {
+    if (strchr(sep, c)) {
+      res.push_back(cur);
+      cur.clear();
+    } else {
+      cur.push_back(c);
+    }
+  }
+  res.push_back(cur);
+  return res;
+}
+
 std::string join(std::vector<std::string> const& list, char sep) {
   std::string res;
   for (auto& str : list) {

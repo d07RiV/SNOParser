@@ -1,5 +1,10 @@
 #pragma once
 
+// 2.2.0
+//#define SNOBUILD 29699
+// 2.3.0
+#define SNOBUILD 32445
+
 #include "file.h"
 #include "json.h"
 #include "path.h"
@@ -95,26 +100,34 @@ public:
   }
 };
 
+struct SnoInfo {
+  char const* type;
+  char const* ext;
+  const uint32 index;
+};
+
 class SnoLoader {
 protected:
-  virtual std::vector<std::string> listdir(char const* type, char const* ext) = 0;
-  virtual File loadfile(char const* type, char const* name, char const* ext) = 0;
+  virtual std::vector<std::string> listdir(SnoInfo const& type) = 0;
+  virtual File loadfile(SnoInfo const& type, char const* name) = 0;
 public:
   virtual uint32 hash() const = 0;
+  virtual uint32 build() const { return 0; }
+  virtual std::string version() const { return "unknown"; }
 
   template<class T>
   std::vector<std::string> list() {
-    return listdir(T::type(), T::ext());
+    return listdir(T::info());
   }
 
   template<class T>
   File load(std::string const& name) {
-    return loadfile(T::type(), name.c_str(), T::ext());
+    return loadfile(T::info(), name.c_str());
   }
 
   template<class T>
   File load(char const* name) {
-    return name ? loadfile(T::type(), name, T::ext()) : File();
+    return name ? loadfile(T::info(), name) : File();
   }
 
   template<class T>
@@ -270,7 +283,7 @@ public:
   void dump(std::string const& name) {
     File src = load<T>(name);
     if (!src) return;
-    File dst(path::work() / T::type() / name + ".txt", "wt");
+    File dst(path::work() / fmtstring("%s.%s", T::type(), version().c_str()) / name + ".txt", "wt");
     if (!dst) return;
     json::WriterVisitor writer(dst);
     writer.setIndent(2);
@@ -319,8 +332,8 @@ public:
 class SnoSysLoader : public SnoLoader {
 protected:
   std::string dir_;
-  std::vector<std::string> listdir(char const* type, char const* ext);
-  File loadfile(char const* type, char const* name, char const* ext);
+  std::vector<std::string> listdir(SnoInfo const& type);
+  File loadfile(SnoInfo const& type, char const* name);
 public:
   SnoSysLoader(std::string dir = "");
   uint32 hash() const {
@@ -332,16 +345,50 @@ public:
 class SnoCascLoader : public SnoLoader {
 protected:
   uint32 hash_;
+  uint32 build_;
+  std::string version_;
   std::string lang_;
   void* handle_;
-  std::vector<std::string> listdir(char const* type, char const* ext);
-  File loadfile(char const* type, char const* name, char const* ext);
+  std::vector<std::string> listdir(SnoInfo const& type);
+  File loadfile(SnoInfo const& type, char const* name);
 public:
   uint32 hash() const {
     return hash_;
+  }
+  uint32 build() const {
+    return build_;
+  }
+  std::string version() const {
+    return version_;
   }
   SnoCascLoader(std::string dir, std::string lang = "");
   ~SnoCascLoader();
 
   static File cascFile(HANDLE hFile);
+};
+
+class SnoCdnLoader : public SnoLoader {
+protected:
+  struct CdnImpl;
+  uint32 hash_;
+  std::string lang_;
+  CdnImpl* handle_;
+  std::vector<std::string> listdir(SnoInfo const& type);
+  File loadfile(SnoInfo const& type, char const* name);
+public:
+  uint32 hash() const {
+    return hash_;
+  }
+  uint32 build() const;
+  std::string version() const;
+  SnoCdnLoader(std::string const& build, std::string lang = "");
+  ~SnoCdnLoader();
+
+  std::map<std::string, std::string> const& buildinfo();
+
+  std::map<istring, std::string> install();
+  File load(std::string const& hash);
+
+  static std::vector<std::string> builds();
+  static std::map<std::string, std::string> buildinfo(std::string const& build);
 };

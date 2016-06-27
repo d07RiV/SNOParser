@@ -208,6 +208,7 @@ void parseItem(GameBalance::Type::Item const& item, json::Value& to, bool html) 
   if (item.x128) dst["primary"].append(fmtstring("+%d Random Magic Properties", item.x128));
   if (item.x12C) dst["secondary"].append(fmtstring("+%d Random Magic Properties", item.x12C));
 }
+
 void parseSetBonus(GameBalance::Type::SetItemBonusTableEntry const& bonus, json::Value& to, bool html) {
   static re::Prog getname(R"((.*) \([0-9]+\))");
   FormatData& stl = FormatData::get();
@@ -373,7 +374,6 @@ void jsonCompare(json::Value& lhs, json::Value& rhs, bool noArrays) {
     rhs.clear();
   }
 }
-
 
 double strdist(std::string const& slhs, std::string const& srhs) {
   auto lhs = split(slhs);

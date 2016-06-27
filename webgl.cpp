@@ -850,4 +850,376 @@ namespace WebGL {
     json::write(File("d3gl_actors.js", "w"), actors, json::mJS);
     json::write(File("d3gl_physics.js", "w"), phys, json::mJS);
   }
+
+  struct ObjMaterial {
+    std::vector<uint8> tex;
+    char mime[16];
+    float diff[4];
+    float spec[3];
+
+    ObjMaterial() {
+      memset(mime, 0, sizeof mime);
+      memset(diff, 0, sizeof diff);
+      memset(spec, 0, sizeof spec);
+      diff[3] = 1.0f;
+    }
+  };
+  typedef std::tuple<int, int, int> VertexIndex;
+  struct ObjVertexNormal {
+    int8 normal[4];
+    ObjVertexNormal() {}
+    ObjVertexNormal(float x, float y, float z) {
+      float d = std::sqrt(x * x + y * y + z * z);
+      normal[0] = static_cast<int8>(x / d * 127.0f);
+      normal[1] = static_cast<int8>(y / d * 127.0f);
+      normal[2] = static_cast<int8>(z / d * 127.0f);
+      normal[3] = 0;
+    }
+    Vector vec() const {
+      return Vector(normal[0] / 127.0f, normal[1] / 127.0f, normal[2] / 127.0f);
+    }
+  };
+  struct ObjVertexTex {
+    int16 texcoord[2];
+    ObjVertexTex() {}
+    ObjVertexTex(float u, float v) {
+      texcoord[0] = static_cast<int16>(u * 512.0f);
+      texcoord[1] = static_cast<int16>(v * 512.0f);
+    }
+  };
+  struct ObjVertex {
+    Vector v;
+    ObjVertexNormal n;
+    ObjVertexTex t;
+    ObjVertex() {}
+    ObjVertex(Vector const& v, ObjVertexTex const& t, ObjVertexNormal const& n)
+      : v(v)
+      , t(t)
+      , n(n)
+    {}
+  };
+
+  std::vector<uint8> read_file(std::string const& path) {
+    File file(path);
+    std::vector<uint8> vec(file.size());
+    file.read(vec.data(), vec.size());
+    return vec;
+  }
+
+  void parseObj(char const* path, char const* dst) {
+    std::map<std::string, int> mat_index;
+    std::vector<ObjMaterial> mat_list;
+
+
+    std::vector<Vector> v_list;
+    std::vector<ObjVertexTex> t_list;
+    std::vector<ObjVertexNormal> n_list;
+
+
+    struct Object {
+      uint32 mat;
+      std::map<VertexIndex, uint16> vertex_index;
+      std::vector<ObjVertex> vertex_list;
+      std::vector<uint16> index_list;
+      std::vector<uint16> face_list;
+      std::vector<uint32> face_sizes;
+    };
+
+    ObjVertexTex t0(0, 0);
+    ObjVertexNormal n0(0, 0, 0);
+
+    std::vector<Object> objects;
+
+    MemoryFile output;
+
+    std::string root = path::path(path);
+    for (std::string line : File(path)) {
+      trim(line);
+      if (line.empty() || line[0] == '#') continue;
+
+      size_t space = line.find(' ');
+      std::string cmd = line.substr(0, space);
+      line = trim(line.substr(space));
+
+      if (cmd == "mtllib") {
+        for (std::string subline : File(root / line)) {
+          trim(subline);
+          if (subline.empty() || subline[0] == '#') continue;
+
+          size_t space = subline.find(' ');
+          std::string subcmd = subline.substr(0, space);
+          subline = trim(subline.substr(space));
+
+          if (subcmd == "newmtl") {
+            mat_index[subline] = mat_list.size();
+            mat_list.emplace_back();
+          } else if (subcmd == "Kd") {
+            auto parts = split(subline);
+            mat_list.back().diff[0] = std::stof(parts[0]);
+            mat_list.back().diff[1] = std::stof(parts[1]);
+            mat_list.back().diff[2] = std::stof(parts[2]);
+          } else if (subcmd == "Ks") {
+            auto parts = split(subline);
+            mat_list.back().spec[0] = std::stof(parts[0]);
+            mat_list.back().spec[1] = std::stof(parts[1]);
+            mat_list.back().spec[2] = std::stof(parts[2]);
+          } else if (subcmd == "d") {
+            mat_list.back().diff[3] = std::stof(subline);
+          } else if (subcmd == "map_Kd") {
+            mat_list.back().tex = read_file(root / subline);
+            std::string ext = strlower(path::ext(subline));
+            if (ext == ".jpg") {
+              strcpy(mat_list.back().mime, "image/jpeg");
+            } else if (ext == ".png") {
+              strcpy(mat_list.back().mime, "image/png");
+            }
+          }
+        }
+      } else if (cmd == "usemtl") {
+        objects.emplace_back();
+        objects.back().mat = mat_index[line];
+      } else if (cmd == "v") {
+        auto parts = split(line);
+        v_list.emplace_back(std::stof(parts[0]), std::stof(parts[1]), std::stof(parts[2]));
+        v_list.back() *= 1e-6f;
+      } else if (cmd == "vt") {
+        auto parts = split(line);
+        t_list.emplace_back(std::stof(parts[0]), std::stof(parts[1]));
+      } else if (cmd == "vn") {
+        auto parts = split(line);
+        n_list.emplace_back(std::stof(parts[0]), std::stof(parts[1]), std::stof(parts[2]));
+      } else if (cmd == "f") {
+        auto parts = split(line);
+        std::vector<uint16> indices;
+
+        Object& obj = objects.back();
+        for (auto const& p : parts) {
+          auto cp = split(p, '/');
+          int v = std::stoi(cp[0]);
+          int t = (cp.size() < 2 || cp[1].empty() ? 0 : std::stoi(cp[1]));
+          int n = (cp.size() < 3 ? 0 : std::stoi(cp[2]));
+          VertexIndex idx(v, t, n);
+          if (!objects.back().vertex_index.count(idx)) {
+            obj.vertex_index[idx] = obj.vertex_list.size();
+            obj.vertex_list.emplace_back(v_list[v - 1], t ? t_list[t - 1] : t0, n ? n_list[n - 1] : n0);
+          }
+          indices.push_back(obj.vertex_index[idx]);
+        }
+
+        std::vector<Vector> vn;
+        for (size_t i = 0; i < indices.size(); ++i) {
+          Vector c1 = obj.vertex_list[indices[i]].v;
+          Vector c0 = obj.vertex_list[indices[i == 0 ? indices.size() - 1 : i - 1]].v;
+          Vector c2 = obj.vertex_list[indices[(i + 1) % indices.size()]].v;
+          vn.push_back((c1 - c0) ^ (c2 - c1));
+        }
+        Vector n = obj.vertex_list[indices[0]].n.vec();
+        if (n.length2() < 1e-4) {
+          n = Vector(0, 0, 0);
+          for (auto& cn : vn) {
+            if ((cn & n) > 0) {
+              n += cn;
+            } else {
+              n -= cn;
+            }
+          }
+          n.normalize();
+        }
+
+        bool hp = false, hn = false;
+        for (auto& cn : vn) {
+          float dt = (cn & n);
+          if (dt > 1e-4) {
+            hp = true;
+          } else if (dt < -1e-4) {
+            hn = true;
+          }
+        }
+
+        if (hp && hn) {
+          if (vn.size() == 25) {
+            int asdf = 0;
+          }
+          n = Vector(0, 0, 0);
+          for (size_t i = 1; i < indices.size() - 1; ++i) {
+            Vector c0 = obj.vertex_list[indices[0]].v;
+            Vector c1 = obj.vertex_list[indices[i]].v;
+            Vector c2 = obj.vertex_list[indices[i + 1]].v;
+            n += (c1 - c0) ^ (c2 - c0);
+          }
+          n.normalize();
+          while (indices.size() > 3) {
+            size_t ss = indices.size();
+            for (size_t i = 0; i < indices.size(); ++i) {
+              uint16 i0 = (i == 0 ? indices.size() - 1 : i - 1), i2 = (i + 1) % indices.size();
+              Vector c1 = obj.vertex_list[indices[i]].v;
+              Vector c0 = obj.vertex_list[indices[i0]].v;
+              Vector c2 = obj.vertex_list[indices[i2]].v;
+              Vector cn = (c1 - c0) ^ (c2 - c1);
+              float vd = (cn & n);
+              if (vd > -1e-8 && vd < 1e-8) {
+                indices.erase(indices.begin() + i);
+                break;
+              }
+              if (vd < 0) continue;
+              bool ok = true;
+              for (size_t j = 0; j < indices.size(); ++j) {
+                if (j == i || j == i0 || j == i2) continue;
+                Vector v = obj.vertex_list[indices[j]].v;
+                Vector v0 = (v - c1) ^ (c2 - c1);
+                Vector v1 = (v - c2) ^ (c0 - c2);
+                Vector v2 = (v - c0) ^ (c1 - c0);
+                if ((v0 & n) < -1e-4 && (v1 & n) < -1e-4 && (v2 & n) < -1e-4) {
+                  ok = false;
+                  break;
+                }
+              }
+              if (ok) {
+                obj.index_list.push_back(indices[i0]);
+                obj.index_list.push_back(indices[i]);
+                obj.index_list.push_back(indices[i2]);
+                obj.face_list.push_back(indices[i0]);
+                obj.face_list.push_back(indices[i]);
+                obj.face_list.push_back(indices[i2]);
+                obj.face_sizes.push_back(3);
+                indices.erase(indices.begin() + i);
+                break;
+              }
+            }
+            if (indices.size() == ss) {
+              n = Vector(0, 0, 0);
+              for (size_t i = 1; i < indices.size() - 1; ++i) {
+                Vector c0 = obj.vertex_list[indices[0]].v;
+                Vector c1 = obj.vertex_list[indices[i]].v;
+                Vector c2 = obj.vertex_list[indices[i + 1]].v;
+                n += (c1 - c0) ^ (c2 - c0);
+              }
+              n.normalize();
+              int asdf = 0;
+            }
+          }
+          obj.index_list.push_back(indices[0]);
+          obj.index_list.push_back(indices[1]);
+          obj.index_list.push_back(indices[2]);
+          obj.face_list.push_back(indices[0]);
+          obj.face_list.push_back(indices[1]);
+          obj.face_list.push_back(indices[2]);
+          obj.face_sizes.push_back(3);
+        } else {
+          if (hn && !hp) {
+            std::reverse(indices.begin(), indices.end());
+          }
+          obj.face_list.push_back(indices[0]);
+          for (size_t i = 1; i < indices.size() - 1; ++i) {
+            obj.index_list.push_back(indices[0]);
+            obj.index_list.push_back(indices[i]);
+            obj.index_list.push_back(indices[i + 1]);
+            obj.face_list.push_back(indices[i]);
+          }
+          obj.face_list.push_back(indices.back());
+          obj.face_sizes.push_back(indices.size());
+        }
+      } else if (cmd == "g") {
+      } else {
+        int adsf = 0;
+      }
+    }
+
+    uint32 mat_offset = 32;
+    uint32 tex_offset = mat_offset + mat_list.size() * 52;
+    uint32 model_offset = tex_offset;
+    for (auto const& mat : mat_list) {
+      model_offset += mat.tex.size();
+      model_offset = (model_offset + 3) & (~3);
+    }
+    uint32 vertex_offset = model_offset + objects.size() * 36;
+
+    auto vsh = read_file(root / "shader.vsh");
+    auto psh = read_file(root / "shader.psh");
+
+    uint32 vsh_offset = vertex_offset;
+    for (auto const& mdl : objects) {
+      vsh_offset += mdl.vertex_list.size() * sizeof(ObjVertex);
+      vsh_offset += mdl.index_list.size() * 2;
+      vsh_offset = (vsh_offset + 3) & (~3);
+      vsh_offset += mdl.face_sizes.size() * 4;
+      vsh_offset += mdl.face_list.size() * 2;
+      vsh_offset = (vsh_offset + 3) & (~3);
+    }
+    uint32 psh_offset = vsh_offset + vsh.size();
+
+    output.write32(mat_list.size());
+    output.write32(mat_offset);
+    output.write32(objects.size());
+    output.write32(model_offset);
+    output.write32(vsh_offset);
+    output.write32(vsh.size());
+    output.write32(psh_offset);
+    output.write32(psh.size());
+    for (auto const& mat : mat_list) {
+      output.write(mat.mime, sizeof mat.mime);
+      output.write32(mat.tex.size() ? tex_offset : 0);
+      output.write32(mat.tex.size());
+      tex_offset += mat.tex.size();
+      tex_offset = (tex_offset + 3) & (~3);
+      output.write(mat.diff, sizeof mat.diff);
+      output.write(mat.spec, sizeof mat.spec);
+    }
+    for (auto const& mat : mat_list) {
+      if (mat.tex.size()) {
+        output.write(&mat.tex[0], mat.tex.size());
+        size_t size = mat.tex.size();
+        while (size & 3) {
+          output.write8(0);
+          size++;
+        }
+      }
+    }
+    for (auto const& mdl : objects) {
+      output.write32(mdl.mat);
+      output.write32(mdl.vertex_list.size());
+      output.write32(vertex_offset);
+      vertex_offset += mdl.vertex_list.size() * sizeof(ObjVertex);
+      output.write32(mdl.index_list.size());
+      output.write32(vertex_offset);
+      vertex_offset += mdl.index_list.size() * 2;
+      vertex_offset = (vertex_offset + 3) & (~3);
+      output.write32(mdl.face_sizes.size());
+      output.write32(mdl.face_list.size());
+      output.write32(vertex_offset);
+      vertex_offset += mdl.face_sizes.size() * 4;
+      output.write32(vertex_offset);
+      vertex_offset += mdl.face_list.size() * 2;
+      vertex_offset = (vertex_offset + 3) & (~3);
+    }
+    for (auto const& mdl : objects) {
+      for (auto const& v : mdl.vertex_list) {
+        output.write(v);
+      }
+      for (uint16 i : mdl.index_list) {
+        output.write16(i);
+      }
+      if (mdl.index_list.size() & 1) {
+        output.write16(0);
+      }
+      for (uint16 i : mdl.face_sizes) {
+        output.write32(i);
+      }
+      for (uint16 i : mdl.face_list) {
+        output.write16(i);
+      }
+      if (mdl.face_list.size() & 1) {
+        output.write16(0);
+      }
+    }
+    output.write(vsh.data(), vsh.size());
+    output.write(psh.data(), psh.size());
+    uint32 outSize = output.size();
+    std::vector<uint8> odata(outSize);
+    gzencode(output.data(), output.size(), odata.data(), &outSize);
+    odata.resize(outSize);
+    File cout(dst, "wb");
+    cout.write(odata.data(), odata.size());
+  }
+
 }

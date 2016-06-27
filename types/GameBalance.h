@@ -155,8 +155,10 @@ declstruct(GameBalance::Type) {
     int x480;
     RecipeIngredient x484_RecipeIngredients[6];
     int x4B4;
+#if SNOBUILD >= 32445
     int x4B8_;
     int x4BC_;
+#endif
     AttributeSpecifier x4B8_AttributeSpecifier;
     AttributeSpecifier x4D0_AttributeSpecifier;
     int x4E8;
@@ -165,10 +167,12 @@ declstruct(GameBalance::Type) {
     int x4F4;
     int x4F8;
     int x4FC;
+#if SNOBUILD >= 32445
     int x508_;
     int x50C_;
     int x510_;
     int x514_;
+#endif
     void dumpfunc() {
       dumpval(x000_Text, x100, x104, x108_ActorSno, x10C_ItemTypesGameBalanceId, x110_Bit0);
       dumpval(x110_Bit1, x110_Bit2, x110_Bit3, x110_Bit4, x110_Bit5, x110_Bit6);
@@ -1512,9 +1516,13 @@ declstruct(GameBalance::Type) {
     float x1C;
     int x20;
     int x24;
+    uint64 x28;
+    float x30;
+    float x34;
     void dumpfunc() {
       dumpval(x00, x04, x08, x0C, x10, x14);
-      dumpval(x18, x1C, x20, x24);
+      dumpval(x18, x1C, x20, x24, x28, x30);
+      dumpval(x34);
     }
   };
 

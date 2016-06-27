@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/D "_CRT_SECURE_NO_DEPRECATE" /D "_CRT_SECURE_NO_WARNINGS" %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>./</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="affixes.cpp" />
+    <ClCompile Include="cdnloader.cpp" />
     <ClCompile Include="checksum.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="description.cpp" />
@@ -173,18 +174,26 @@
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageblp2.cpp" />
     <ClCompile Include="imagepng.cpp" />
+    <ClCompile Include="inet.cpp" />
     <ClCompile Include="itemlib.cpp" />
     <ClCompile Include="json.cpp" />
     <ClCompile Include="locale.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="math3d.cpp" />
     <ClCompile Include="miner.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="mongoose.c" />
+    <ClCompile Include="newmain.cpp" />
     <ClCompile Include="ngdp.cpp" />
     <ClCompile Include="path.cpp" />
+    <ClCompile Include="poe.cpp" />
     <ClCompile Include="powertag.cpp" />
     <ClCompile Include="regexp.cpp" />
     <ClCompile Include="parser.cpp" />
+    <ClCompile Include="server.cpp" />
     <ClCompile Include="snocommon.cpp" />
     <ClCompile Include="snomap.cpp" />
     <ClCompile Include="logger.cpp" />
@@ -204,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affixes.h" />
+    <ClInclude Include="allsno.h" />
     <ClInclude Include="checksum.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="description.h" />
@@ -221,10 +231,13 @@
     <ClInclude Include="math3d.h" />
     <ClInclude Include="miner.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="mongoose.h" />
     <ClInclude Include="ngdp.h" />
+    <ClInclude Include="poe.h" />
     <ClInclude Include="powertag.h" />
     <ClInclude Include="regexp.h" />
     <ClInclude Include="serialize.h" />
+    <ClInclude Include="server.h" />
     <ClInclude Include="snocommon.h" />
     <ClInclude Include="snotypes.h" />
     <ClInclude Include="file.h" />

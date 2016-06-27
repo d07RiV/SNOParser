@@ -57,6 +57,10 @@ public:
 
   static std::string getItemType(uint32 id);
 
+  static json::Value const& rawData() {
+    return instance().affixData_.raw;
+  }
+
 private:
   struct GameAffix;
   AttributeMap defaultMap_;

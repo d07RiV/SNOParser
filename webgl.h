@@ -148,4 +148,6 @@ namespace WebGL {
   void GenericItems();
 
   void AddPhysics();
+
+  void parseObj(char const* path, char const* dst);
 }

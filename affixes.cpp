@@ -6,89 +6,37 @@
 #include <algorithm>
 
 int fixAttrId(int id, bool reverse) {
-  static enum { Unknown, Live, Ptr, Ptr2, Ptr24_1 } version = Unknown;
-  if (version == Unknown) {
+  static bool fixLoaded = false;
+  typedef std::pair<int, int> fixpair;
+  static std::vector<fixpair> fix_forward;
+  static std::vector<fixpair> fix_reverse;
+  if (!fixLoaded) {
+    fixLoaded = true;
     SnoFile<GameBalance> gmb("1xx_AffixList");
     for (auto& affix : gmb->x078_AffixTable) {
-      if (!strcmp(affix.x000_Text, "1xx_CCReduction 0.1 Legendary")) {
-        switch (affix.x260_AttributeSpecifiers[0].x00_Type) {
-        case 683: version = Live; break;
-        case 689: version = Ptr; break;
-        case 690: version = Ptr2; break;
-        case 699: version = Ptr24_1; break;
-        default: throw Exception("unknown build version");
+      if (!strcmp(affix.x000_Text, "X1_SplashDamage 1")) {
+        std::string diff = fmtstring("%d", 1331 - affix.x260_AttributeSpecifiers[0].x00_Type);
+        auto const& fix = GameAffixes::rawData()["AffixFix"];
+        if (!fix.has(diff)) throw Exception("unsupported build");
+        for (json::Value const& val : fix[diff]) {
+          fixpair fp(val[0].getInteger(), val[1].getInteger());
+          fix_forward.push_back(fp);
+          fix_reverse.emplace_back(fp.first + fp.second, -fp.second);
         }
         break;
       }
     }
   }
-  if (reverse) {
-    switch (version) {
-    case Live:
-      if (id >= 677) {
-        return id - 5;
-      } else if (id >= 168) {
-        return id - 3;
-      } else {
-        return id;
-      }
-    case Ptr:
-      return id;
-    case Ptr2:
-      if (id >= 677) {
-        return id + 1;
-      } else {
-        return id;
-      }
-    case Ptr24_1:
-      if (id >= 1053) {
-        return id + 11;
-      } else if (id >= 677) {
-        return id + 10;
-      } else if (id >= 335) {
-        return id + 3;
-      } else if (id >= 134) {
-        return id + 1;
-      } else {
-        return id;
-      }
-    default:
-      return id;
-    }
-  } else {
-    switch (version) {
-    case Live:
-      if (id >= 672) {
-        return id + 5;
-      } else if (id >= 165) {
-        return id + 3;
-      } else {
-        return id;
-      }
-    case Ptr:
-      return id;
-    case Ptr2:
-      if (id >= 678) {
-        return id - 1;
-      } else {
-        return id;
-      }
-    case Ptr24_1:
-      if (id >= 1064) {
-        return id - 11;
-      } else if (id >= 687) {
-        return id - 10;
-      } else if (id >= 338) {
-        return id - 3;
-      } else if (id >= 135) {
-        return id - 1;
-      } else {
-        return id;
-      }
-    default:
-      return id;
+  std::vector<fixpair>& fix = (reverse ? fix_reverse : fix_forward);
+  int result = id;
+  for (fixpair const& fp : fix) {
+    if (id >= fp.first) {
+      result = id + fp.second;
+    } else {
+      break;
     }
   }
+  return result;
 }
 
 bool GameAffixes::isSecondary(uint32 attr) {
@@ -161,7 +109,7 @@ GameAffixes::GameAffixes() {
     }
   }
 
-  json::parse(File("affixes.js"), affixData_.raw);
+  json::parse(File(path::work() / "affixes.js"), affixData_.raw);
   for (auto& kv : affixData_.raw["Affixes"].getMap()) {
     affixData_.types[atoi(kv.first.c_str())] = kv.second.getString();
   }

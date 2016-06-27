@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>D3 Diff</title>
+  <style type="text/css">
+   .bg-red { background-color: #f88; }
+   .bg-green { background-color: #8f8; }
+   .indent { padding-left: 48px; margin: 0; display: block; }
+   .label { font-weight: bold; }
+   i { font-size: 16px; display: block; background-color: #ccc; padding: 2px; margin-bottom: 3px; }
+   div { border: 1px solid black; margin-top: 6px; padding-bottom: 3px; margin-right: 180px; }
+   .menu { border: 1px solid black; padding: 8px; background-color: #fff; position: fixed; margin: 0; top: 8px; right: 8px; }
+   h4 { margin: 6px 0; }
+   .menu a { display: block; }
+   a { color: #00f; text-decoration: none; }
+   a:hover { text-decoration: underline; }
+   .tip { font-style: italic; font-size: 12px; }
+  </style>
+  <script src="/external/jquery.min.js"></script>
+  <script src="/external/jquery.mousewheel.min.js"></script>
+  <script type="text/javascript">
+   $(document).on("change", ".version", function() {
+     window.location.href = "/diff/powers/" + $(this).val();
+   });
+   $(function() {
+     var menu = $(".menu");
+     function doScroll(evt) {
+       var ht = menu.outerHeight();
+       var wht = $(window).height();
+       var ypos = menu.position().top;
+       var clipped = false;
+       var npos = ypos + evt.deltaY * evt.deltaFactor;
+       if (npos > 8) { npos = 8; clipped = true; }
+       if (npos + ht < wht - 8) {npos = wht - 8 - ht; clipped = true; }
+       menu.css("top", npos);
+       return clipped;
+     }
+     menu.mousewheel(function(evt) {
+       doScroll(evt);
+       return false;
+     });
+     $("body").mousewheel(function(evt) {
+       doScroll(evt);
+     });
+   });
+  </script>
+ </head>
+ <body>
+  {NAVBAR}

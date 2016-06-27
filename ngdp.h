@@ -13,6 +13,8 @@ namespace NGDP {
   void from_string(Hash hash, std::string const& str);
   std::string to_string(const Hash hash);
 
+  void preload(char const* task, File& file);
+
   struct Hash_container {
     Hash _;
     struct hash {
@@ -52,9 +54,9 @@ namespace NGDP {
     }
 
     std::string geturl(std::string const& hash, std::string const& type = "config", bool index = false) const;
-    File load(std::string const& hash, std::string const& type = "config", bool index = false) const;
-    File load(const Hash hash, std::string const& type = "config", bool index = false) const {
-      return load(to_string(hash), type, index);
+    File load(std::string const& hash, std::string const& type = "config", bool index = false, char const* preload = nullptr) const;
+    File load(const Hash hash, std::string const& type = "config", bool index = false, char const* preload = nullptr) const {
+      return load(to_string(hash), type, index, preload);
     }
 
   private:
@@ -130,7 +132,7 @@ namespace NGDP {
 
   class ArchiveIndex {
   public:
-    ArchiveIndex(NGDP const& ngdp, CascStorage& storage, std::vector<std::string> const& archives, uint32 blockSize = (1U<<20));
+    ArchiveIndex(NGDP const& ngdp, uint32 blockSize = (1U<<20));
 
     File load(Hash const& hash);
 
@@ -145,11 +147,9 @@ namespace NGDP {
       std::vector<uint8> mask;
     };
     NGDP const& ngdp_;
-    CascStorage& storage_;
     uint32 blockSize_;
     std::vector<ArchiveInfo> archives_;
     std::unordered_map<Hash_container, IndexEntry, Hash_container::hash, Hash_container::equal> index_;
-    File load_raw(Hash const& hash);
   };
 
   class DataStorage {

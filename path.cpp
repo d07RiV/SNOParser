@@ -65,12 +65,21 @@ namespace path {
     for (auto const& root : roots) {
       uint32 attr = GetFileAttributes(root.c_str());
       if (attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY)) {
-        instance.root = root / "Base";
+        instance.root = root;
         instance.work = root / "Work";
         SetCurrentDirectory(instance.work.c_str());
         initialized = true;
         break;
       }
+    }
+    if (roots.empty()) {
+      char buffer[512];
+      GetModuleFileName(GetModuleHandle(NULL), buffer, sizeof buffer);
+      std::string root = path(buffer);
+      instance.root = root;
+      instance.work = root / "Work";
+      SetCurrentDirectory(instance.work.c_str());
+      initialized = true;
     }
     if (!initialized) throw Exception("work dir not found");
     initialized = false;
@@ -82,7 +91,7 @@ namespace path {
         break;
       }
     }
-    if (!initialized) throw Exception("casc dir not found");
+    if (!initialized && cascs.size()) throw Exception("casc dir not found");
     return instance;
   }
 }

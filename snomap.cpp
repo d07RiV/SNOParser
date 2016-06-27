@@ -11,13 +11,13 @@ void SnoMap::parse(File& file, std::string const& name) {
   }
 }
 void SnoMap::save(std::string const& type) {
-  File file(path::work() / fmtstring("sno_%08x", SnoLoader::default->hash()) / type + ".txt", "wt");
+  File file(path::work() / fmtstring("sno_%s", SnoLoader::default->version().c_str()) / type + ".txt", "wt");
   for (const auto& kv : map_) {
     file.printf("%d %s\n", kv.first, kv.second.c_str());
   }
 }
 bool SnoMap::load(std::string const& type) {
-  File file(path::work() / fmtstring("sno_%08x", SnoLoader::default->hash()) / type + ".txt", "rt");
+  File file(path::work() / fmtstring("sno_%s", SnoLoader::default->version().c_str()) / type + ".txt", "rt");
   if (!file) return false;
   int id;
   char fname[512];
@@ -39,9 +39,9 @@ static void insert(std::map<uint32, std::string>& dst, T const& src) {
 }
 
 const SnoMap& SnoManager::gameBalance() {
-  auto it = instance_.map_.find("GameBalanceId");
+  auto it = instance_.map_.find(0xDEADBEEF);
   if (it == instance_.map_.end()) {
-    SnoMap& map = instance_.map_["GameBalanceId"];
+    SnoMap& map = instance_.map_[0xDEADBEEF];
     if (map.load("GameBalanceId")) return map;
     for (auto& gmb : SnoLoader::All<GameBalance>()) {
       insert(map.map_, gmb->x018_ItemTypes);
@@ -75,7 +75,7 @@ const SnoMap& SnoManager::gameBalance() {
 }
 
 void SnoManager::clear() {
-  std::string root = path::work() / fmtstring("sno_%08x", SnoLoader::default->hash());
+  std::string root = path::work() / fmtstring("sno_%s", SnoLoader::default->version().c_str());
   WIN32_FIND_DATA fdata;
   HANDLE hFind = FindFirstFile((root / "*").c_str(), &fdata);
   if (hFind == INVALID_HANDLE_VALUE) return;
@@ -92,3 +92,31 @@ void SnoManager::clear() {
 }
 
 SnoManager SnoManager::instance_;
+
+struct TocHeader {
+  static const uint32 MAX_ASSETS = 70;
+  uint32 entryCounts[MAX_ASSETS];
+  uint32 entryOffsets[MAX_ASSETS];
+  uint32 unknown[MAX_ASSETS];
+  uint32 align;
+};
+struct TocEntry {
+  uint32 asset;
+  uint32 index;
+  uint32 name;
+};
+
+void SnoManager::loadTOC(uint8 const* toc) {
+  TocHeader const* header = (TocHeader const*) toc;
+  toc += sizeof(TocHeader);
+  for (size_t i = 0; i < TocHeader::MAX_ASSETS; ++i) {
+    if (!header->entryCounts[i]) continue;
+
+    TocEntry const* entries = (TocEntry const*)(toc + header->entryOffsets[i]);
+    char const* names = (char const*)(entries + header->entryCounts[i]);
+
+    for (size_t j = 0; j < header->entryCounts[i]; ++j) {
+      instance_.map_[entries[j].asset].map_[entries[j].index] = names + entries[j].name;
+    }
+  }
+}

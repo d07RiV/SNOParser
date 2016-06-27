@@ -799,6 +799,7 @@ bool BuilderVisitor::closeComplexValue() {
 }
 
 bool parse(File& file, Value& value, int mode, std::string* func, bool throwExceptions) {
+  if (!file) return false;
   BuilderVisitor builder(value, throwExceptions);
   value.clear();
   return parse(file, &builder, mode, func);

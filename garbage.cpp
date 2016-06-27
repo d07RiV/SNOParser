@@ -781,51 +781,37 @@ std::string file_contents(File& src) {
   return tmp;
 }
 
-void write_template(File& out, File& src, Dictionary const* tr = nullptr) {
-  std::string tmp = file_contents(src);
-  if (tr) {
-    for (auto const& kv : *tr) {
-      size_t offs = 0;
-      while (true) {
-        offs = tmp.find(kv.first, offs);
-        if (offs == std::string::npos) break;
-        tmp.replace(offs, kv.first.size(), kv.second);
-        offs += kv.second.size();
-      }
-    }
-  }
-  out.write(&tmp[0], tmp.size());
-}
-
 void make_diff(std::string const& name, std::vector<std::string> const& fields, bool links = false) {
   json::Value live, ptr;
   json::parse(File(name + "_live.js"), live);
   json::parse(File(name + "_ptr.js"), ptr);
-  File out("diff/" + name + ".html", "w");
-  Dictionary tr;
-  tr.emplace("%LHS%", file_contents(File("version_live.js")));
-  tr.emplace("%RHS%", file_contents(File("version_ptr.js")));
-  write_template(out, File("diff/templates/" + name + ".html"), &tr);
-  if (links) file_copy(out, "menu.html");
+
+  std::string build1 = file_contents(File("version_live.js"));
+  std::string build2 = file_contents(File("version_ptr.js"));
+  size_t offs1 = build1.find_last_of('.');
+  build1 = build1.substr(offs1 + 1);
+  size_t offs2 = build2.find_last_of('.');
+  build2 = build2.substr(offs2 + 1);
+
+  File out("diff/" + name + "." + build1 + "." + build2 + ".html", "w");
+  out.copy(File("diff/templates/" + name + ".html"));
+  if (links) out.copy(File("menu.html"));
   diff(out, live, ptr, fields, links);
-  file_copy(out, "diff/templates/tail.html");
+  out.copy(File("diff/templates/tail.html"));
 }
 void make_html(std::string const& name, bool ptr, std::vector<std::string> const& fields, bool links = false) {
   json::Value value;
   std::string suffix(ptr ? "_ptr.js" : "_live.js");
+
+  std::string build = file_contents(File("version" + suffix));
+  size_t offs = build.find_last_of('.');
+  build = build.substr(offs + 1);
+
   json::parse(File(name + suffix), value);
-  File out("game/" + name + (ptr ? "_ptr.html" : "_live.html"), "w");
-  Dictionary tr;
-  tr.emplace("%VER%", file_contents(File("version" + suffix)));
-  write_template(out, File("game/templates/" + name + ".html"), &tr);
-  if (ptr) {
-    out.printf(" | <a class=\"live_link\" href=\"/game/%s\">Live</a>", name.c_str());
-  } else {
-    out.printf(" | <a class=\"ptr_link\" href=\"/game/%s\">PTR</a>", name.c_str());
-  }
-  out.printf(" | <a class=\"ptr_link\" href=\"/diff/%s\">Diff</a>\n", name.c_str());
+  File out("game/" + name + "." + build + ".html", "w");
+  out.copy(File("game/templates/" + name + ".html"));
   makehtml(out, value, fields, links);
-  file_copy(out, "game/templates/tail.html");
+  out.copy(File("game/templates/tail.html"));
 }
 void make_html(std::string const& name, std::vector<std::string> const& fields, bool links = false) {
   make_html(name, false, fields, links);
@@ -976,38 +962,52 @@ void make_menu() {
     }
   }
   mf.printf("  </div>");
-  //json::Value powers;
-  //for (auto& pow : casc.json<Power>()) {
-  //  powers[Power::name(pow["x000_Header"]["id"].getInteger())] = dumpPower(pow);
-  //}
-  //json::write(File("powers" + suffix, "w"), powers, json::mJS);
-  //return 0;
 }
 
 std::string get_version() {
-  std::string dir = path::casc();
-  while (dir.size() && GetFileAttributes((dir / ".build.info").c_str()) == INVALID_FILE_ATTRIBUTES) {
-    dir = path::path(dir);
+  if (SnoCdnLoader* cdn = dynamic_cast<SnoCdnLoader*>(SnoLoader::default)) {
+    auto config = cdn->buildinfo();
+    std::vector<std::string> version;
+    std::string build_id;
+    for (auto const& p : split_multiple(config["build-name"], "_- ")) {
+      if (!p.empty() && std::isdigit((unsigned char) p[0])) {
+        std::string d;
+        for (size_t i = 0; i < p.size() && std::isdigit((unsigned char) p[i]); ++i) {
+          d.push_back(p[i]);
+        }
+        if (d.size() >= 4) {
+          build_id = d;
+        } else {
+          version.push_back(d);
+        }
+      }
+    }
+    return join(version, ".") + "." + build_id;
+  } else {
+    std::string dir = path::casc();
+    while (dir.size() && GetFileAttributes((dir / ".build.info").c_str()) == INVALID_FILE_ATTRIBUTES) {
+      dir = path::path(dir);
+    }
+    File info(dir / ".build.info");
+    if (!info) return "unknown";
+    std::string line;
+    if (!info.getline(line)) return "unknown";
+    size_t pos = line.find("Version!");
+    if (pos == std::string::npos) return "unknown";
+    size_t count = 0;
+    while (pos) {
+      count += (line[--pos] == '|');
+    }
+    if (!info.getline(line)) return "unknown";
+    size_t left = 0;
+    while (count--) {
+      left = line.find('|', left);
+      if (left == std::string::npos) return "unknown";
+      ++left;
+    }
+    size_t right = line.find('|', left);
+    return line.substr(left, right == std::string::npos ? right : right - left);
   }
-  File info(dir / ".build.info");
-  if (!info) return "unknown";
-  std::string line;
-  if (!info.getline(line)) return "unknown";
-  size_t pos = line.find("Version!");
-  if (pos == std::string::npos) return "unknown";
-  size_t count = 0;
-  while (pos) {
-    count += (line[--pos] == '|');
-  }
-  if (!info.getline(line)) return "unknown";
-  size_t left = 0;
-  while (count--) {
-    left = line.find('|', left);
-    if (left == std::string::npos) return "unknown";
-    ++left;
-  }
-  size_t right = line.find('|', left);
-  return line.substr(left, right == std::string::npos ? right : right - left);
 }
 
 void dump_data(std::string const& suffix) {
@@ -1377,8 +1377,8 @@ bool operator < (MonValue const& lhs, MonValue const& rhs) {
 }
 void progress_comp(bool trans) {
   json::Value lhs, rhs;
-  json::parse(File("monsters_second.js"), lhs);
-  json::parse(File("monsters_latest.js"), rhs);
+  json::parse(File("monsters_live.js"), lhs);
+  json::parse(File("monsters_ptr.js"), rhs);
   std::map<istring, std::pair<double, double>> values;
   for (auto& kv : lhs.getMap()) {
     values[kv.first].first = kv.second.getNumber();
@@ -1609,7 +1609,7 @@ void write_item_icons() {
   //  std::string slot = src["itemTypes"][type]["slot"].getString();
   //  write_item_icon(dst, dsticons, id, slot == "torso");
   //}
-  write_item_icon(dst, dsticons, "Unique_Offhand_001_x1", false);
+  //write_item_icon(dst, dsticons, "Unique_Offhand_001_x1", false);
   json::write(File("item_icons.js", "w"), dst, json::mJS);
   dsticons.write(File("item_icons.wgz", "wb"), false);
 }

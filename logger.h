@@ -20,7 +20,11 @@ private:
 public:
   static void* begin(size_t count, char const* name = nullptr, void* task = nullptr);
   static void item(char const* name, void* task = nullptr);
+  static void progress(size_t count, bool add = true, void* task = nullptr);
   static void end(bool pop = false, void* task = nullptr);
+
+  static int menu(char const* title, std::vector<std::string> const& options);
+  static int menu(char const* title, std::map<char, std::string> const& options);
 
   static void log(char const* fmt, ...);
 
