@@ -7,7 +7,7 @@ GameTextures& GameTextures::instance() {
 }
 
 GameTextures::GameTextures() {
-  File src(path::work() / fmtstring("TextureMap.%s.dat", SnoLoader::default->version().c_str()));
+  File src(path::work() / fmtstring("sno_%s/TextureMap.dat", SnoLoader::default->version().c_str()));
   if (!src) {
     auto const& files = SnoManager::get<Textures>().get();
     size_t count = 0;
@@ -29,7 +29,7 @@ GameTextures::GameTextures() {
       }
     }
     Logger::end();
-    File dst(path::work() / fmtstring("TextureMap.%s.dat", SnoLoader::default->version().c_str()), "wb");
+    File dst(path::work() / fmtstring("sno_%s/TextureMap.dat", SnoLoader::default->version().c_str()), "wb");
     dst.write32(dir_.size());
     for (auto& d : dir_) {
       dst.write32(d.first);

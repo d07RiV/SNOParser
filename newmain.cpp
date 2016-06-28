@@ -35,9 +35,7 @@
 #include <stdarg.h>
 
 namespace path {
-  std::vector<std::string> roots = {
-    "C:\\Work\\junk",
-  };
+  std::vector<std::string> roots;
   std::vector<std::string> cascs;
 }
 
@@ -169,6 +167,113 @@ void write_icon(Archive& dsticons, GameBalance::Type::Item const& item) {
   }
 }
 
+static json::Value versions;
+
+void OpExtract() {
+  uint32 build = SnoLoader::default->build();
+  std::string suffix = fmtstring(".%d.js", build);
+  json::Value js_sets;
+  json::Value js_items;
+  json::Value js_powers;
+  for (auto& gmb : SnoLoader::All<GameBalance>()) {
+    for (auto& val : gmb->x168_SetItemBonusTable) {
+      parseSetBonus(val, js_sets, false);
+    }
+    for (auto& val : gmb->x028_Items) {
+      parseItem(val, js_items, false);
+    }
+  }
+  for (auto& pow : SnoLoader::All<Power>()) {
+    parsePower(*pow, js_powers, false);
+  }
+  json::write(File(path::work() / "itemsets" + suffix, "w"), js_sets);
+  json::write(File(path::work() / "items" + suffix, "w"), js_items);
+  json::write(File(path::work() / "powers" + suffix, "w"), js_powers);
+
+  make_html("items", build, js_items, { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
+  make_html("itemsets", build, js_sets, { "name", "2", "3", "4", "5", "6", "powers" });
+}
+
+void OpCompare() {
+  uint32 build = SnoLoader::default->build();
+  if (!File::exists(path::work() / fmtstring("items.%d.js", build))) {
+    Logger::log("Please extract game data first");
+    return;
+  }
+  std::vector<uint32> verlist;
+  for (auto const& kv : versions.getMap()) {
+    uint32 ver = std::stoi(kv.first);
+    if (ver != build && File::exists(path::work() / fmtstring("items.%d.js", ver))) {
+      verlist.push_back(ver);
+    }
+  }
+  if (verlist.empty()) {
+    Logger::log("No other versions found");
+    return;
+  }
+  std::sort(verlist.begin(), verlist.end(), [](uint32 a, uint32 b) { return a > b; });
+  std::vector<std::string> vernames;
+  for (uint32 v : verlist) {
+    vernames.push_back(versions[fmtstring("%d", v)].getString());
+  }
+  int index = Logger::menu("Choose other version", vernames);
+  uint32 other = verlist[index];
+
+  make_diff("items", other, build, { "name", "set", "icon", "flavor", "primary", "secondary", "powers" });
+  make_diff("itemsets", other, build, { "name", "2", "3", "4", "5", "6", "powers" });
+  make_diff("powers", other, build, { "name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e" }, true);
+}
+
+void OpDumpSNO() {
+  std::vector<std::string> types;
+  std::vector<uint32> indices;
+#define SNOTYPE(T)  types.push_back(T::type()); indices.push_back(T::index);
+#include "allsno.h"
+#undef SNOTYPE
+  types.push_back("Cancel");
+  indices.push_back(0);
+  int choice = Logger::menu("Choose SNO type", types);
+  switch (indices[choice]) {
+#define SNOTYPE(T)  case T::index: SnoLoader::Dump<T>(); break;
+#include "allsno.h"
+#undef SNOTYPE
+  }
+}
+
+void OpExtractIcons() {
+  Archive icons;
+  for (auto& gmb : SnoLoader::All<GameBalance>()) {
+    for (auto& item : gmb->x028_Items) {
+      write_icon(icons, item);
+    }
+  }
+  icons.write(File("icons.wgz", "wb"), false);
+}
+
+void OpDumpPowers() {
+  json::Value value = PowerTags::dump();
+  File out(path::work() / fmtstring("jspowers.%d.js", SnoLoader::default->build()), "wb");
+  out.printf("var Powers=");
+  json::WriterVisitor visitor(out, json::mJS);
+  value.walk(&visitor);
+  visitor.onEnd();
+  out.printf(";");
+}
+
+//{"Extract game data", "Compare versions", "Dump SNO data", "Extract icons", "Model viewer", "Exit"}
+struct {
+  char const* name;
+  void(*func)();
+} operations[] = {
+  { "Extract game data", OpExtract },
+  { "Compare versions", OpCompare },
+  { "Dump SNO data", OpDumpSNO },
+  { "Extract icons", OpExtractIcons },
+  { "Model viewer", ViewModels },
+  { "Dump powers", OpDumpPowers },
+  { "Exit", nullptr },
+};
+
 int do_main() {
   json::Value value;
   json::parse(File(path::work() / "paths.js"), value);
@@ -243,89 +348,18 @@ int do_main() {
     }
   }
   Logger::log("Loaded build %d", SnoLoader::default->build());
-  json::Value versions;
   json::parse(File(path::work() / "versions.js"), versions);
   versions[fmtstring("%d", SnoLoader::default->build())] = SnoLoader::default->version();
   json::write(File(path::work() / "versions.js", "wb"), versions);
 
   while (true) {
-    int choice = Logger::menu("Choose action", {"Extract game data", "Compare versions", "Dump SNO data", "Extract icons", "Model viewer", "Exit"});
-    if (choice == 0) {
-      uint32 build = SnoLoader::default->build();
-      std::string suffix = fmtstring(".%d.js", build);
-      json::Value js_sets;
-      json::Value js_items;
-      json::Value js_powers;
-      for (auto& gmb : SnoLoader::All<GameBalance>()) {
-        for (auto& val : gmb->x168_SetItemBonusTable) {
-          parseSetBonus(val, js_sets, false);
-        }
-        for (auto& val : gmb->x028_Items) {
-          parseItem(val, js_items, false);
-        }
-      }
-      for (auto& pow : SnoLoader::All<Power>()) {
-        parsePower(*pow, js_powers, false);
-      }
-      json::write(File(path::work() / "itemsets" + suffix, "w"), js_sets);
-      json::write(File(path::work() / "items" + suffix, "w"), js_items);
-      json::write(File(path::work() / "powers" + suffix, "w"), js_powers);
-
-      make_html("items", build, js_items, {"name", "set", "icon", "flavor", "primary", "secondary", "powers"});
-      make_html("itemsets", build, js_sets, {"name", "2", "3", "4", "5", "6", "powers"});
-    } else if (choice == 1) {
-      uint32 build = SnoLoader::default->build();
-      if (!File::exists(path::work() / fmtstring("items.%d.js", build))) {
-        Logger::log("Please extract game data first");
-        continue;
-      }
-      std::vector<uint32> verlist;
-      for (auto const& kv : versions.getMap()) {
-        uint32 ver = std::stoi(kv.first);
-        if (ver != build && File::exists(path::work() / fmtstring("items.%d.js", ver))) {
-          verlist.push_back(ver);
-        }
-      }
-      if (verlist.empty()) {
-        Logger::log("No other versions found");
-        continue;
-      }
-      std::sort(verlist.begin(), verlist.end(), [](uint32 a, uint32 b) { return a > b; });
-      std::vector<std::string> vernames;
-      for (uint32 v : verlist) {
-        vernames.push_back(versions[fmtstring("%d", v)].getString());
-      }
-      int index = Logger::menu("Choose other version", vernames);
-      uint32 other = verlist[index];
-
-      make_diff("items", other, build, {"name", "set", "icon", "flavor", "primary", "secondary", "powers"});
-      make_diff("itemsets", other, build, {"name", "2", "3", "4", "5", "6", "powers"});
-      make_diff("powers", other, build, {"name", "desc", "flavor", "rune_a", "rune_b", "rune_c", "rune_d", "rune_e"}, true);
-    } else if (choice == 2) {
-      std::vector<std::string> types;
-      std::vector<uint32> indices;
-#define SNOTYPE(T)  types.push_back(T::type()); indices.push_back(T::index);
-#include "allsno.h"
-#undef SNOTYPE
-      types.push_back("Cancel");
-      indices.push_back(0);
-      int choice = Logger::menu("Choose SNO type", types);
-      switch (indices[choice]) {
-#define SNOTYPE(T)  case T::index: SnoLoader::Dump<T>(); break;
-#include "allsno.h"
-#undef SNOTYPE
-      default: break;
-      }
-    } else if (choice == 3) {
-      Archive icons;
-      for (auto& gmb : SnoLoader::All<GameBalance>()) {
-        for (auto& item : gmb->x028_Items) {
-          write_icon(icons, item);
-        }
-      }
-      icons.write(File("icons.wgz", "wb"), false);
-    } else if (choice == 4) {
-      ViewModels();
+    std::vector<std::string> opNames;
+    for (auto const& op : operations) {
+      opNames.push_back(op.name);
+    }
+    int choice = Logger::menu("Choose action", opNames);
+    if (operations[choice].func) {
+      operations[choice].func();
     } else {
       break;
     }

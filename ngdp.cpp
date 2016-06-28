@@ -7,7 +7,7 @@
 
 namespace NGDP {
 
-  const std::string HOST = "http://cn.patch.battle.net:1119";
+  const std::string HOST = "http://us.patch.battle.net:1119";
   const std::string PROGRAM = "d3t";
   const std::string CACHE = "cdncache";
 

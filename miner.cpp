@@ -530,7 +530,7 @@ void diff(File& file, json::Value const& lhs, json::Value const& rhs, std::vecto
     }
     file.printf(">\n");
     if (links) {
-      file.printf("   <i><a href=\"/powers/%s\">%s</a></i>\n", key.c_str(), key.c_str());
+      file.printf("   <i><a href=\"/powers/%d/%s\">%s</a></i>\n", SnoLoader::default->build(), key.c_str(), key.c_str());
     } else {
       file.printf("   <i>%s</i>\n", key.c_str());
     }
@@ -569,9 +569,9 @@ void diff(File& file, json::Value const& lhs, json::Value const& rhs, std::vecto
           for (auto& lr : list) {
             if (sub == "powers") {
               if (lr.second) {
-                file.printf("    <a href=\"/powers/%s\">", firstKey(*lr.second).c_str());
+                file.printf("    <a href=\"/powers/%d/%s\">", SnoLoader::default->build(), firstKey(*lr.second).c_str());
               } else {
-                file.printf("    <a href=\"/powers/%s\">", firstKey(*lr.first).c_str());
+                file.printf("    <a href=\"/powers/%d/%s\">", SnoLoader::default->build(), firstKey(*lr.first).c_str());
               }
             } else {
               file.printf("    ");
@@ -640,7 +640,7 @@ void makehtml(File& file, json::Value const& val, std::vector<std::string> const
     }
     file.printf(">\n");
     if (links) {
-      file.printf("   <i><a href=\"/powers/%s\">%s</a></i>\n", key.c_str(), key.c_str());
+      file.printf("   <i><a href=\"/powers/%d/%s\">%s</a></i>\n", SnoLoader::default->build(), key.c_str(), key.c_str());
     } else {
       file.printf("   <i>%s</i>\n", key.c_str());
     }
@@ -665,7 +665,7 @@ void makehtml(File& file, json::Value const& val, std::vector<std::string> const
         file.printf("   <span class=\"label\">%s</span>: <p class=\"indent\">\n", sub.c_str());
         for (auto& lri : lv) {
           if (sub == "powers") {
-            file.printf("    <a href=\"/powers/%s\">", firstKey(lri).c_str());
+            file.printf("    <a href=\"/powers/%d/%s\">", SnoLoader::default->build(), firstKey(lri).c_str());
           } else {
             file.printf("    ");
           }
